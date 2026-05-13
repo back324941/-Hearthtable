@@ -81,7 +81,7 @@
                         <select id="pickupTime" class="px-2 py-5 rounded-2xl border-4 border-gray-100 font-black text-xl text-center bg-white">
                             <option value="17:00-18:00">17:00-18:00</option>
                             <option value="17:30-18:30">17:30-18:30</option>
-                            <option value="18:00-19:00">18:00-19:00</option>
+                            <option value="18:30-19:00">18:30-19:00</option>
                         </select>
                     </div>
                     <div id="address-box"><input type="text" id="address" class="w-full px-6 py-5 rounded-2xl border-4 border-orange-100 text-xl font-black bg-orange-50 outline-none" placeholder="外送地址 (非必填)"></div>
@@ -140,7 +140,7 @@
     <script>
         // --- 額滿日期設定區塊 ---
         // 填寫要截止的日期簡寫，例如：['Wed', 'Fri'] 代表週三與週五額滿
-        const disabledDays = ['Wed','Tue']; 
+        const disabledDays = ['Wed','Tue','Thu']; 
         // -----------------------
 
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNvPw1H3ks0tr7R4sUCr-l--0NUMeMZhTe2ni_wW1OpBK3Gg3euOrwA0Uyai4MNH4xdg/exec";
