@@ -89,7 +89,7 @@
                         <label class="text-sm font-black text-gray-400 px-2">付款方式</label>
                         <select id="paymentMethod" onchange="togglePayNotice(this.value)" class="w-full px-6 py-5 rounded-2xl border-4 border-gray-100 font-black text-xl bg-gray-50 outline-none">
                             <option value="現金付款">當面現金付款</option>
-                            <option value="電子支付">Line Pay / 轉帳</option>
+                            <option value="電子支付">Line Pay / 街口 / 轉帳</option>
                         </select>
                         <div id="payment-notice" class="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl text-blue-600 font-bold text-sm">💡 下單後請於一小時內完成支付。</div>
                     </div>
@@ -101,7 +101,7 @@
                         <button onclick="clearDay()" class="text-sm font-black text-red-500 border-2 border-red-100 px-4 py-1 rounded-full clickable">✕ 清空本日</button>
                     </div>
                     <div class="flex border-[4px] rounded-[2rem] overflow-hidden bg-gray-100 border-gray-100">
-                        <div onclick="switchDay('Tue')" id="tab-Tue" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">二</div>
+                        <div onclick="switchDay('Mon')" id="tab-Mon" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">一</div>
                         <div onclick="switchDay('Wed')" id="tab-Wed" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">三</div>
                         <div onclick="switchDay('Thu')" id="tab-Thu" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">四</div>
                         <div onclick="switchDay('Fri')" id="tab-Fri" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">五</div>
@@ -127,11 +127,33 @@
 
         <div id="success-container" class="hidden bg-white rounded-[3.5rem] shadow-2xl p-10 text-center">
             <h2 class="text-3xl font-black text-[#a67c52] mb-6">🎉 預訂已記錄</h2>
-            <div class="screenshot-remind p-6 rounded-[2.5rem] mb-8">
+            
+            <div class="screenshot-remind p-6 rounded-[2.5rem] mb-6">
                 <div class="text-5xl mb-3">📸</div>
                 <p class="text-2xl font-black text-red-600 mb-2">請務必「截圖」此頁面</p>
                 <p class="text-lg font-bold text-gray-700">並回傳至官方 Line 確認訂單</p>
             </div>
+
+            <div class="bg-gray-50 border-4 border-gray-100 p-5 rounded-[2rem] mb-6 space-y-2">
+                <p class="text-sm font-black text-gray-400">街口收款帳號</p>
+                <p class="text-3xl font-black tracking-wider text-gray-800" id="jk-account-num">903550968</p>
+                <button onclick="copyJKAccount()" id="copy-btn-text" class="px-6 py-2 bg-amber-100 text-amber-800 rounded-full font-black text-sm clickable">📋 點我一鍵複製帳號</button>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <a id="line-portal-btn" href="#" target="_blank" class="block w-full py-5 bg-[#06C755] text-white rounded-2xl text-center font-black text-xl shadow-md clickable">
+                    💬 打開官方 LINE 傳送截圖
+                </a>
+                <div class="grid grid-cols-2 gap-4">
+                    <a id="pay-portal-btn" href="#" target="_blank" class="block py-5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-2xl text-center font-black text-lg shadow-md clickable">
+                        💚 LINE 轉帳
+                    </a>
+                    <a id="jk-portal-btn" href="#" target="_blank" class="block py-5 bg-[#D71822] text-white rounded-2xl text-center font-black text-lg shadow-md clickable">
+                        ❤️ 開啟街口 APP
+                    </a>
+                </div>
+            </div>
+
             <div id="summary-content" class="text-left text-xl font-black whitespace-pre-line leading-relaxed border-4 p-8 rounded-[2.5rem] bg-gray-50 mb-10"></div>
             <div onclick="location.reload()" class="text-gray-400 underline text-lg py-4 clickable">返回主頁</div>
         </div>
@@ -139,21 +161,82 @@
 
     <script>
         // --- 額滿日期設定區塊 ---
-        // 填寫要截止的日期簡寫，例如：['Wed', 'Fri'] 代表週三與週五額滿
-        const disabledDays = ['Wed','Tue','Thu']; 
+        const disabledDays = []; 
         // -----------------------
+
+        // --- 連結設定區塊 ---
+        const LINE_OFFICIAL_URL = "https://lin.ee/7gDyy0y"; // 您的官方 LINE 連結
+        const LINE_PAY_URL = "https://line.me/ti/p/back324941"; // 您的個人 LINE 轉帳連結
+        const JK_TRANSFER_URL = "https://www.jkopay.com/transfer?jkoid=JKO0000000903550968"; // 已為您綁定專屬轉帳代碼！
+        // --------------------------------------------------
 
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNvPw1H3ks0tr7R4sUCr-l--0NUMeMZhTe2ni_wW1OpBK3Gg3euOrwA0Uyai4MNH4xdg/exec";
 
         const menus = {
-            Tue: { main: [{i:"A",n:"果香翅小腿",m:180,s:100},{i:"B",n:"薑煸小卷",m:250,s:150},{i:"C",n:"蔥爆豬肉片",m:180,s:100},{i:"D",n:"乾煎鱸魚",m:210,s:120},{i:"E",n:"乾煎鮭魚",m:290,s:170}], side: [{i:"F",n:"糯米椒炒豆乾",m:100,s:60},{i:"G",n:"馬鈴薯炒肉絲",m:110,s:70},{i:"H",n:"番茄炒蛋",m:100,s:60}], soup: {n:"味噌牡蠣湯", p:100} },
-            Wed: { main: [{i:"A",n:"香菇肉燥",m:180,s:100},{i:"B",n:"檸檬魚",m:230,s:130},{i:"C",n:"蔥爆牛肉",m:240,s:140},{i:"D",n:"大黃瓜透過",m:180,s:100},{i:"E",n:"乾煎鮭魚",m:290,s:170}], side: [{i:"F",n:"蔬菜烘蛋",m:120,s:60},{i:"G",n:"馬鈴薯炒肉絲",m:110,s:70},{i:"H",n:"蔥爆豆乾",m:100,s:60}], soup: {n:"海帶芽貢丸湯", p:100} },
-            Thu: { main: [{i:"A",n:"南瓜滷肉",m:220,s:130},{i:"B",n:"茄汁鯖魚",m:200,s:120},{i:"C",n:"蔥爆牛肉",m:240,s:140},{i:"D",n:"大黃瓜燴蝦仁",m:180,s:100},{i:"E",n:"乾煎鮭魚",m:290,s:170}], side: [{i:"F",n:"蟹黃豆腐煲",m:120,s:70},{i:"G",n:"蔥爆豆乾",m:100,s:60},{i:"H",n:"番茄炒蛋",m:100,s:60}], soup: {n:"香菇雞湯", p:120} },
-            Fri: { main: [{i:"A",n:"白醬嫩雞",m:200,s:120},{i:"B",n:"絲瓜鮮蚵",m:190,s:110},{i:"C",n:"蔥爆豬肉片",m:180,s:100},{i:"D",n:"紅燒鱸魚",m:210,s:120},{i:"E",n:"乾煎鮭魚",m:290,s:170}], side: [{i:"F",n:"金針菇炒豆包",m:100,s:60},{i:"G",n:"蔥爆豆乾",m:100,s:60},{i:"H",n:"番茄炒蛋",m:100,s:60}], soup: {n:"香根牛肉湯", p:120} }
+            Mon: { 
+                main: [
+                    {i:"A",n:"安東燉雞",m:180,s:110},
+                    {i:"B",n:"蔥爆魷魚",m:180,s:110},
+                    {i:"C",n:"蔥爆豬肉片",m:180,s:100},
+                    {i:"D",n:"乾煎鱸魚",m:210,s:120}
+                ], 
+                side: [
+                    {i:"E",n:"櫛瓜洋蔥煎餅",m:80,s:50},
+                    {i:"F",n:"糯米椒炒豆乾",m:100,s:60},
+                    {i:"G",n:"馬鈴薯炒肉絲",m:110,s:70},
+                    {i:"H",n:"番茄炒蛋",m:100,s:60}
+                ], 
+                soup: {n:"大醬豬肉豆腐湯", p:120} 
+            },
+            Wed: { 
+                main: [
+                    {i:"A",n:"酸菜牛肉",m:290,s:175},
+                    {i:"B",n:"白醬鱸魚排",m:250,s:150},
+                    {i:"C",n:"蔥爆牛肉",m:240,s:140},
+                    {i:"D",n:"大黃瓜透過",m:180,s:100}
+                ], 
+                side: [
+                    {i:"E",n:"絲瓜豆包",m:120,s:75},
+                    {i:"F",n:"蔬菜烘蛋",m:120,s:60},
+                    {i:"G",n:"馬鈴薯炒肉絲",m:110,s:70},
+                    {i:"H",n:"蔥爆豆乾",m:100,s:60}
+                ], 
+                soup: {n:"鮮蚵豆腐湯", p:120} 
+            },
+            Thu: { 
+                main: [
+                    {i:"A",n:"南瓜滷肉",m:220,s:130},
+                    {i:"B",n:"茄汁鯖魚",m:200,s:120},
+                    {i:"C",n:"韓式水煮肉",m:240,s:145},
+                    {i:"D",n:"茄汁鮮蝦",m:240,s:145}
+                ], 
+                side: [
+                    {i:"E",n:"金針菇煎蛋",m:95,s:60},
+                    {i:"F",n:"蟹黃豆腐煲",m:120,s:70},
+                    {i:"G",n:"蔥爆豆乾",m:100,s:60},
+                    {i:"H",n:"番茄炒蛋",m:100,s:60}
+                ], 
+                soup: {n:"韓式海帶芽牛肉湯", p:120} 
+            },
+            Fri: { 
+                main: [
+                    {i:"A",n:"彩椒炒牛肉",m:260,s:160},
+                    {i:"B",n:"蒜炒蛤蠣杏鮑菇",m:200,s:120},
+                    {i:"C",n:"蔥爆豬肉片",m:180,s:100},
+                    {i:"D",n:"紅燒鱸魚",m:210,s:120}
+                ], 
+                side: [
+                    {i:"E",n:"三杯豆腐",m:100,s:60},
+                    {i:"F",n:"金針菇炒豆包",m:100,s:60},
+                    {i:"G",n:"蔥爆豆乾",m:100,s:60},
+                    {i:"H",n:"番茄炒蛋",m:100,s:60}
+                ], 
+                soup: {n:"金針排骨湯", p:120} 
+            }
         };
 
-        let selections = { Tue: {}, Wed: {}, Thu: {}, Fri: {} };
-        let currentDay = 'Tue';
+        let selections = { Mon: {}, Wed: {}, Thu: {}, Fri: {} };
+        let currentDay = 'Mon';
 
         function handleDeliveryChange(val) {
             document.getElementById('address-box').classList.toggle('show', val === '外送');
@@ -167,7 +250,7 @@
         }
 
         function switchDay(day) { 
-            if(disabledDays.includes(day)) return; // 額滿則不允許切換
+            if(disabledDays.includes(day)) return; 
             currentDay = day; 
             updateTabUI();
             renderMenu(); 
@@ -186,9 +269,8 @@
         }
 
         function goToNextDay() { 
-            const days=['Tue','Wed','Thu','Fri']; 
+            const days=['Mon','Wed','Thu','Fri']; 
             let idx=days.indexOf(currentDay); 
-            // 尋找下一個沒額滿的日期
             for(let i = idx + 1; i < days.length; i++) {
                 if(!disabledDays.includes(days[i])) {
                     switchDay(days[i]);
@@ -219,7 +301,6 @@
         function renderMenu() {
             const sel = selections[currentDay], d = menus[currentDay];
             
-            // 處理額滿顯示
             if(disabledDays.includes(currentDay)) {
                 document.getElementById('menu-content').innerHTML = `
                     <div class="py-20 text-center space-y-4">
@@ -277,7 +358,7 @@
 
         function buildDetailText() {
             let result = [];
-            const dayNames = {Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
+            const dayNames = {Mon:'週一',Wed:'週三',Thu:'週四',Fri:'週五'};
             for(let day in selections){
                 let items = [];
                 const s = selections[day], d = menus[day];
@@ -344,6 +425,21 @@
             list.innerHTML = text ? `<div class="space-y-4">${text.split(' | ').map(t => `<div class="p-4 bg-orange-50 border border-orange-100 rounded-2xl font-black text-sm text-gray-700">${t}</div>`).join('')}${deliveryFeeHtml}</div>` : '<div class="text-center py-20 text-gray-300">目前尚無預訂內容</div>';
         }
 
+        function copyJKAccount() {
+            const numText = document.getElementById('jk-account-num').innerText;
+            navigator.clipboard.writeText(numText).then(() => {
+                const btn = document.getElementById('copy-btn-text');
+                btn.innerText = "✅ 複製成功！";
+                btn.classList.replace('bg-amber-100', 'bg-green-100');
+                btn.classList.replace('text-amber-800', 'text-green-800');
+                setTimeout(() => {
+                    btn.innerText = "📋 點我一鍵複製帳號";
+                    btn.classList.replace('bg-green-100', 'bg-amber-100');
+                    btn.classList.replace('text-green-800', 'text-amber-800');
+                }, 2000);
+            });
+        }
+
         async function submitOrder() {
             const name = document.getElementById('userName').value;
             const delivery = document.getElementById('deliveryType').value;
@@ -359,6 +455,19 @@
             let deliveryDays = 0;
             for(let day in selections) { if(selections[day].type) deliveryDays++; }
             document.getElementById('summary-content').innerText = `姓名: ${name}\n方式: ${delivery} (${time})\n地址: ${addr || "未提供"}\n付款: ${pay}\n明細:\n${orderDetail.replace(/ \| /g, '\n')}${delivery==='外送'?'\n(外送費 '+deliveryDays+'天 共+$'+(deliveryDays*50)+')':''}\n總額: NT$ ${total}`;
+            
+            // 綁定動態傳送門連結
+            document.getElementById('line-portal-btn').href = LINE_OFFICIAL_URL;
+            document.getElementById('pay-portal-btn').href = LINE_PAY_URL;
+            
+            // 判斷街口個人網址是否有填寫
+            const jkBtn = document.getElementById('jk-portal-btn');
+            if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") {
+                jkBtn.href = JK_TRANSFER_URL;
+            } else {
+                jkBtn.href = "jkos://jkos/home"; // 沒填寫則預設直開 App 首頁
+            }
+
             document.getElementById('form-container').classList.add('hidden');
             document.getElementById('success-container').classList.remove('hidden');
             window.scrollTo({top:0, behavior:'smooth'});
@@ -366,9 +475,8 @@
 
         // 初始化
         function init() {
-            // 如果週二剛好額滿，自動切換到下一個沒額滿的日期
             if(disabledDays.includes(currentDay)) {
-                const days=['Tue','Wed','Thu','Fri'];
+                const days=['Mon','Wed','Thu','Fri'];
                 for(let d of days) {
                     if(!disabledDays.includes(d)) {
                         currentDay = d;
