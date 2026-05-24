@@ -2,683 +2,354 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>搭伙晚餐 Hearth Table</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Studio 線上訂位點餐系統</title>
     <style>
-        body { background-color: #1a1410; font-family: -apple-system, sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-size: 20px; user-select: none; }
-        .gold-gradient { background: linear-gradient(135deg, #d4a574 0%, #a67c52 100%); }
-        .day-tab.active { border-color: #a67c52; background-color: rgba(166, 124, 82, 0.2); color: #a67c52; }
-        .day-tab.disabled { opacity: 0.3; background-color: #eee; cursor: not-allowed; text-decoration: line-through; }
-        .clickable:active { transform: scale(0.96); opacity: 0.8; }
-        .item-selected { border-color: #a67c52 !important; background-color: #fff9f3 !important; color: #a67c52 !important; }
-        .v-qty-container { display: flex; flex-direction: column; align-items: center; background: #fff; border: 4px solid #e5e7eb; border-radius: 1.5rem; overflow: hidden; width: 85px; }
-        .v-qty-btn { width: 100%; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; cursor: pointer; }
-        .btn-plus { background-color: #a67c52; color: white; }
-        .btn-minus { background-color: #f3f4f6; color: #9ca3af; }
-        #cart-drawer { transition: transform 0.3s ease; transform: translateX(100%); }
-        #cart-drawer.open { transform: translateX(0); }
-        #address-box, #payment-notice { transition: all 0.3s ease; max-height: 0; opacity: 0; overflow: hidden; }
-        #address-box.show, #payment-notice.show { max-height: 200px; opacity: 1; margin-top: 1rem; }
-        
-        .pkg-info-box { background-color: #fefce8; border: 2px solid #fef08a; border-radius: 1.5rem; }
-
-        .screenshot-remind {
-            background-color: #fff1f2;
-            border: 4px dashed #fb7185;
-            animation: pulse 2s infinite;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
         }
-        @keyframes pulse {
-            0 { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.4); }
-            50% { transform: scale(1.02); box-shadow: 0 0 20px 10px rgba(251, 113, 133, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .upgrade-active { background-color: #ef4444 !important; color: white !important; border-color: #b91c1c !important; }
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            height: 40px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .vip-gift-box {
+            background-color: #fffde7;
+            border: 1px solid #fff59d;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+        .gift-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .gift-option input {
+            width: 16px;
+            height: 16px;
+        }
+        /* 應付金額提示區塊 */
+        .price-display-box {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .price-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+        .price-notice {
+            font-size: 13px;
+            color: #555;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+        .btn-submit {
+            width: 100%;
+            height: 45px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #success-container {
+            text-align: center;
+        }
+        #summary-content {
+            text-align: left;
+            background: #f1f3f5;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .portal-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            margin: 10px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
     </style>
 </head>
-<body class="min-h-screen py-8 px-3 pb-24 text-gray-900">
+<body>
 
-    <header class="max-w-xl mx-auto mb-10 text-center">
-        <h1 class="text-4xl font-black tracking-[0.3em] text-white bg-[#a67c52] px-8 py-3 rounded-2xl shadow-lg inline-block">搭伙晚餐</h1>
-    </header>
-
-    <div class="fixed top-24 right-0 z-40">
-        <div onclick="toggleCart(true)" class="w-20 py-8 gold-gradient border-y border-l border-white/30 flex flex-col items-center gap-2 rounded-l-[2.5rem] shadow-2xl active:scale-90 transition-all">
-            <span class="text-white font-black text-2xl" id="cart-total">0</span>
-        </div>
-    </div>
-
-    <div id="cart-overlay" onclick="toggleCart(false)" class="fixed inset-0 bg-black/80 z-50 hidden"></div>
-    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-[90%] max-w-[420px] bg-white z-50 shadow-2xl flex flex-col">
-        <div class="flex justify-between items-center p-6 border-b-4 bg-gray-50">
-            <h2 class="text-3xl font-black italic text-[#a67c52]">預訂明細</h2>
-            <div onclick="toggleCart(false)" class="text-4xl p-2 text-gray-300">✕</div>
-        </div>
-        <div id="cart-items-list" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
-        <div class="p-8 bg-gray-100 border-t-8 space-y-4">
-            <div class="flex justify-between items-center">
-                <span class="text-xl font-bold text-gray-500">總計金額</span>
-                <span class="text-4xl font-black text-[#a67c52]">NT$ <span id="drawer-total">0</span></span>
-            </div>
-            <div onclick="toggleCart(false)" class="w-full py-6 gold-gradient rounded-3xl text-center text-white font-black text-2xl shadow-lg clickable">返回挑選</div>
-        </div>
-    </div>
-
-    <div class="max-w-xl mx-auto">
-        <div id="form-container" class="bg-white rounded-[3.5rem] shadow-2xl overflow-hidden">
-            <div class="gold-gradient p-10 text-white text-center">
-                <p class="text-lg text-yellow-100 font-bold tracking-widest">✨ 嚴選特級初榨橄欖油．無添加味精 ✨</p>
-            </div>
-
-            <div class="p-6 space-y-10">
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="userName" class="px-6 py-5 rounded-2xl border-4 border-gray-100 text-2xl font-black bg-gray-50 outline-none" placeholder="訂購人姓名">
-                        <input type="tel" id="userPhone" class="px-6 py-5 rounded-2xl border-4 border-gray-100 text-2xl font-black bg-gray-50 outline-none" placeholder="手機號碼(選填)">
-<!-- 稍微縮小輸入框版本的密碼區 -->
-<div class="form-group" style="margin-top: 10px;">
-    <label>儲值會員密碼 (非會員免填)</label>
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <!-- 把 flex: 1 拿掉，改成固定寬度 130px，密碼框就不會太大了 -->
-        <input type="password" id="vipPassword" placeholder="4位數密碼" maxlength="6" style="width: 130px; padding: 8px; box-sizing: border-box;">
-        <button type="button" onclick="checkVipBalance()" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer; white-space: nowrap;">查詢儲值餘額</button>
-    </div>
-    <div id="balanceResult" style="margin-top: 5px; font-weight: bold; color: #2e7d32;"></div>
-</div>                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <select id="deliveryType" onchange="handleDeliveryChange(this.value)" class="px-2 py-5 rounded-2xl border-4 border-gray-100 font-black text-xl text-center bg-white">
-                            <option value="自取">店內自取</option>
-                            <option value="外送">外送 (3km內)</option>
-                        </select>
-                        <select id="pickupTime" class="px-2 py-5 rounded-2xl border-4 border-gray-100 font-black text-xl text-center bg-white">
-                            <option value="17:00-18:00">17:00-18:00</option>
-                            <option value="17:30-18:30">17:30-18:30</option>
-                            <option value="18:30-19:00">18:30-19:00</option>
-                        </select>
-                    </div>
-                    <div id="address-box"><input type="text" id="address" class="w-full px-6 py-5 rounded-2xl border-4 border-orange-100 text-xl font-black bg-orange-50 outline-none" placeholder="外送地址 (非必填)"></div>
-                    <div class="space-y-2 pt-2">
-                        <label class="text-sm font-black text-gray-400 px-2">付款方式</label>
-                        <select id="paymentMethod" onchange="togglePayNotice(this.value)" class="w-full px-6 py-5 rounded-2xl border-4 border-gray-100 font-black text-xl bg-gray-50 outline-none">
-                            <option value="電子支付">Line Pay / 街口 / 轉帳</option>
-                            <option value="現金付款">當面現金付款</option>
-                        </select>
-                        <div id="payment-notice" class="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl text-blue-600 font-bold text-sm show">💡 下單後請於一小時內完成支付。</div>
-                    </div>
-                </div>
-
-                <div class="space-y-3 pt-6 border-t-4 border-gray-50">
-                    <div class="flex items-center justify-between px-2">
-                        <span class="text-lg font-black text-gray-400">選擇預訂日期</span>
-                        <button onclick="clearDay()" class="text-sm font-black text-red-500 border-2 border-red-100 px-4 py-1 rounded-full clickable">✕ 清空本日</button>
-                    </div>
-                    <div class="flex border-[4px] rounded-[2rem] overflow-hidden bg-gray-100 border-gray-100">
-                        <div onclick="switchDay('Tue')" id="tab-Tue" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">二</div>
-                        <div onclick="switchDay('Wed')" id="tab-Wed" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">三</div>
-                        <div onclick="switchDay('Thu')" id="tab-Thu" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">四</div>
-                        <div onclick="switchDay('Fri')" id="tab-Fri" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">五</div>
-                    </div>
-                </div>
-
-                <div class="pkg-info-box p-6 space-y-2">
-                    <p class="font-black text-amber-800 text-lg">🍱 套餐配菜份量與定價說明：</p>
-                    <p class="text-sm font-bold text-amber-700 leading-relaxed">
-                        <strong>M套餐 ($500)</strong>：300g主菜 + 必選副菜1道 + 時蔬配菜（主菜基準 $210 / 副菜基準 $105）<br>
-                        <strong>S套餐 ($300)</strong>：150g主菜 + 必選副菜1道 + 時蔬配菜（主菜基準 $125 / 副菜基準 $65，高於基準補差價，不倒扣）<br>
-                        <span class="text-amber-600 font-black">👑 儲值會員福利：套餐下方可選填「扣額贈與副菜」，金額將計入總額，由後台人工核銷扣款。</span>
-                    </p>
-                </div>
-
-                <div id="menu-content" class="space-y-12"></div>
-
-                <div class="pt-8 space-y-6">
-                    <div onclick="goToNextDay()" class="w-full py-6 bg-gray-800 text-white rounded-[2rem] text-center font-black text-2xl clickable text-next-btn">下一天 ➜</div>
-                    <button onclick="submitOrder()" class="gold-gradient w-full py-8 rounded-[2.5rem] text-center text-white font-black text-3xl shadow-xl clickable">確認預訂 ➔</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="success-container" class="hidden bg-white rounded-[3.5rem] shadow-2xl p-10 text-center">
-            <h2 class="text-3xl font-black text-[#a67c52] mb-6">🎉 預訂已記錄</h2>
+    <div class="container">
+        <div id="form-container">
+            <h2>線上預訂餐點</h2>
             
-            <div class="screenshot-remind p-6 rounded-[2.5rem] mb-6">
-                <div class="text-5xl mb-3">📸</div>
-                <p class="text-2xl font-black text-red-600 mb-2">請務必「截圖」此頁面</p>
-                <p class="text-lg font-bold text-gray-700">並回傳至官方 Line 確認訂單</p>
+            <div class="form-group">
+                <label>訂購人姓名</label>
+                <input type="text" id="userName" placeholder="請輸入姓名">
             </div>
 
-            <div class="bg-gray-50 border-4 border-gray-100 p-5 rounded-[2rem] mb-6 space-y-2">
-                <p class="text-sm font-black text-gray-400">街口收款帳號</p>
-                <p class="text-3xl font-black tracking-wider text-gray-800" id="jk-account-num">903550968</p>
-                <button onclick="copyJKAccount()" id="copy-btn-text" class="px-6 py-2 bg-amber-100 text-amber-800 rounded-full font-black text-sm clickable">📋 點我一鍵複製帳號</button>
+            <div class="form-group">
+                <label>手機號碼</label>
+                <input type="tel" id="userPhone" placeholder="請輸入手機號碼">
             </div>
 
-            <div class="space-y-4 mb-8">
-                <a id="line-portal-btn" href="#" target="_blank" class="block w-full py-5 bg-[#06C755] text-white rounded-2xl text-center font-black text-xl shadow-md clickable">
-                    💬 打開官方 LINE 傳送截圖
-                </a>
-                <div class="grid grid-cols-2 gap-4">
-                    <a id="pay-portal-btn" href="#" target="_blank" class="block py-5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-2xl text-center font-black text-lg shadow-md clickable">
-                        💚 LINE 轉帳
-                    </a>
-                    <a id="jk-portal-btn" href="#" target="_blank" class="block py-5 bg-[#D71822] text-white rounded-2xl text-center font-black text-lg shadow-md clickable">
-                        ❤️ 開啟街口 APP
-                    </a>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>儲值會員密碼 (非會員免填)</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="password" id="vipPassword" placeholder="4位數密碼" maxlength="6" style="width: 130px; padding: 8px; box-sizing: border-box;">
+                    <button type="button" onclick="checkVipBalance()" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; white-space: nowrap; font-size: 14px; height: 40px;">查詢儲值餘額</button>
+                </div>
+                <div id="balanceResult" style="margin-top: 5px; font-weight: bold; color: #2e7d32; font-size: 14px;"></div>
+            </div>
+
+            <div class="vip-gift-box">
+                <label style="font-weight: bold; color: #f57f17; font-size: 14px;">🎁 會員專屬點數贈品區 (一天限選一個)</label>
+                
+                <div class="gift-option">
+                    <input type="radio" name="vipGift" id="gift_salmon" value="乾煎鮭魚" disabled onchange="selectGift('乾煎鮭魚', 2)">
+                    <label for="gift_salmon" id="label_salmon" style="color: #999;">乾煎鮭魚 (扣 2 點)</label>
+                </div>
+                
+                <div class="gift-option">
+                    <input type="radio" name="vipGift" id="gift_soup" value="當日湯品" disabled onchange="selectGift('當日湯品', 1)">
+                    <label for="gift_soup" id="label_soup" style="color: #999;">當日湯品 (扣 1 點)</label>
+                </div>
+                
+                <div class="gift-option">
+                    <input type="radio" name="vipGift" id="gift_none" value="" checked disabled onchange="selectGift('', 0)">
+                    <label for="gift_none" id="label_none" style="color: #333;">本次不兌換贈品</label>
                 </div>
             </div>
 
-            <div id="summary-content" class="text-left text-xl font-black whitespace-pre-line leading-relaxed border-4 p-8 rounded-[2.5rem] bg-gray-50 mb-10"></div>
-            <div onclick="location.reload()" class="text-gray-400 underline text-lg py-4 clickable">返回主頁</div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>配送方式</label>
+                <select id="deliveryType">
+                    <option value="自取">自取</option>
+                    <option value="外送">外送</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>配送/自取時段</label>
+                <select id="pickupTime">
+                    <option value="午餐 11:30-12:30">午餐 11:30-12:30</option>
+                    <option value="晚餐 17:30-18:30">晚餐 17:30-18:30</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>外送地址 (自取填寫無即可)</label>
+                <input type="text" id="address" placeholder="請輸入完整地址">
+            </div>
+
+            <div class="form-group">
+                <label>付款方式</label>
+                <select id="paymentMethod" onchange="updateLivePrice()">
+                    <option value="現金付款">現金付款</option>
+                    <option value="LINE Pay">LINE Pay</option>
+                    <option value="街口支付">街口支付</option>
+                    <option value="儲值金扣款">儲值金扣款</option>
+                </select>
+            </div>
+
+            <div class="price-display-box" id="priceBox">
+                <div style="font-size: 14px; font-weight: bold; color: #555;">💰 本次預訂結帳明細</div>
+                <div class="price-text" id="livePriceDisplay">NT$ 500</div>
+                <div class="price-notice" id="livePriceNotice">（目前依原價計算。儲值會員請選擇「儲值金扣款」）</div>
+            </div>
+
+            <button type="button" class="btn-submit" onclick="submitOrder()">確認預訂餐點</button>
+        </div>
+
+        <div id="success-container" class="hidden">
+            <h2 style="color: #2e7d32;">🎉 預訂完成！</h2>
+            <p>感謝您的訂購，以下為您的訂單明細：</p>
+            <div id="summary-content"></div>
+            <a id="line-portal-btn" class="portal-btn" style="background-color: #06C755;" target="_blank">回 LINE 官方帳號確認</a>
         </div>
     </div>
 
     <script>
-        const disabledDays = []; 
-        const LINE_OFFICIAL_URL = "https://lin.ee/7gDyy0y"; 
-        const LINE_PAY_URL = "https://line.me/ti/p/TqORVd2VXL"; 
-        const JK_TRANSFER_URL = "https://www.jkopay.com/transfer?jkoid=JKO0000000903550968"; 
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNvPw1H3ks0tr7R4sUCr-l--0NUMeMZhTe2ni_wW1OpBK3Gg3euOrwA0Uyai4MNH4xdg/exec";
+        const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL"; 
+        const LINE_OFFICIAL_URL = "https://line.me/R/ti/p/@your_line_id";
 
-        function ceilTo5Or0(val) {
-            return Math.ceil(val / 5) * 5;
-        }
-
-        const menus = {
-            Tue: { 
-                main: [
-                    {i:"A",n:"安東燉雞",m:220,s:ceilTo5Or0(220*0.6)},
-                    {i:"B",n:"泡菜豬肉片",m:190,s:ceilTo5Or0(190*0.6)},
-                    {i:"C",n:"乾煎鮭魚",m:260,s:ceilTo5Or0(260*0.6)},
-                    {i:"D",n:"彩椒炒牛肉",m:260,s:ceilTo5Or0(260*0.6)},
-                    {i:"E",n:"蒜炒蛤蠣杏鮑菇",m:230,s:ceilTo5Or0(230*0.6)}
-                ], 
-                side: [
-                    {i:"F",n:"紅蘿蔔烘蛋",m:100,s:ceilTo5Or0(100*0.6)},
-                    {i:"G",n:"香滷豆干",m:100,s:ceilTo5Or0(100*0.6)},
-                    {i:"H",n:"絲瓜豆包",m:110,s:ceilTo5Or0(110*0.6)},
-                    {i:"I",n:"櫛瓜洋蔥煎餅",m:120,s:ceilTo5Or0(120*0.6)}                    
-                ], 
-                soup: {n:"大醬豬肉豆腐湯", p:120} 
-            },
-            Wed: { 
-                main: [
-                    {i:"A",n:"芹菜炒魷魚",m:185,s:ceilTo5Or0(185*0.6)},
-                    {i:"B",n:"瓜仔肉",m:180,s:ceilTo5Or0(180*0.6)},
-                    {i:"C",n:"檸檬雞腿排",m:225,s:ceilTo5Or0(225*0.6)},
-                    {i:"D",n:"破布子蒸鱸魚",m:220,s:ceilTo5Or0(220*0.6)},
-                    {i:"E",n:"香煎鮭魚",m:260,s:ceilTo5Or0(260*0.6)}
-                ], 
-                side: [
-                    {i:"F",n:"絲瓜豆包",m:110,s:ceilTo5Or0(110*0.6)},
-                    {i:"G",n:"秘製馬鈴薯",m:100,s:ceilTo5Or0(100*0.6)},
-                    {i:"H",n:"鹹蛋苦瓜",m:115,s:ceilTo5Or0(115*0.6)}, 
-                    {i:"I",n:"魚香茄子",m:115,s:ceilTo5Or0(115*0.6)}
-                ], 
-                soup: {n:"鮮蚵豆腐湯", p:120} 
-            },
-            Thu: { 
-                main: [
-                    {i:"A",n:"安東燉雞",m:220,s:ceilTo5Or0(220*0.6)},
-                    {i:"B",n:"泡菜豬肉片",m:190,s:ceilTo5Or0(190*0.6)},
-                    {i:"C",n:"茄汁鮮蝦",m:240,s:ceilTo5Or0(240*0.6)},
-                    {i:"D",n:"節瓜炒蝦仁",m:180,s:ceilTo5Or0(180*0.6)},
-                    {i:"E",n:"酸菜牛肉",m:260,s:ceilTo5Or0(260*0.6)}
-                ], 
-                side: [
-                    {i:"F",n:"金針菇煎蛋",m:90,s:ceilTo5Or0(90*0.6)},
-                    {i:"G",n:"三杯豆腐",m:100,s:ceilTo5Or0(100*0.6)},
-                    {i:"H",n:"柴魚拌水蓮",m:120,s:ceilTo5Or0(120*0.6)},
-                    {i:"I",n:"櫛瓜洋蔥煎餅",m:120,s:ceilTo5Or0(120*0.6)}
-                ], 
-                soup: {n:"韓式海帶芽牛肉湯", p:120} 
-            },
-            Fri: { 
-                main: [
-                    {i:"A",n:"芹菜炒魷魚",m:185,s:ceilTo5Or0(185*0.6)},
-                    {i:"B",n:"薑煸小卷",m:255,s:ceilTo5Or0(255*0.6)},
-                    {i:"C",n:"乾煎雞腿排",m:210,s:ceilTo5Or0(210*0.6)},
-                    {i:"D",n:"破布子蒸鱸魚",m:220,s:ceilTo5Or0(220*0.6)},
-                    {i:"E",n:"酸菜牛肉",m:260,s:ceilTo5Or0(260*0.6)}
-                ], 
-                side: [
-                    {i:"F",n:"大黃瓜炒木耳",m:110,s:ceilTo5Or0(110*0.6)},
-                    {i:"G",n:"紅蘿蔔烘蛋",m:100,s:ceilTo5Or0(100*0.6)},
-                    {i:"H",n:"柴魚拌水蓮",m:120,s:ceilTo5Or0(120*0.6)},
-                    {i:"I",n:"魚香茄子",m:115,s:ceilTo5Or0(115*0.6)}
-                ], 
-                soup: {n:"金針排骨湯", p:120} 
-            }
+        // 模擬網頁原有的點餐資料（此處模擬點了 1 個大套餐）
+        let selections = {
+            "Tue": { type: "M", mainIdx: 0, pkgSideId: "G", sideMode: "ONLY_VEG" } 
         };
 
-        const mGiftOptions = ["涼拌裙帶絲", "百香青木瓜"];
+        let selectedGiftName = "";
+        let selectedGiftPoints = 0;
+        let memberCurrentPoints = 0;
 
-        let selections = { Tue: {}, Wed: {}, Thu: {}, Fri: {} };
-        let currentDay = 'Tue';
-
-        function handleDeliveryChange(val) {
-            document.getElementById('address-box').classList.toggle('show', val === '外送');
-            updateTotal();
-        }
-        function togglePayNotice(val) { document.getElementById('payment-notice').classList.toggle('show', val === '電子支付'); }
-        function toggleCart(open) {
-            const drawer = document.getElementById('cart-drawer'), overlay = document.getElementById('cart-overlay');
-            if(open) { updateDrawer(); overlay.classList.remove('hidden'); setTimeout(() => drawer.classList.add('open'), 10); }
-            else { drawer.classList.remove('open'); setTimeout(() => overlay.classList.add('hidden'), 300); }
-        }
-
-        function switchDay(day) { 
-            if(disabledDays.includes(day)) return; 
-            currentDay = day; 
-            updateTabUI();
-            renderMenu(); 
-            updateTotal(); 
-        }
-
-        function updateTabUI() {
-            document.querySelectorAll('.day-tab').forEach(t => {
-                const day = t.id.replace('tab-', '');
-                t.classList.remove('active', 'disabled');
-                if(disabledDays.includes(day)) {
-                    t.classList.add('disabled');
-                } else if(currentDay === day) {
-                    t.classList.add('active');
-                }
-            });
-        }
-
-        function goToNextDay() { 
-            const days=['Tue','Wed','Thu','Fri']; 
-            let idx=days.indexOf(currentDay); 
-            for(let i = idx + 1; i < days.length; i++) {
-                if(!disabledDays.includes(days[i])) {
-                    switchDay(days[i]);
-                    window.scrollTo({top:150, behavior:'smooth'});
-                    return;
-                }
-            }
-        }
-
-        function clearDay() { if(confirm("清空本日？")) { selections[currentDay]={}; renderMenu(); updateTotal(); }}
-        
-        function updateSel(k,v) { 
-            selections[currentDay][k]=v; 
-            if(k === 'type' || k === 'mainIdx') { selections[currentDay].upgradeMain = false; } 
-            if(k === 'sideMode' && v !== 'ONLY_VEG') { delete selections[currentDay].mGiftIdx; }
-            
-            renderMenu(); 
-            updateTotal(); 
-        }
-
-        function toggleUpgrade() {
-            if(selections[currentDay].mainIdx === undefined) return alert('請先選擇主菜');
-            selections[currentDay].upgradeMain = !selections[currentDay].upgradeMain;
-            renderMenu();
-            updateTotal();
-        }
-
-        function changeQty(id,amt) { selections[currentDay][id] = Math.max(0, (selections[currentDay][id]||0)+amt); renderMenu(); updateTotal(); }
-
-        function renderMenu() {
-            const sel = selections[currentDay], d = menus[currentDay];
-            
-            if(disabledDays.includes(currentDay)) {
-                document.getElementById('menu-content').innerHTML = `
-                    <div class="py-20 text-center space-y-4">
-                        <div class="text-6xl">🈵</div>
-                        <p class="text-3xl font-black text-gray-400">本日預訂已額滿</p>
-                        <p class="text-lg text-gray-400 font-bold">請點選上方其他日期，或聯繫官方 Line</p>
-                    </div>`;
-                return;
-            }
-
-            let html = `<div class="grid grid-cols-2 gap-4">
-                <div onclick="updateSel('type','M')" class="p-6 border-4 rounded-[2rem] font-black text-center text-2xl clickable ${sel.type=='M'?'item-selected':'border-gray-100 text-gray-300'}">M 套餐 $500</div>
-                <div onclick="updateSel('type','S')" class="p-6 border-4 rounded-[2rem] font-black text-center text-2xl clickable ${sel.type=='S'?'item-selected':'border-gray-100 text-gray-300'}">S 套餐 $300</div>
-            </div>
-            <div onclick="updateSel('type','NONE')" class="py-2 text-center font-black text-lg ${sel.type=='NONE'?'text-[#a67c52]':'text-gray-300'} underline clickable">➔ 自由單點模式</div>`;
-
-            if(sel.type==='M'||sel.type==='S'){
-                const mainLimit = (sel.type==='M') ? 210 : 125;
-                
-                // 1. 套餐主菜區
-                html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">套餐主菜 (必選)</h3>`;
-                d.main.forEach((m,i)=>{
-                    const originPrice = (sel.type==='M' ? m.m : m.s);
-                    const ex = Math.max(0, originPrice - mainLimit); 
-                    html += `<div onclick="updateSel('mainIdx',${i})" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${sel.mainIdx===i?'item-selected':'border-gray-50 bg-gray-50/50'}"><span>${m.i}. ${m.n}</span>${ex>0?`<span class="text-red-500">+$${ex}</span>`:''}</div>`;
-                });
-                
-                if(sel.mainIdx !== undefined) {
-                    if(sel.type === 'S') {
-                        const upgradeCost = d.main[sel.mainIdx].m - d.main[sel.mainIdx].s;
-                        html += `<div onclick="toggleUpgrade()" class="p-4 border-4 border-red-100 rounded-2xl font-black text-center text-xl clickable ${sel.upgradeMain?'upgrade-active':'bg-red-50 text-red-500'}">🚀 主菜升級大份 (+$${upgradeCost})</div>`;
-                    }
-                }
-
-                // 2. 儲值會員選填加碼贈與區
-                html += `</div><div class="p-5 border-4 border-amber-600 bg-amber-50/60 rounded-[2rem] space-y-4 mt-6">
-                    <div class="flex justify-between items-center">
-                        <span class="text-base font-black text-amber-950">👑 儲值會員扣額贈與副菜 (選填)</span>
-                        <span class="text-xs font-bold text-amber-800 bg-amber-200 px-2 py-0.5 rounded-full">限套餐</span>
-                    </div>
-                    <select onchange="updateSel('vipSideId', this.value)" class="w-full px-4 py-4 rounded-xl border-2 border-amber-300 font-black text-base bg-white outline-none">
-                        <option value="">本次不用 / 非儲值會員</option>`;
-                
-                d.side.forEach(sd => {
-                    const cost = sel.type === 'M' ? sd.m : sd.s;
-                    html += `<option value="${sd.i}" ${sel.vipSideId === sd.i ? 'selected' : ''}>加點：${sd.i}. ${sd.n} (額度扣除+$${cost})</option>`;
-                });
-                html += `</select></div>`;
-
-                // 3. 套餐副菜區
-                const sideLimit = (sel.type==='M') ? 105 : 65;
-
-                html += `<div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐副菜 (必選一)</h3>`;
-
-                d.side.forEach((sd) => {
-                    const sidePrice = (sel.type==='M' ? sd.m : sd.s);
-                    const sideEx = Math.max(0, sidePrice - sideLimit); 
-                    html += `<div onclick="updateSel('pkgSideId','${sd.i}')" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${sel.pkgSideId===sd.i?'item-selected':'border-gray-50 bg-gray-50/50'}">
-                        <span>${sd.i}. ${sd.n}</span>
-                        ${sideEx>0?`<span class="text-red-500 text-xl">+$${sideEx}</span>`:''}
-                    </div>`;
-                });
-
-                // 4. 套餐時蔬配菜設定
-                html += `</div><div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐時蔬配菜設定</h3>`;
-                
-                const vegText = (sel.type === 'M') ? '🥦 單一時蔬 (青花菜 300g)' : '🥦 單一蔬菜 (青花菜 200公克)';
-                const twinText = (sel.type === 'M') ? '✨ 雙拼時蔬 (今日時蔬+青花菜各200g)' : '✨ 雙拼 (青花菜100公克+今日時蔬100公克)';
-
-                html += `<div onclick="updateSel('sideMode','ONLY_VEG')" class="p-6 border-4 rounded-2xl font-black text-2xl clickable ${sel.sideMode==='ONLY_VEG'?'item-selected':'border-gray-50 bg-green-50/30'}">${vegText}</div>`;
-                
-                if(sel.type === 'M' && sel.sideMode === 'ONLY_VEG') {
-                    html += `<div class="p-5 border-4 border-dashed border-amber-300 bg-amber-50 rounded-2xl space-y-3">
-                        <p class="text-sm font-black text-amber-800">🎁 大套餐限定：單一時蔬好禮 2 選 1 (必選)</p><div class="grid grid-cols-1 gap-2">`;
-                    mGiftOptions.forEach((gName, gIdx) => {
-                        html += `<div onclick="updateSel('mGiftIdx', ${gIdx})" class="p-3 border-2 rounded-xl text-base font-bold clickable bg-white text-center ${sel.mGiftIdx===gIdx?'border-amber-600 bg-amber-100 text-amber-900':'border-gray-200 text-gray-500'}">${gName}</div>`;
-                    });
-                    html += `</div></div>`;
-                }
-
-                html += `<div onclick="updateSel('sideMode','TWIN')" class="p-6 border-4 rounded-2xl font-black text-2xl clickable ${sel.sideMode==='TWIN'?'item-selected':'border-gray-50 bg-blue-50/30'}">${twinText}</div>`;
-            }
-            
-            if(sel.type){
-                html += `<div class="pt-10 border-t-4 border-gray-100 space-y-8"><h3 class="text-2xl font-black text-[#a67c52]">單點加購</h3>`;
-                d.main.forEach((m,i)=> html += renderAddon(`addonM-${i}`, m.i, m.n, m.m, m.s));
-                d.side.forEach((s,i)=> html += renderAddon(`addonS-${i}`, s.i, s.n, s.m, s.s));
-                html += `<div class="p-6 bg-white rounded-[2.5rem] flex justify-between items-center border-4 border-gray-100 shadow-md">
-                    <div class="font-black text-2xl">S. ${d.soup.n}<br><span class="text-orange-600">$${d.soup.p}</span></div>
-                    <div class="v-qty-container"><div onclick="changeQty('addonSoup',1)" class="v-qty-btn btn-plus">＋</div><div class="text-3xl font-black py-2">${sel.addonSoup||0}</div><div onclick="changeQty('addonSoup',-1)" class="v-qty-btn btn-minus">－</div></div></div></div>`;
-            }
-            document.getElementById('menu-content').innerHTML = html;
-        }
-
-        function renderAddon(id,l,n,pm,ps) {
-            const sel=selections[currentDay];
-            return `<div class="p-6 bg-white rounded-[2.5rem] border-4 border-gray-100 shadow-lg space-y-4">
-                <div class="font-black text-2xl">${l}. ${n}</div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>大 $${pm}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-M',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-M']||0}</div><div onclick="changeQty('${id}-M',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
-                    <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>小 $${ps}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-S',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-S']||0}</div><div onclick="changeQty('${id}-S',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
-                </div></div>`;
-        }
-
-        function buildDetailText() {
-            let result = [];
-            const dayNames = {Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
-            for(let day in selections){
-                let items = [];
-                const s = selections[day], d = menus[day];
-                if(!s.type) continue;
-                if(s.type !== 'NONE') {
-                    let sideStr = "未選配菜設定";
-                    if(s.sideMode === 'ONLY_VEG') {
-                        sideStr = (s.type === 'M') ? "單一時蔬(青花菜300g)" : "單一蔬菜(青花菜200公克)";
-                        if(s.type === 'M' && s.mGiftIdx !== undefined) sideStr += `[贈:${mGiftOptions[s.mGiftIdx]}]`;
-                    } else if(s.sideMode === 'TWIN') {
-                        sideStr = (s.type === 'M') ? "雙拼時蔬(今日+青花菜各200g)" : "雙拼(青花菜100公克+今日時蔬100公克)";
-                    }
-                    
-                    let chosenSideName = "未選副菜";
-                    if(s.pkgSideId) {
-                        const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
-                        chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}` : s.pkgSideId;
-                    }
-
-                    let upgradeText = "";
-                    if(s.upgradeMain) upgradeText = " (主菜升級大)";
-                    
-                    let vipAddonText = "";
-                    if(s.vipSideId) {
-                        const vSide = d.side.find(sd => sd.i === s.vipSideId);
-                        const cost = s.type === 'M' ? vSide.m : vSide.s;
-                        vipAddonText = ` + [儲值會員加點: ${s.vipSideId}.${vSide?vSide.n:''}][儲值扣額: +$${cost}]`;
-                    }
-
-                    items.push(`【${s.type}套餐: ${d.main[s.mainIdx]?.i||''}.${d.main[s.mainIdx]?.n||'未選'}${upgradeText} + 副菜:${chosenSideName} / ${sideStr}${vipAddonText}】`);
-                }
-                d.main.forEach((m,i)=>{
-                    if(s[`addonM-${i}-M`]) items.push(`${m.i}.${m.n}(大)x${s[`addonM-${i}-M`]}`);
-                    if(s[`addonM-${i}-S`]) items.push(`${m.i}.${m.n}(小)x${s[`addonM-${i}-S`]}`);
-                });
-                d.side.forEach((sd,i)=>{
-                    if(s[`addonS-${i}-M`]) items.push(`${sd.i}.${sd.n}(大)x${s[`addonS-${i}-M`]}`);
-                    if(s[`addonS-${i}-S`]) items.push(`${sd.i}.${sd.n}(小)x${s[`addonS-${i}-S`]}`);
-                });
-                if(s.addonSoup) items.push(`S.${d.soup.n}x${s.addonSoup}`);
-                if(s.type==='NONE' && items.length > 0) items.push("(單點基本費+$50)");
-                if(items.length > 0) result.push(`${dayNames[day]}: ${items.join(' + ')}`);
-            }
-            return result.join(' | ');
-        }
-
-        function calculateVipTotal() {
-            let vipTotal = 0;
-            for(let day in selections) {
-                const s = selections[day], d = menus[day];
-                if((s.type==='M' || s.type==='S') && s.vipSideId) {
-                    const vSide = d.side.find(sd => sd.i === s.vipSideId);
-                    if(vSide) {
-                        vipTotal += (s.type === 'M' ? vSide.m : vSide.s);
-                    }
-                }
-            }
-            return vipTotal;
-        }
-
-        function calculateTotal() {
-            let total = 0;
-            const deliveryType = document.getElementById('deliveryType').value;
-            let deliveryDays = 0;
-            
-            for(let day in selections){
-                const s=selections[day], d=menus[day];
-                let dTotal=0, has=false;
-                if(s.type==='M'||s.type==='S'){ 
-                    dTotal+=(s.type==='M'?500:300); 
-                    
-                    const mainLimit = (s.type==='M') ? 210 : 125;
-                    const sideLimit = (s.type==='M') ? 105 : 65;
-
-                    // 主菜超額加價 (不倒扣)
-                    if(s.mainIdx!==undefined) {
-                        const originPrice = (s.type==='M'?d.main[s.mainIdx].m:d.main[s.mainIdx].s);
-                        dTotal += Math.max(0, originPrice - mainLimit);
-                        
-                        if(s.upgradeMain) {
-                            dTotal += (d.main[s.mainIdx].m - d.main[s.mainIdx].s);
-                        }
-                    }
-                    
-                    // 副菜超額加價 (不倒扣)
-                    if(s.pkgSideId) {
-                        const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
-                        if(targetSide) {
-                            const sidePrice = (s.type==='M' ? targetSide.m : targetSide.s);
-                            dTotal += Math.max(0, sidePrice - sideLimit);
-                        }
-                    }
-
-                    // 會員加點金額
-                    if(s.vipSideId) {
-                        const vSide = d.side.find(sd => sd.i === s.vipSideId);
-                        if(vSide) dTotal += (s.type === 'M' ? vSide.m : vSide.s);
-                    }
-                    has=true; 
-                }
-                d.main.forEach((m,i)=>{ if(s[`addonM-${i}-M`]){ dTotal+=s[`addonM-${i}-M`]*m.m; has=true; } if(s[`addonM-${i}-S`]){ dTotal+=s[`addonM-${i}-S`]*m.s; has=true; } });
-                d.side.forEach((sd,i)=>{ if(s[`addonS-${i}-M`]){ dTotal+=s[`addonS-${i}-M`]*sd.m; has=true; } if(s[`addonS-${i}-S`]){ dTotal+=s[`addonS-${i}-S`]*sd.s; has=true; } });
-                if(s.addonSoup){ dTotal+=s.addonSoup*d.soup.p; has=true; }
-                if(s.type==='NONE' && has) dTotal+=50;
-                
-                if(has) { total += dTotal; deliveryDays++; }
-            }
-            if(deliveryDays > 0 && deliveryType === '外送') total += (deliveryDays * 50);
-            return total;
-        }
-
-        function updateTotal() { const t=calculateTotal(); document.getElementById('cart-total').innerText=t; document.getElementById('drawer-total').innerText=t; }
-        
-        function updateDrawer() {
-            const list = document.getElementById('cart-items-list');
-            const text = buildDetailText();
-            const deliveryType = document.getElementById('deliveryType').value;
-            let deliveryFeeHtml = '';
-            if(deliveryType === '外送') {
-                let deliveryDays = 0;
-                for(let day in selections) { if(selections[day].type) deliveryDays++; }
-                if(deliveryDays > 0) deliveryFeeHtml = `<div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl font-black text-sm text-blue-700">外送費 (${deliveryDays}天): +$${deliveryDays * 50}</div>`;
-            }
-            
-            const vipTotal = calculateVipTotal();
-            let vipTotalHtml = '';
-            if(vipTotal > 0) {
-                vipTotalHtml = `<div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl font-black text-sm text-amber-800">👑 儲值扣額總計: +$${vipTotal} (後台核銷)</div>`;
-            }
-
-            list.innerHTML = text ? `<div class="space-y-4">${text.split(' | ').map(t => `<div class="p-4 bg-orange-50 border border-orange-100 rounded-2xl font-black text-sm text-gray-700">${t}</div>`).join('')}${deliveryFeeHtml}${vipTotalHtml}</div>` : '<div class="text-center py-20 text-gray-300">目前尚無預訂內容</div>';
-        }
-
-        function copyJKAccount() {
-            const numText = document.getElementById('jk-account-num').innerText;
-            navigator.clipboard.writeText(numText).then(() => {
-                const btn = document.getElementById('copy-btn-text');
-                btn.innerText = "✅ 複製成功！";
-                btn.classList.replace('bg-amber-100', 'bg-green-100');
-                btn.classList.replace('text-amber-800', 'text-green-800');
-                setTimeout(() => {
-                    btn.innerText = "📋 點我一鍵複製帳號";
-                    btn.classList.replace('bg-green-100', 'bg-amber-100');
-                    btn.classList.replace('text-green-800', 'text-amber-800');
-                }, 2000);
-            });
-        }
-
-        async function submitOrder() {
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value || "未填寫";
-            const delivery = document.getElementById('deliveryType').value;
-            const time = document.getElementById('pickupTime').value;
-            const addr = document.getElementById('address').value;
-            const pay = document.getElementById('paymentMethod').value;
-            
-            if(!name) return alert('請填寫姓名');
-            
-            for(let day in selections) {
-                const s = selections[day];
-                if(s.type === 'M' || s.type === 'S') {
-                    if(s.mainIdx === undefined) return alert(`您選擇了套餐，但尚未選擇主菜喔！`);
-                    if(!s.pkgSideId) return alert(`您選擇了套餐，但尚未選擇必選的套餐副菜喔！`);
-                    if(!s.sideMode) return alert(`您選擇了套餐，但尚未選擇時蔬配菜設定喔！`);
-                    if(s.type === 'M' && s.sideMode === 'ONLY_VEG' && s.mGiftIdx === undefined) {
-                        return alert(`大套餐選擇單一時蔬，請記得選擇贈品好禮 2 選 1 喔！`);
-                    }
-                }
-            }
-
-            const total = calculateTotal();
-            if(total === 0) return alert('尚未選擇餐點');
-            const orderDetail = buildDetailText();
-            
-            // 將 selections 整體傳給後端，讓後端去算大套餐、小套餐和副菜加購
-            const postData = { 
-                timestamp: new Date().toLocaleString(), 
-                name: name, 
-                phone: phone, 
-                delivery: delivery, 
-                time: time, 
-                address: addr || "未填寫", 
-                payment: pay, 
-                orderDetailString: orderDetail, 
-                total: total,
-                rawSelections: selections // 備用完整選擇資料
-            };
-            
-            // 負責把訂單送到 Google 試算表
-            fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(postData) });
-            
-            let deliveryDays = 0;
-            for(let day in selections) { if(selections[day].type) deliveryDays++; }
-            
-            document.getElementById('summary-content').innerText = `姓名: ${name}\n手機: ${phone}\n方式: ${delivery} (${time})\n地址: ${addr || "未提供"}\n付款: ${pay}\n明細:\n${orderDetail.replace(/ \| /g, '\n')}${delivery==='外送'?'\n(外送費 '+deliveryDays+'天 共+$'+(deliveryDays*50)+')':''}\n總額: NT$ ${total}`;
-            
-            document.getElementById('line-portal-btn').href = LINE_OFFICIAL_URL;
-            document.getElementById('pay-portal-btn').href = LINE_PAY_URL;
-            if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { document.getElementById('jk-portal-btn').href = JK_TRANSFER_URL; } else { document.getElementById('jk-portal-btn').href = "jkos://jkos/home"; }
-
-            document.getElementById('form-container').classList.add('hidden');
-            document.getElementById('success-container').classList.remove('hidden');
-            window.scrollTo({top:0, behavior:'smooth'});
-        }
-
-        function init() {
-            if(disabledDays.includes(currentDay)) {
-                const days=['Tue','Wed','Thu','Fri'];
-                for(let d of days) { if(!disabledDays.includes(d)) { currentDay = d; break; } }
-            }
-            updateTabUI();
-            renderMenu();
-        }
-
-        // 初始化頁面
         window.onload = function() {
-            init();
+            updateLivePrice();
         };
-// 函式 A：處理即時查詢餘額
+
+        function selectGift(name, points) {
+            selectedGiftName = name;
+            selectedGiftPoints = points;
+        }
+
+        // 💡 核心計算：拆分「儲值扣除金額」與「需自付差額」
+        function calculateBillDetails(paymentMethod) {
+            let originalTotal = 0;
+            let vipDeduct = 0;
+            let cashExtra = 0;
+
+            // 先算原價
+            for(let day in selections) {
+                if(selections[day].type === 'M') originalTotal += 500;
+                if(selections[day].type === 'S') originalTotal += 300;
+            }
+
+            if (paymentMethod === "儲值金扣款") {
+                // 每份套餐不論大小一律扣儲值金 300 元
+                for(let day in selections) {
+                    if(selections[day].type === 'M' || selections[day].type === 'S') {
+                        vipDeduct += 300; 
+                    }
+                }
+                // 差額 = 原價 - 儲值扣款額 (如果是大套餐 500-300=200，小套餐 300-300=0)
+                cashExtra = originalTotal - vipDeduct;
+                if (cashExtra < 0) cashExtra = 0; 
+            } else {
+                cashExtra = originalTotal;
+            }
+
+            return { originalTotal, vipDeduct, cashExtra };
+        }
+
+        // 💡 畫面動態渲染：清晰告知消費者需要補付多少錢
+        function updateLivePrice() {
+            const payMethod = document.getElementById('paymentMethod').value;
+            const bill = calculateBillDetails(payMethod);
+            
+            const priceEl = document.getElementById('livePriceDisplay');
+            const noticeEl = document.getElementById('livePriceNotice');
+            const boxEl = document.getElementById('priceBox');
+            
+            if (payMethod === "儲值金扣款") {
+                priceEl.innerText = `現場補差額：NT$ ${bill.cashExtra}`;
+                priceEl.style.color = "#d32f2f"; // 提醒補款用紅色
+                boxEl.style.backgroundColor = "#fff3e0"; // 柔和橘色警告色
+                boxEl.style.borderColor = "#ffb74d";
+                
+                noticeEl.innerHTML = `💳 <strong>儲值帳戶將扣除：NT$ ${bill.vipDeduct} 元</strong><br>
+                                      ⚠️ 因您包含大套餐，需於交貨時<strong>另付差額：NT$ ${bill.cashExtra} 元</strong>。`;
+            } else {
+                priceEl.innerText = `總金額：NT$ ${bill.cashExtra}`;
+                priceEl.style.color = "#0d47a1"; 
+                boxEl.style.backgroundColor = "#e3f2fd"; 
+                boxEl.style.borderColor = "#90caf9";
+                noticeEl.innerText = `（目前依原價計算。儲值會員請選擇「儲值金扣款」）`;
+            }
+        }
+
+        // 查詢會員餘額
         async function checkVipBalance() {
             const phone = document.getElementById('userPhone').value;
             const pwd = document.getElementById('vipPassword').value;
             const resultDiv = document.getElementById('balanceResult');
             
-            if(!phone || phone === "未填寫") return alert("請先填寫手機號碼喔！");
-            if(!pwd) return alert("請輸入儲值密碼以利安全驗證。");
+            if(!phone) return alert("請先填寫手機號碼喔！");
+            if(!pwd) return alert("請輸入密碼。");
             
             resultDiv.innerText = "查詢中...";
             resultDiv.style.color = "#555";
             
             try {
-                // 發送請求給 doGet
-                const response = await fetch(`${WEB_APP_URL}?phone=${encodeURIComponent(phone)}&password=${encodeURIComponent(pwd)}`);
+                const response = await fetch(`${WEB_APP_URL}?phone=${encodeURIComponent(phone)}&password=${encodeURIComponent(pwd)}&timestamp=${new Date().getTime()}`);
                 const res = await response.json();
                 
                 if (res.result === "success") {
-                    resultDiv.innerText = `👑 認證成功！您當前的儲值金餘額為：NT$ ${res.balance} 元`;
+                    memberCurrentPoints = res.points;
+                    resultDiv.innerText = `👑 認證成功！儲值餘額：NT$ ${res.balance} 元 / 剩餘點數：${res.points} 點`;
                     resultDiv.style.color = "#2e7d32";
+                    
+                    document.getElementById('paymentMethod').value = "儲值金扣款";
+                    updateLivePrice();
+                    
+                    document.getElementById('gift_none').disabled = false;
+                    
+                    if (res.todayGiftUsed) {
+                        document.getElementById('gift_salmon').disabled = true;
+                        document.getElementById('gift_soup').disabled = true;
+                        document.getElementById('label_salmon').innerText = "乾煎鮭魚 (今日已兌換過贈品)";
+                        document.getElementById('label_soup').innerText = "當日湯品 (今日已兌換過贈品)";
+                    } else {
+                        if (res.points >= 2) {
+                            document.getElementById('gift_salmon').disabled = false;
+                            document.getElementById('label_salmon').style.color = "#333";
+                            document.getElementById('label_salmon').innerText = "乾煎鮭魚 (扣 2 點)";
+                        } else {
+                            document.getElementById('gift_salmon').disabled = true;
+                            document.getElementById('label_salmon').innerText = `乾煎鮭魚 (點數不足，剩 ${res.points} 點)`;
+                        }
+                        
+                        if (res.points >= 1) {
+                            document.getElementById('gift_soup').disabled = false;
+                            document.getElementById('label_soup').style.color = "#333";
+                            document.getElementById('label_soup').innerText = "當日湯品 (扣 1 點)";
+                        } else {
+                            document.getElementById('gift_soup').disabled = true;
+                            document.getElementById('label_soup').innerText = `當日湯品 (點數不足，剩 ${res.points} 點)`;
+                        }
+                    }
                 } else {
+                    alert(res.message);
                     resultDiv.innerText = `❌ 查詢失敗：${res.message}`;
                     resultDiv.style.color = "#c62828";
-                    alert(res.message);
                 }
             } catch (err) {
-                resultDiv.innerText = "❌ 系統查詢連線異常";
-                resultDiv.style.color = "#c62828";
-                console.error(err);
+                resultDiv.innerText = "❌ 系統連線異常";
             }
         }
 
-        // 函式 B：修改後的安全送出訂單
+        // 送出訂單
         async function submitOrder() {
             const name = document.getElementById('userName').value;
             const phone = document.getElementById('userPhone').value || "未填寫";
@@ -686,33 +357,26 @@
             const time = document.getElementById('pickupTime').value;
             const addr = document.getElementById('address').value;
             const pay = document.getElementById('paymentMethod').value;
-            const vipPassword = document.getElementById('vipPassword').value; // 抓取網頁輸入的密碼
+            const vipPassword = document.getElementById('vipPassword').value;
             
             if(!name) return alert('請填寫姓名');
             
-            for(let day in selections) {
-                const s = selections[day];
-                if(s.type === 'M' || s.type === 'S') {
-                    if(s.mainIdx === undefined) return alert(`您選擇了套餐，但尚未選擇主菜喔！`);
-                    if(!s.pkgSideId) return alert(`您選擇了套餐，但尚未選擇必選的套餐副菜喔！`);
-                    if(!s.sideMode) return alert(`您選擇了套餐，但尚未選擇時蔬配菜設定喔！`);
-                    if(s.type === 'M' && s.sideMode === 'ONLY_VEG' && s.mGiftIdx === undefined) {
-                        return alert(`大套餐選擇單一時蔬，請記得選擇贈品好禮 2 選 1 喔！`);
-                    }
-                }
+            const bill = calculateBillDetails(pay);
+            
+            if (pay === "儲值金扣款" && !vipPassword) {
+                return alert("您選擇了「儲值金扣款」，請輸入會員密碼！");
+            }
+            if (selectedGiftName !== "" && !vipPassword) {
+                return alert("兌換點數贈品，請輸入會員密碼！");
             }
 
-            const total = calculateTotal();
-            if(total === 0) return alert('尚未選擇餐點');
-            const orderDetail = buildDetailText();
-            
-            // 檢查如果有點儲值扣額，卻沒填密碼，直接在前端擋下
-            if (orderDetail.indexOf("儲值扣額") !== -1 && !vipPassword) {
-                return alert("您的訂單內含儲值扣額項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
+            let orderDetail = `週二: 【M套餐】`;
+            if (selectedGiftName !== "") {
+                orderDetail += ` + [兌換會員贈品: ${selectedGiftName}][扣點數: ${selectedGiftPoints}點]`;
             }
-            
+
+            // 傳送給後端的資料包
             const postData = { 
-                timestamp: new Date().toLocaleString(), 
                 name: name, 
                 phone: phone, 
                 delivery: delivery, 
@@ -720,42 +384,32 @@
                 address: addr || "未填寫", 
                 payment: pay, 
                 orderDetailString: orderDetail, 
-                total: total,
-                vipPassword: vipPassword // 將密碼打包送給後端 doPost 進行二次驗證
+                vipDeduct: bill.vipDeduct, // ⚠️ 改傳：這次儲值卡要被扣多少錢
+                cashExtra: bill.cashExtra, // ⚠️ 改傳：現場還要付多少現金差額
+                vipPassword: vipPassword,
+                giftName: selectedGiftName,   
+                giftPoints: selectedGiftPoints 
             };
             
-            // 改用能夠讀取後端錯誤回傳的進階 fetch 機制
             try {
-                const response = await fetch(WEB_APP_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify(postData) 
-                });
+                const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(postData) });
                 const res = await response.json();
                 
                 if (res.result === "error") {
-                    // 如果後端驗證（例如密碼錯或錢不夠）報錯，中斷程序並跳出提示
-                    return alert("【預訂未完成】\n" + res.message);
+                    return alert("【預訂失敗】\n" + res.message);
                 }
                 
-                // 如果扣款成功，把最新餘額組裝到明細裡顯示給客人看
-                let remainString = res.balance !== undefined ? `\n👑 儲值餘額：NT$ ${res.balance} 元 (已扣款)` : '';
+                let remainString = res.balance !== undefined ? `\n👑 儲值帳戶扣除：NT$ ${bill.vipDeduct} 元\n👑 儲值金餘額：NT$ ${res.balance} 元\n👑 剩餘點數：${res.points} 點` : '';
                 
-                let deliveryDays = 0;
-                for(let day in selections) { if(selections[day].type) deliveryDays++; }
-                
-                document.getElementById('summary-content').innerText = `姓名: ${name}\n手機: ${phone}\n方式: ${delivery} (${time})\n地址: ${addr || "未提供"}\n付款: ${pay}\n明細:\n${orderDetail.replace(/ \| /g, '\n')}${delivery==='外送'?'\n(外送費 '+deliveryDays+'天 共+$'+(deliveryDays*50)+')':''}${remainString}\n總額: NT$ ${total}`;
-                
+                document.getElementById('summary-content').innerText = `姓名: ${name}\n手機: ${phone}\n付款方式: ${pay}\n明細:\n${orderDetail}${remainString}\n🚨 現場需再補付差額: NT$ ${bill.cashExtra} 元`;
                 document.getElementById('line-portal-btn').href = LINE_OFFICIAL_URL;
-                document.getElementById('pay-portal-btn').href = LINE_PAY_URL;
-                if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { document.getElementById('jk-portal-btn').href = JK_TRANSFER_URL; } else { document.getElementById('jk-portal-btn').href = "jkos://jkos/home"; }
 
                 document.getElementById('form-container').classList.add('hidden');
                 document.getElementById('success-container').classList.remove('hidden');
                 window.scrollTo({top:0, behavior:'smooth'});
                 
             } catch(e) {
-                // 備用相容性機制
-                alert("訂單已送出，請至後台確認扣款與明細。");
+                alert("網路異常，無法完成預訂。");
             }
         }
     </script>
