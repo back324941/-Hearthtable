@@ -683,62 +683,54 @@
                 });
                 const res = await response.json();
                 
-               if (res.result === "error") {
+if (res.result === "error") {
     return alert("【預訂未完成】\n" + res.message);
 }
 
 try {
-    // 1. 會員儲值餘額與點數文字
-    let remainString = res.balance !== undefined ? `\n👑 錢包餘額：NT$ ${res.balance} 元 (已扣款)` : '';
-    let pointsRemainString = res.points !== undefined ? `\n🪙 剩餘點數：${res.points} 點` : (totalPointsRequired > 0 ? `\n🪙 本次扣除點數：${totalPointsRequired} 點` : '');
+    let remainString = res.balance !== undefined ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
+    let pointsRemainString = res.points !== undefined ? "\n🪙 剩餘點數：" + res.points + " 點" : (totalPointsRequired > 0 ? "\n🪙 本次扣除點數：" + totalPointsRequired + " 點" : "");
     
-    // 2. 計算外送天數
     let deliveryDays = 0;
     for(let day in selections) { if(selections[day].type) deliveryDays++; }
     
-    // 💡 3. 智慧判定「實際應付金額」與「儲值扣款金額」
-    let cashExtraString = '';
-    let totalLabel = '總額'; // 預設標籤
+    let cashExtraString = "";
+    let totalLabel = "總額";
     
-    // 如果後台有回傳 cashExtra (代表有走會員扣款機制)
     if (res.cashExtra !== undefined) {
-        totalLabel = '原始總額'; // 把原本的總額改成原始總額
-        let vipDeducted = total - res.cashExtra; // 算出本次自動扣了多少儲值金
-        
-        cashExtraString = `\n✨ 儲值扣款：-NT$ ${vipDeducted} 元` +
-                          `\n🔥 實際應付差額：NT$ ${res.cashExtra} 元 (現場/轉帳)`;
+        totalLabel = "原始總額";
+        let vipDeducted = total - res.cashExtra;
+        cashExtraString = "\n✨ 儲值扣款：-NT$ " + vipDeducted + " 元" +
+                          "\n🔥 實際應付差額：NT$ " + res.cashExtra + " 元 (現場/轉帳)";
     }
     
-    // 4. 組合最終要在明細頁面顯示的文字
-    document.getElementById('summary-content').innerText = 
-        `姓名: ${name}\n` +
-        `手機: ${phone}\n` +
-        `方式: ${delivery} (${time})\n` +
-        `地址: ${addr || "未提供"}\n` +
-        `付款: ${pay}\n` +
-        `明細:\n${orderDetail.replace(/ \| /g, '\n')}` +
-        `${delivery === '外送' ? '\n(外送費 ' + deliveryDays + '天 共+$' + (deliveryDays * 50) + ')' : ''}` +
-        `${remainString}${pointsRemainString}` +
-        `\n------------------------\n` +
-        `${totalLabel}: NT$ ${total}${cashExtraString}`; // 💡 塞入算好的實際應付金額
+    document.getElementById("summary-content").innerText = 
+        "姓名: " + name + "\n" +
+        "手機: " + phone + "\n" +
+        "方式: " + delivery + " (" + time + ")\n" +
+        "地址: " + (addr || "未提供") + "\n" +
+        "付款: " + pay + "\n" +
+        "明細:\n" + orderDetail.replace(/ \| /g, "\n") +
+        (delivery === "外送" ? "\n(外送費 " + deliveryDays + "天 共+$" + (deliveryDays * 50) + ")" : "") +
+        remainString + pointsRemainString +
+        "\n------------------------\n" +
+        totalLabel + ": NT$ " + total + cashExtraString;
     
-    // 5. 按鈕傳送門與頁面切換
-    document.getElementById('line-portal-btn').href = LINE_OFFICIAL_URL;
-    document.getElementById('pay-portal-btn').href = LINE_PAY_URL;
+    document.getElementById("line-portal-btn").href = LINE_OFFICIAL_URL;
+    document.getElementById("pay-portal-btn").href = LINE_PAY_URL;
     if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { 
-        document.getElementById('jk-portal-btn').href = JK_TRANSFER_URL; 
+        document.getElementById("jk-portal-btn").href = JK_TRANSFER_URL; 
     } else { 
-        document.getElementById('jk-portal-btn').href = "jkos://jkos/home"; 
+        document.getElementById("jk-portal-btn").href = "jkos://jkos/home"; 
     }
 
-    document.getElementById('form-container').classList.add('hidden');
-    document.getElementById('success-container').classList.remove('hidden');
-    window.scrollTo({top:0, behavior:'smooth'});
+    document.getElementById("form-container").classList.add("hidden");
+    document.getElementById("success-container").classList.remove("hidden");
+    window.scrollTo({top:0, behavior:"smooth"});
     
 } catch(e) {
     alert("訂單已送出，請至後台確認扣款、扣點與明細狀態。");
 }
-        }
     </script>
 </body>
 </html>
