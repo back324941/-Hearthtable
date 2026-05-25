@@ -491,7 +491,10 @@
             return result.join(' | ');
         }
 
-function calculateTotal() {
+// 🔒 在全域環境初始化安全防護鎖，預設為 false (不啟用儲值金扣款)
+        window.requireVipDeduction = false;
+
+        function calculateTotal() {
             let total = 0;
             const deliveryType = document.getElementById('deliveryType').value;
             let deliveryDays = 0;
@@ -611,15 +614,20 @@ function calculateTotal() {
                     let ptsStr = res.points !== undefined ? ` / 點數：${res.points} 點` : '';
                     resultDiv.innerText = `👑 認證成功！您當前的儲值金餘額為：NT$ ${res.balance} 元${ptsStr}`;
                     resultDiv.style.color = "#2e7d32";
+                    
+                    // ✨ 密碼查核驗證成功，解鎖後端儲值金扣款機制
+                    window.requireVipDeduction = true;
                 } else {
                     resultDiv.innerText = `❌ 查詢失敗：${res.message}`;
                     resultDiv.style.color = "#c62828";
                     alert(res.message);
+                    window.requireVipDeduction = false;
                 }
             } catch (err) {
                 resultDiv.innerText = "❌ 系統查詢連線異常";
                 resultDiv.style.color = "#c62828";
                 console.error(err);
+                window.requireVipDeduction = false;
             }
         }
 
@@ -657,9 +665,9 @@ function calculateTotal() {
                 if(selections[day].exchangeSalmon) totalPointsRequired += 2;
             }
             
-            // 安全機制：若有點數換購項目，強制輸入密碼
-            if (totalPointsRequired > 0 && !vipPassword) {
-                return alert("您的訂單內含點數換購項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
+            // 🔒【安全檢查防線】：有通過密碼驗證(requireVipDeduction)或有點數換購，但未輸入密碼時進行防呆
+            if ((window.requireVipDeduction || totalPointsRequired > 0) && !vipPassword) {
+                return alert("🔑 您的訂單內含儲值扣款或點數換購項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
             }
             
             const postData = { 
@@ -673,7 +681,8 @@ function calculateTotal() {
                 orderDetailString: orderDetail, 
                 total: total,
                 totalPointsRequired: totalPointsRequired, 
-                vipPassword: vipPassword 
+                vipPassword: vipPassword,
+                requireVipDeduction: window.requireVipDeduction // ✨ 將安全判定密鑰同步傳給後端
             };
             
             try {
