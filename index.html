@@ -123,9 +123,9 @@
                 <div class="pkg-info-box p-6 space-y-2">
                     <p class="font-black text-amber-800 text-lg">🍱 套餐配菜份量與定價說明：</p>
                     <p class="text-sm font-bold text-amber-700 leading-relaxed">
-                        <strong>M套餐 ($500)</strong>：300g主菜 + 必選副菜1道 + 時蔬配菜（主菜基準 $210 / 副菜基準 $105）<br>
-                        <strong>S套餐 ($300)</strong>：150g主菜 + 必選副菜1道 + 時蔬配菜（主菜基準 $125 / 副菜基準 $65，高於基準補差價，不倒扣）<br>
-                        <span class="text-amber-600 font-black">👑 儲值會員福利：套餐下方可選擇扣除點數進行餐點換購（每日限換購一項）。</span>
+                        <strong>M套餐 ($500)</strong>：300g主菜 + 必選副菜1道 + 時蔬配菜<br>
+                        <strong>S套餐 ($300)</strong>：150g主菜 + 必選副菜1道 + 時蔬配菜<br>
+                        <span class="text-amber-600 font-black">👑 儲值會員福利：儲值3000元可獲得2點；套餐下方可選擇扣除點數進行餐點換購（每日限換購一項）。</span>
                     </p>
                 </div>
 
@@ -491,7 +491,7 @@
             return result.join(' | ');
         }
 
-        function calculateTotal() {
+function calculateTotal() {
             let total = 0;
             const deliveryType = document.getElementById('deliveryType').value;
             let deliveryDays = 0;
@@ -683,58 +683,61 @@
                 });
                 const res = await response.json();
                 
-if (res.result === "error") {
-            return alert("【預訂未完成】\n" + res.message);
-        }
+                if (res.result === "error") {
+                    return alert("【預訂未完成】\n" + res.message);
+                }
 
-        try {
-            let remainString = res.balance !== undefined ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
-            let pointsRemainString = res.points !== undefined ? "\n🪙 剩餘點數：" + res.points + " 點" : (totalPointsRequired > 0 ? "\n🪙 本次扣除點數：" + totalPointsRequired + " 點" : "");
-            
-            let deliveryDays = 0;
-            for(let day in selections) { if(selections[day].type) deliveryDays++; }
-            
-            let cashExtraString = "";
-            let totalLabel = "總額";
-            
-            if (res.cashExtra !== undefined) {
-                totalLabel = "原始總額";
-                let vipDeducted = total - res.cashExtra;
-                cashExtraString = "\n✨ 儲值扣款：-NT$ " + vipDeducted + " 元" +
-                                  "\n🔥 實際應付差額：NT$ " + res.cashExtra + " 元 (現場/轉帳)";
+                try {
+                    let remainString = res.balance !== undefined ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
+                    let pointsRemainString = res.points !== undefined ? "\n🪙 剩餘點數：" + res.points + " 點" : (totalPointsRequired > 0 ? "\n🪙 本次扣除點數：" + totalPointsRequired + " 點" : "");
+                    
+                    let deliveryDays = 0;
+                    for(let day in selections) { if(selections[day].type) deliveryDays++; }
+                    
+                    let cashExtraString = "";
+                    let totalLabel = "總額";
+                    
+                    if (res.cashExtra !== undefined) {
+                        totalLabel = "原始總額";
+                        let vipDeducted = total - res.cashExtra;
+                        cashExtraString = "\n✨ 儲值扣款：-NT$ " + vipDeducted + " 元" +
+                                          "\n🔥 實際應付差額：NT$ " + res.cashExtra + " 元 (現場/轉帳)";
+                    }
+                    
+                    document.getElementById("summary-content").innerText = 
+                        "姓名: " + name + "\n" +
+                        "手機: " + phone + "\n" +
+                        "方式: " + delivery + " (" + time + ")\n" +
+                        "地址: " + (addr || "未提供") + "\n" +
+                        "付款: " + pay + "\n" +
+                        "明細:\n" + orderDetail.replace(/ \| /g, "\n") +
+                        (delivery === "外送" ? "\n(外送費 " + deliveryDays + "天 共+$" + (deliveryDays * 50) + ")" : "") +
+                        remainString + pointsRemainString +
+                        "\n------------------------\n" +
+                        totalLabel + ": NT$ " + total + cashExtraString;
+                    
+                    document.getElementById("line-portal-btn").href = LINE_OFFICIAL_URL;
+                    document.getElementById("pay-portal-btn").href = LINE_PAY_URL;
+                    if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { 
+                        document.getElementById("jk-portal-btn").href = JK_TRANSFER_URL; 
+                    } else { 
+                        document.getElementById("jk-portal-btn").href = "jkos://jkos/home"; 
+                    }
+
+                    document.getElementById("form-container").classList.add("hidden");
+                    document.getElementById("success-container").classList.remove("hidden");
+                    window.scrollTo({top:0, behavior:"smooth"});
+                    
+                } catch(e) {
+                    alert("訂單已送出，請至後台確認扣款、扣點與明細狀態。");
+                }
+
+            } catch (err) {
+                console.error("錯誤:", err);
+                alert("網路連線失敗或系統回傳異常，請重新嘗試。");
             }
-            
-            document.getElementById("summary-content").innerText = 
-                "姓名: " + name + "\n" +
-                "手機: " + phone + "\n" +
-                "方式: " + delivery + " (" + time + ")\n" +
-                "地址: " + (addr || "未提供") + "\n" +
-                "付款: " + pay + "\n" +
-                "明細:\n" + orderDetail.replace(/ \| /g, "\n") +
-                (delivery === "外送" ? "\n(外送費 " + deliveryDays + "天 共+$" + (deliveryDays * 50) + ")" : "") +
-                remainString + pointsRemainString +
-                "\n------------------------\n" +
-                totalLabel + ": NT$ " + total + cashExtraString;
-            
-            document.getElementById("line-portal-btn").href = LINE_OFFICIAL_URL;
-            document.getElementById("pay-portal-btn").href = LINE_PAY_URL;
-            if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { 
-                document.getElementById("jk-portal-btn").href = JK_TRANSFER_URL; 
-            } else { 
-                document.getElementById("jk-portal-btn").href = "jkos://jkos/home"; 
-            }
-
-            document.getElementById("form-container").classList.add("hidden");
-            document.getElementById("success-container").classList.remove("hidden");
-            window.scrollTo({top:0, behavior:"smooth"});
-            
-        } catch(e) {
-            alert("訂單已送出，請至後台確認扣款、扣點與明細狀態。");
-        }
-
-    }) 
-    .catch(err => {
-        console.error("錯誤:", err);
-        alert("網路連線失敗或系統回傳異常，請重新嘗試。");
-    });
-}
+        } // <-- 大功能 submitOrder 在此完美封口
+        
+    </script>
+</body>
+</html>
