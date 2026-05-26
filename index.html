@@ -631,7 +631,10 @@
             }
         }
 
-        async function submitOrder() {
+async function submitOrder() {
+            // 1. 自動尋找你的送出按鈕（支援常見的 id 或型態，防呆免手動改 HTML）
+            const submitBtn = document.getElementById('submitBtn') || document.querySelector('button[onclick="submitOrder()"]');
+            
             const name = document.getElementById('userName').value;
             const phone = document.getElementById('userPhone').value || "未填寫";
             const delivery = document.getElementById('deliveryType').value;
@@ -670,6 +673,13 @@
                 return alert("🔑 您的訂單內含儲值扣款或點數換購項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
             }
             
+            // 🚀【啟動防重複點擊防線】：表單檢查皆通過，正式發送前鎖定按鈕
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = "⏳ 傳送中，請勿重複送單...";
+                submitBtn.style.opacity = "0.6"; // 讓按鈕外觀變灰，提示客人無法再點
+            }
+            
             const postData = { 
                 timestamp: new Date().toLocaleString(), 
                 name: name, 
@@ -693,6 +703,12 @@
                 const res = await response.json();
                 
                 if (res.result === "error") {
+                    // 🔓【後端報錯解鎖】：例如餘額不足、密碼錯誤，將按鈕復原讓客人修改重送
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "預訂送出"; 
+                        submitBtn.style.opacity = "1";
+                    }
                     return alert("【預訂未完成】\n" + res.message);
                 }
 
@@ -743,6 +759,12 @@
 
             } catch (err) {
                 console.error("錯誤:", err);
+                // 🔓【網路異常解鎖】：萬一客人網路斷線導致傳送失敗，解除鎖定讓客人能再次嘗試
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "預訂送出"; 
+                    submitBtn.style.opacity = "1";
+                }
                 alert("網路連線失敗或系統回傳異常，請重新嘗試。");
             }
         } // <-- 大功能 submitOrder 在此完美封口
