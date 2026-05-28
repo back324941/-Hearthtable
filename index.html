@@ -661,14 +661,14 @@ async function submitOrder() {
             if(total === 0) return alert('尚未選擇餐點');
             const orderDetail = buildDetailText();
             
-            // 計算點數（鮭魚2點，湯品1點）
+            // 🪙【點數換購新制】湯品扣 5 點、鮭魚扣 10 點
             let totalPointsRequired = 0;
             for(let day in selections) {
-                if(selections[day].exchangeSoup) totalPointsRequired += 1;
-                if(selections[day].exchangeSalmon) totalPointsRequired += 2;
+                if(selections[day].exchangeSoup) totalPointsRequired += 5;
+                if(selections[day].exchangeSalmon) totalPointsRequired += 10;
             }
             
-            // 🔒【安全檢查防線】：有通過密碼驗證(requireVipDeduction)或有點數換購，但未輸入密碼時進行防呆
+            // 🔒【帳戶安全核對】不論是否為當月有效會員，只要有儲值扣款或扣點換購（點數無期限），一律強制要求輸入密碼
             if ((window.requireVipDeduction || totalPointsRequired > 0) && !vipPassword) {
                 return alert("🔑 您的訂單內含儲值扣款或點數換購項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
             }
@@ -690,9 +690,9 @@ async function submitOrder() {
                 payment: pay, 
                 orderDetailString: orderDetail, 
                 total: total,
-                totalPointsRequired: totalPointsRequired, 
+                totalPointsRequired: totalPointsRequired, // 將本次預計扣除的總點數傳給後端
                 vipPassword: vipPassword,
-                requireVipDeduction: window.requireVipDeduction // ✨ 將安全判定密鑰同步傳給後端
+                requireVipDeduction: window.requireVipDeduction // 將安全判定密鑰同步傳給後端
             };
             
             try {
@@ -703,7 +703,7 @@ async function submitOrder() {
                 const res = await response.json();
                 
                 if (res.result === "error") {
-                    // 🔓【後端報錯解鎖】：例如餘額不足、密碼錯誤，將按鈕復原讓客人修改重送
+                    // 🔓【後端報錯解鎖】：例如儲值餘額不足（直接拒絕送單）、點數不足、密碼錯誤，將按鈕復原讓客人修改
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         submitBtn.innerText = "預訂送出"; 
@@ -713,21 +713,15 @@ async function submitOrder() {
                 }
 
                 try {
+                    // 👑【成功畫面顯示】結構優化
                     let remainString = res.balance !== undefined ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
-                    let pointsRemainString = res.points !== undefined ? "\n🪙 剩餘點數：" + res.points + " 點" : (totalPointsRequired > 0 ? "\n🪙 本次扣除點數：" + totalPointsRequired + " 點" : "");
+                    let pointsRemainString = res.points !== undefined ? "\n🪙 剩餘點數：" + res.points + " 點" : "";
+                    
+                    // 🎁 會員資格期內且當日消費滿額，後端若判定符合集點會回傳 earnedPoint: true
+                    let rewardMsg = res.earnedPoint ? "\n✨ 感謝有效會員今日訂購！完成消費將自動為您累計 1 點！" : "";
                     
                     let deliveryDays = 0;
                     for(let day in selections) { if(selections[day].type) deliveryDays++; }
-                    
-                    let cashExtraString = "";
-                    let totalLabel = "總額";
-                    
-                    if (res.cashExtra !== undefined) {
-                        totalLabel = "原始總額";
-                        let vipDeducted = total - res.cashExtra;
-                        cashExtraString = "\n✨ 儲值扣款：-NT$ " + vipDeducted + " 元" +
-                                          "\n🔥 實際應付差額：NT$ " + res.cashExtra + " 元 (現場/轉帳)";
-                    }
                     
                     document.getElementById("summary-content").innerText = 
                         "姓名: " + name + "\n" +
@@ -737,9 +731,9 @@ async function submitOrder() {
                         "付款: " + pay + "\n" +
                         "明細:\n" + orderDetail.replace(/ \| /g, "\n") +
                         (delivery === "外送" ? "\n(外送費 " + deliveryDays + "天 共+$" + (deliveryDays * 50) + ")" : "") +
-                        remainString + pointsRemainString +
+                        remainString + pointsRemainString + rewardMsg +
                         "\n------------------------\n" +
-                        totalLabel + ": NT$ " + total + cashExtraString;
+                        "總額: NT$ " + total;
                     
                     document.getElementById("line-portal-btn").href = LINE_OFFICIAL_URL;
                     document.getElementById("pay-portal-btn").href = LINE_PAY_URL;
