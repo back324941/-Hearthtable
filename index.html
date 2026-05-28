@@ -384,11 +384,11 @@
                     <div class="flex flex-col gap-3">
                         <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                             <input type="checkbox" ${sel.exchangeSoup ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSoup = this.checked; handleExchangeChange('soup');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
-                            <span>換購當日湯品 🥣 (扣 1 點)</span>
+                            <span>換購當日湯品 🥣 (扣 5 點)</span>
                         </label>
                         <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                             <input type="checkbox" ${sel.exchangeSalmon ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSalmon = this.checked; handleExchangeChange('salmon');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
-                            <span>換購香煎鮭魚 🐟 (扣 2 點)</span>
+                            <span>換購香煎鮭魚 🐟 (扣 10 點)</span>
                         </label>
                     </div>
                 </div>`;
