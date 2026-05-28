@@ -1,3 +1,22 @@
+// 在網頁腳本最上方加入這個變數
+let requireVipDeduction = false; 
+
+// 在你的 checkVipBalance() 會員認證成功判斷裡加入：
+if (data.result === "success") {
+    let orderTotal = parseFloat(document.getElementById("drawer-total").innerText) || 0;
+    
+    if (data.balance >= orderTotal) {
+        // 錢夠，自動標記為要從儲值扣款
+        requireVipDeduction = true; 
+        balanceResult.innerHTML = `🎉 會員認證成功！<br>目前餘額：$${data.balance} 元 / 剩餘點數：${data.points} 點<br>ℹ️ 本單將自動從儲值金扣款。`;
+        balanceResult.style.color = "#059669";
+    } else {
+        // 錢不夠，標記為不扣款（讓客人付現金/轉帳），但依然享有會員權益
+        requireVipDeduction = false; 
+        balanceResult.innerHTML = `⚠️ 會員認證成功！(目前餘額 $${data.balance} 元，本單不足以全額扣款)<br>🎁 本單將正常為您累積/換購點數，請於下方改選【現金】或【電子支付】。`;
+        balanceResult.style.color = "#ea580c";
+    }
+}
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
