@@ -881,23 +881,34 @@ async function submitOrder() {
                 }
             }
 
-            // 9. 畫面強制切換（隱藏表單、顯示成功畫面）
-            const formContainer = document.getElementById("form-container");
-            const successContainer = document.getElementById("success-container");
-            
-            if (formContainer && successContainer) {
-                // 💡 強制確保成功畫面如果是黑色的話，文字一定要是白色的，避免字體隱形變黑螢幕！
-                successContainer.style.color = "#ffffff"; 
-                successContainer.style.display = "block"; // 確保區塊顯示
-                
-                formContainer.classList.add("hidden");
-                successContainer.classList.remove("hidden");
-                window.scrollTo({top: 0, behavior: "smooth"});
-            } else {
-                // 如果找不到容器，直接彈跳傳統視窗提示，絕不給客人看黑畫面
-                alert("🎉 訂購成功！\n\n" + finalSummaryText);
-                window.location.reload();
-            }
+            // ==================== 9. 畫面強制切換（隱藏表單、顯示成功畫面） ====================
+const formContainer = document.getElementById("form-container");
+const successContainer = document.getElementById("success-container");
+
+if (formContainer && successContainer) {
+    // 💡 移除原本硬塞的 "block" 設定，避免破壞網頁原本的 Flex 或是 Grid 美麗排版！
+    // 只保留最純粹的 class 切換，讓網頁原生 CSS 決定怎麼顯示
+    formContainer.classList.add("hidden");
+    successContainer.classList.remove("hidden");
+    
+    // 💡 強制確保文字顏色不會跟背景撞色（預防字體隱形）
+    // 如果你原本就是白底黑字，可以把下面這行註解掉
+    // successContainer.style.color = "#333333"; 
+
+    // 延遲 50 毫秒再平滑滾動到頂端，給手機瀏覽器一點點渲染時間，防止畫面閃爍或卡死
+    setTimeout(() => {
+        window.scrollTo({top: 0, behavior: "smooth"});
+    }, 50);
+
+} else {
+    // 如果真的找不到容器，直接彈跳傳統視窗提示，絕不給客人看黑畫面
+    if (typeof finalSummaryText !== 'undefined') {
+        alert("🎉 訂購成功！\n\n" + finalSummaryText);
+    } else {
+        alert("🎉 訂購成功！感謝您的訂購。");
+    }
+    window.location.reload();
+}
             
         } catch(renderError) {
             console.error("成功畫面渲染錯誤:", renderError);
