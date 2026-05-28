@@ -730,136 +730,142 @@ function handlePaymentMethodChange(val) {
         }
 
 async function submitOrder() {
-            // 1. 自動尋找你的送出按鈕（支援常見的 id 或型態，防呆免手動改 HTML）
-            const submitBtn = document.getElementById('submitBtn') || document.querySelector('button[onclick="submitOrder()"]');
-            
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value || "未填寫";
-            const delivery = document.getElementById('deliveryType').value;
-            const time = document.getElementById('pickupTime').value;
-            const addr = document.getElementById('address').value;
-            const pay = document.getElementById('paymentMethod').value;
-            const vipPassword = document.getElementById('vipPassword').value; 
-            
-            if(!name) return alert('請填寫姓名');
-            
-            for(let day in selections) {
-                const s = selections[day];
-                if(s.type === 'M' || s.type === 'S') {
-                    if(s.mainIdx === undefined) return alert(`您選擇了套餐，但尚未選擇主菜喔！`);
-                    if(!s.pkgSideId) return alert(`您選擇了套餐，但尚未選擇必選的套餐副菜喔！`);
-                    if(!s.sideMode) return alert(`您選擇了套餐，但尚未選擇時蔬配菜設定喔！`);
-                    if(s.type === 'M' && s.sideMode === 'ONLY_VEG' && s.mGiftIdx === undefined) {
-                        return alert(`大套餐選擇單一時蔬，請記得選擇贈品好禮 2 選 1 喔！`);
-                    }
-                }
+    // 1. 自動尋找你的送出按鈕（支援常見的 id 或型態，防呆免手動改 HTML）
+    const submitBtn = document.getElementById('submitBtn') || document.querySelector('button[onclick="submitOrder()"]');
+    
+    const name = document.getElementById('userName').value;
+    const phone = document.getElementById('userPhone').value || "未填寫";
+    const delivery = document.getElementById('deliveryType').value;
+    const time = document.getElementById('pickupTime').value;
+    const addr = document.getElementById('address').value;
+    const pay = document.getElementById('paymentMethod').value;
+    const vipPassword = document.getElementById('vipPassword').value; 
+    
+    if(!name) return alert('請填寫姓名');
+    
+    for(let day in selections) {
+        const s = selections[day];
+        if(s.type === 'M' || s.type === 'S') {
+            if(s.mainIdx === undefined) return alert(`您選擇了套餐，但尚未選擇主菜喔！`);
+            if(!s.pkgSideId) return alert(`您選擇了套餐，但尚未選擇必選的套餐副菜喔！`);
+            if(!s.sideMode) return alert(`您選擇了套餐，但尚未選擇時蔬配菜設定喔！`);
+            if(s.type === 'M' && s.sideMode === 'ONLY_VEG' && s.mGiftIdx === undefined) {
+                return alert(`大套餐選擇單一時蔬，請記得選擇贈品好禮 2 選 1 喔！`);
             }
+        }
+    }
 
-            const total = calculateTotal();
-            if(total === 0) return alert('尚未選擇餐點');
-            const orderDetail = buildDetailText();
-            
-            // 🪙【點數換購新制】湯品扣 5 點、鮭魚扣 10 點
-            let totalPointsRequired = 0;
-            for(let day in selections) {
-                if(selections[day].exchangeSoup) totalPointsRequired += 5;
-                if(selections[day].exchangeSalmon) totalPointsRequired += 10;
-            }
-            
-            // 🔒【帳戶安全核對】不論是否為當月有效會員，只要有儲值扣款或扣點換購（點數無期限），一律強制要求輸入密碼
-            if ((window.requireVipDeduction || totalPointsRequired > 0) && !vipPassword) {
-                return alert("🔑 您的訂單內含儲值扣款或點數換購項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
-            }
-            
-            // 🚀【啟動防重複點擊防線】：表單檢查皆通過，正式發送前鎖定按鈕
+    const total = calculateTotal();
+    if(total === 0) return alert('尚未選擇餐點');
+    const orderDetail = buildDetailText();
+    
+    // 🪙【點數換購新制】湯品扣 5 點、鮭魚扣 10 點
+    let totalPointsRequired = 0;
+    for(let day in selections) {
+        if(selections[day].exchangeSoup) totalPointsRequired += 5;
+        if(selections[day].exchangeSalmon) totalPointsRequired += 10;
+    }
+    
+    // 🚨🚨🚨 【前端安全分流修正】 🚨🚨🚨
+    // 如果付款方式不是「儲值金扣款」，強制關閉儲值扣款判定，避免殘留前一次查詢會員的狀態！
+    if (pay !== "儲值金扣款") {
+        window.requireVipDeduction = false;
+    }
+    
+    // 🔒【帳戶安全核對】只有在明確需要儲值扣款，或是需要點數換購時，才強制要求輸入密碼
+    if ((window.requireVipDeduction || totalPointsRequired > 0) && !vipPassword) {
+        return alert("🔑 您的訂單內含儲值扣款或點數換購項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
+    }
+    
+    // 🚀【啟動防重複點擊防線】：表單檢查皆通過，正式發送前鎖定按鈕
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "⏳ 傳送中，請勿重複送單...";
+        submitBtn.style.opacity = "0.6"; // 讓按鈕外觀變灰，提示客人無法再點
+    }
+    
+    const postData = { 
+        timestamp: new Date().toLocaleString(), 
+        name: name, 
+        phone: phone, 
+        delivery: delivery, 
+        time: time, 
+        address: addr || "未填寫", 
+        payment: pay, 
+        orderDetailString: orderDetail, 
+        total: total,
+        totalPointsRequired: totalPointsRequired, // 將本次預計扣除的總點數傳給後端
+        vipPassword: vipPassword,
+        requireVipDeduction: window.requireVipDeduction // 將安全判定密鑰同步傳給後端
+    };
+    
+    try {
+        const response = await fetch(WEB_APP_URL, { 
+            method: 'POST', 
+            body: JSON.stringify(postData) 
+        });
+        const res = await response.json();
+        
+        if (res.result === "error") {
+            // 🔓【後端報錯解鎖】：例如儲值餘額不足（直接拒絕送單）、點數不足、密碼錯誤，將按鈕復原讓客人修改
             if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerText = "⏳ 傳送中，請勿重複送單...";
-                submitBtn.style.opacity = "0.6"; // 讓按鈕外觀變灰，提示客人無法再點
+                submitBtn.disabled = false;
+                submitBtn.innerText = "預訂送出"; 
+                submitBtn.style.opacity = "1";
             }
+            return alert("【預訂未完成】\n" + res.message);
+        }
+
+        try {
+            // 👑【成功畫面顯示】結構優化
+            let remainString = res.balance !== undefined ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
+            let pointsRemainString = res.points !== undefined ? "\n🪙 目前點數：" + res.points + " 點" : "";
             
-            const postData = { 
-                timestamp: new Date().toLocaleString(), 
-                name: name, 
-                phone: phone, 
-                delivery: delivery, 
-                time: time, 
-                address: addr || "未填寫", 
-                payment: pay, 
-                orderDetailString: orderDetail, 
-                total: total,
-                totalPointsRequired: totalPointsRequired, // 將本次預計扣除的總點數傳給後端
-                vipPassword: vipPassword,
-                requireVipDeduction: window.requireVipDeduction // 將安全判定密鑰同步傳給後端
-            };
+            // 🎁 會員資格期內且當日消費滿額，後端若判定符合集點會回傳 earnedPoint: true
+            let rewardMsg = res.earnedPoint ? "\n✨ 謝謝您的訂購，搭伙祝您用餐愉快！" : "";
             
-            try {
-                const response = await fetch(WEB_APP_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify(postData) 
-                });
-                const res = await response.json();
-                
-                if (res.result === "error") {
-                    // 🔓【後端報錯解鎖】：例如儲值餘額不足（直接拒絕送單）、點數不足、密碼錯誤，將按鈕復原讓客人修改
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = "預訂送出"; 
-                        submitBtn.style.opacity = "1";
-                    }
-                    return alert("【預訂未完成】\n" + res.message);
-                }
-
-                try {
-                    // 👑【成功畫面顯示】結構優化
-                    let remainString = res.balance !== undefined ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
-                    let pointsRemainString = res.points !== undefined ? "\n🪙 目前點數：" + res.points + " 點" : "";
-                    
-                    // 🎁 會員資格期內且當日消費滿額，後端若判定符合集點會回傳 earnedPoint: true
-                    let rewardMsg = res.earnedPoint ? "\n✨ 謝謝您的訂購，搭伙祝您用餐愉快！" : "";
-                    
-                    let deliveryDays = 0;
-                    for(let day in selections) { if(selections[day].type) deliveryDays++; }
-                    
-                    document.getElementById("summary-content").innerText = 
-                        "姓名: " + name + "\n" +
-                        "手機: " + phone + "\n" +
-                        "方式: " + delivery + " (" + time + ")\n" +
-                        "地址: " + (addr || "未提供") + "\n" +
-                        "付款: " + pay + "\n" +
-                        "明細:\n" + orderDetail.replace(/ \| /g, "\n") +
-                        (delivery === "外送" ? "\n(外送費 " + deliveryDays + "天 共+$" + (deliveryDays * 50) + ")" : "") +
-                        remainString + pointsRemainString + rewardMsg +
-                        "\n------------------------\n" +
-                        "總額: NT$ " + total;
-                    
-                    document.getElementById("line-portal-btn").href = LINE_OFFICIAL_URL;
-                    document.getElementById("pay-portal-btn").href = LINE_PAY_URL;
-                    if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { 
-                        document.getElementById("jk-portal-btn").href = JK_TRANSFER_URL; 
-                    } else { 
-                        document.getElementById("jk-portal-btn").href = "jkos://jkos/home"; 
-                    }
-
-                    document.getElementById("form-container").classList.add("hidden");
-                    document.getElementById("success-container").classList.remove("hidden");
-                    window.scrollTo({top:0, behavior:"smooth"});
-                    
-                } catch(e) {
-                    alert("訂單已送出，請至後台確認扣款、扣點與明細狀態。");
-                }
-
-            } catch (err) {
-                console.error("錯誤:", err);
-                // 🔓【網路異常解鎖】：萬一客人網路斷線導致傳送失敗，解除鎖定讓客人能再次嘗試
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "預訂送出"; 
-                    submitBtn.style.opacity = "1";
-                }
-                alert("網路連線失敗或系統回傳異常，請重新嘗試。");
+            let deliveryDays = 0;
+            for(let day in selections) { if(selections[day].type) deliveryDays++; }
+            
+            document.getElementById("summary-content").innerText = 
+                "姓名: " + name + "\n" +
+                "手機: " + phone + "\n" +
+                "方式: " + delivery + " (" + time + ")\n" +
+                "地址: " + (addr || "未提供") + "\n" +
+                "付款: " + pay + "\n" +
+                "明細:\n" + orderDetail.replace(/ \| /g, "\n") +
+                (delivery === "外送" ? "\n(外送費 " + deliveryDays + "天 共+$" + (deliveryDays * 50) + ")" : "") +
+                remainString + pointsRemainString + rewardMsg +
+                "\n------------------------\n" +
+                "總額: NT$ " + total;
+            
+            document.getElementById("line-portal-btn").href = LINE_OFFICIAL_URL;
+            document.getElementById("pay-portal-btn").href = LINE_PAY_URL;
+            if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { 
+                document.getElementById("jk-portal-btn").href = JK_TRANSFER_URL; 
+            } else { 
+                document.getElementById("jk-portal-btn").href = "jkos://jkos/home"; 
             }
-        } // <-- 大功能 submitOrder 在此完美封口
+
+            document.getElementById("form-container").classList.add("hidden");
+            document.getElementById("success-container").classList.remove("hidden");
+            window.scrollTo({top:0, behavior:"smooth"});
+            
+        } catch(e) {
+            alert("訂單已送出，請至後台確認扣款、扣點與明細狀態。");
+        }
+
+    } catch (err) {
+        console.error("錯誤:", err);
+        // 🔓【網路異常解鎖】：萬一客人網路斷線導致傳送失敗，解除鎖定讓客人能再次嘗試
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "預訂送出"; 
+            submitBtn.style.opacity = "1";
+        }
+        alert("網路連線失敗或系統回傳異常，請重新嘗試。");
+    }
+} // <-- 大功能 submitOrder 在此完美封口
         
     </script>
 </body>
