@@ -76,14 +76,16 @@
                         <input type="text" id="userName" class="px-6 py-5 rounded-2xl border-4 border-gray-100 text-2xl font-black bg-gray-50 outline-none" placeholder="訂購人姓名">
                         <input type="tel" id="userPhone" class="px-6 py-5 rounded-2xl border-4 border-gray-100 text-2xl font-black bg-gray-50 outline-none" placeholder="手機號碼(選填)">
                     </div>
-                    <!-- <div class="form-group p-4 bg-gray-50 rounded-2xl border-2 border-gray-100" style="margin-top: 10px;">
+                    
+                    <div class="form-group p-4 bg-gray-50 rounded-2xl border-2 border-gray-100" style="margin-top: 10px;">
                         <label class="block text-sm font-black text-gray-500 mb-2">搭伙會員密碼 (一般散客免填)</label>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <input type="password" id="vipPassword" placeholder="輸入密碼" maxlength="6" style="width: 110px; padding: 12px; box-sizing: border-box;" class="rounded-xl border-2 border-gray-200 outline-none text-xl font-bold">
-                            <button type="button" onclick="checkVipBalance()" style="padding: 12px 20px; background-color: #059669; color: white; border: none; cursor: pointer; white-space: nowrap;" class="rounded-xl font-black text-base clickable shadow-sm hover:bg-emerald-700 transition-colors">會員認證</button>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="password" id="vipPassword" placeholder="輸入密碼" maxlength="6" style="flex: 1; min-width: 100px; padding: 12px; box-sizing: border-box;" class="rounded-xl border-2 border-gray-200 outline-none text-xl font-bold">
+                            <button type="button" onclick="checkVipBalance()" style="flex: 1.5; min-width: 120px; padding: 12px 15px; background-color: #059669; color: white; border: none; cursor: pointer; white-space: normal; word-break: break-all;" class="rounded-xl font-black text-base clickable shadow-sm hover:bg-emerald-700 transition-colors text-center">會員認證</button>
                         </div>
-                        <div id="balanceResult" style="margin-top: 8px; font-weight: bold; color: #059669; font-size: 15px;"></div>
+                        <div id="balanceResult" style="margin-top: 8px; font-weight: bold; color: #059669; font-size: 15px; word-break: break-all;"></div>
                     </div>
+                    
                     <div class="grid grid-cols-2 gap-4">
                         <select id="deliveryType" onchange="handleDeliveryChange(this.value)" class="px-2 py-5 rounded-2xl border-4 border-gray-100 font-black text-xl text-center bg-white">
                             <option value="自取">店內自取</option>
@@ -95,7 +97,9 @@
                             <option value="18:30-19:00">18:30-19:00</option>
                         </select>
                     </div>
+                    
                     <div id="address-box"><input type="text" id="address" class="w-full px-6 py-5 rounded-2xl border-4 border-orange-100 text-xl font-black bg-orange-50 outline-none" placeholder="外送地址 (非必填)"></div>
+                    
                     <div class="space-y-2 pt-2">
                         <label class="text-sm font-black text-gray-400 px-2">付款方式</label>
                         <select id="paymentMethod" onchange="togglePayNotice(this.value)" class="w-full px-6 py-5 rounded-2xl border-4 border-gray-100 font-black text-xl bg-gray-50 outline-none">
@@ -181,7 +185,6 @@
         function ceilTo5Or0(val) {
             return Math.ceil(val / 5) * 5;
         }
-
         const menus = {
             Tue: { 
                 main: [
