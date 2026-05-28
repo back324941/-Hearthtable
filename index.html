@@ -195,50 +195,85 @@
         }
 
         // 🌟 2. 智慧認證與付款變更判斷
-        function checkVipBalance() {
-            const phone = document.getElementById("userPhone").value.trim();
-            const password = document.getElementById("vipPassword").value.trim();
-            const balanceResult = document.getElementById("balanceResult");
+function checkVipBalance() {
+    const phone = document.getElementById("userPhone").value.trim();
+    const password = document.getElementById("vipPassword").value.trim();
+    const balanceResult = document.getElementById("balanceResult");
+    const optVipDeduct = document.getElementById("opt-vip-deduct");
+    const paymentMethod = document.getElementById("paymentMethod");
+    
+    if (!phone || !password) {
+        balanceResult.innerHTML = "❌ 請先輸入手機號碼與會員密碼再點擊認證。";
+        balanceResult.style.color = "#dc2626";
+        return;
+    }
+
+    balanceResult.innerHTML = "🔍 正在認證會員資料...";
+    balanceResult.style.color = "#6b7280";
+
+    fetch(`${WEB_APP_URL}?action=checkVip&phone=${phone}&password=${password}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.result === "success") {
+            let orderTotal = parseFloat(document.getElementById("drawer-total").innerText) || 0;
             
-            if (!phone || !password) {
-                balanceResult.innerHTML = "❌ 請先輸入手機號碼與會員密碼再點擊認證。";
-                balanceResult.style.color = "#dc2626";
-                return;
+            // ✨ 只要密碼對了，就啟用「儲值金扣款」的選項資格（包含過期會員）
+            if (optVipDeduct) {
+                optVipDeduct.disabled = false;
+                optVipDeduct.innerText = `儲值金扣款 (目前餘額: $${data.balance})`;
             }
-
-            balanceResult.innerHTML = "🔍 正在認證會員資料...";
-            balanceResult.style.color = "#6b7280";
-
-            fetch(`${WEB_APP_URL}?action=checkVip&phone=${phone}&password=${password}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === "success") {
-                    // 抓取當下購物車內的總金額
-                    let orderTotal = parseFloat(document.getElementById("drawer-total").innerText) || 0;
-                    
-                    if (data.balance >= orderTotal) {
-                        // 🟢 餘額足夠：判定認證成功，並自動標記本次要從儲值金扣款
-                        requireVipDeduction = true; 
-                        balanceResult.innerHTML = `🎉 會員認證成功！<br>目前餘額：$${data.balance} 元 / 剩餘點數：${data.points} 點<br>ℹ️ 本單將自動從儲值金扣款。`;
-                        balanceResult.style.color = "#059669";
-                    } else {
-                        // 🟠 餘額不足：但密碼對了！一樣認證成功！標記本次不扣儲值金，引導改選現金/轉帳
-                        requireVipDeduction = false; 
-                        balanceResult.innerHTML = `⚠️ 會員認證成功！(目前餘額 $${data.balance} 元，本單不足以全額扣款)<br>🎁 本單將正常為您累積/換購點數，請於下方改選【現金】或【電子支付】。`;
-                        balanceResult.style.color = "#ea580c";
-                    }
-                } else {
-                    balanceResult.innerHTML = `❌ 認證失敗：${data.message}`;
-                    balanceResult.style.color = "#dc2626";
-                    requireVipDeduction = false;
+            
+            if (data.balance >= orderTotal) {
+                // 🟢 餘額足夠：自動幫他切換到儲值金扣款
+                if (paymentMethod) paymentMethod.value = "儲值金扣款";
+                handlePaymentMethodChange("儲值金扣款"); // 觸發提示隱藏或切換
+                
+                balanceResult.innerHTML = `🎉 會員認證成功！<br>目前餘額：$${data.balance} 元 / 剩餘點數：${data.points} 點<br>ℹ️ 已為您自動選擇【儲值金扣款】。`;
+                balanceResult.style.color = "#059669";
+            } else {
+                // 🟠 餘額不足：雖然認證成功，但把儲值扣款選項鎖定（不讓他選），逼他選現金或轉帳
+                if (optVipDeduct) {
+                    optVipDeduct.disabled = true;
+                    optVipDeduct.innerText = `儲值金扣款 (餘額不足: $${data.balance})`;
                 }
-            })
-            .catch(err => {
-                balanceResult.innerHTML = "❌ 系統連線異常，請稍後再試。";
-                balanceResult.style.color = "#dc2626";
-                requireVipDeduction = false;
-            });
+                if (paymentMethod && paymentMethod.value === "儲值金扣款") {
+                    paymentMethod.value = "電子支付"; // 強制彈回電子支付
+                }
+                handlePaymentMethodChange(paymentMethod.value);
+                
+                balanceResult.innerHTML = `⚠️ 會員認證成功！(目前餘額 $${data.balance} 元，本單不足以全額扣款)<br>🎁 本單將正常為您累積/換購點數，請於下方改選【現金】或【電子支付】。`;
+                balanceResult.style.color = "#ea580c";
+            }
+        } else {
+            balanceResult.innerHTML = `❌ 認證失敗：${data.message}`;
+            balanceResult.style.color = "#dc2626";
+            if (optVipDeduct) {
+                optVipDeduct.disabled = true;
+                optVipDeduct.innerText = "儲值金扣款 (請先完成會員認證)";
+            }
         }
+    })
+    .catch(err => {
+        balanceResult.innerHTML = "❌ 系統連線異常，請稍後再試。";
+        balanceResult.style.color = "#dc2626";
+    });
+}
+
+// 貼心提示切換函式（如果你原本是用 togglePayNotice，請自己改名對接）
+function handlePaymentMethodChange(val) {
+    const notice = document.getElementById("payment-notice");
+    if (!notice) return;
+    if (val === "儲值金扣款") {
+        notice.innerHTML = "ℹ️ 本單將直接從您的會員儲值金中扣除，送出後即可完成預訂。";
+        notice.className = "bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl text-emerald-600 font-bold text-sm show";
+    } else if (val === "現金付款") {
+        notice.innerHTML = "💡 請於取餐現場當面支付現金給現場工作人員。";
+        notice.className = "bg-amber-50 border-2 border-amber-200 p-4 rounded-2xl text-amber-700 font-bold text-sm show";
+    } else {
+        notice.innerHTML = "💡 下單後請於一小時內完成 LINE Pay 或轉帳支付。";
+        notice.className = "bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl text-blue-600 font-bold text-sm show";
+    }
+}
 
         // 🌟 3. 注意：請確保你原本寫在後面的 submitOrder() 打包傳送資料時有包含這行：
         // 範例：如果你的 submitOrder 裡有宣告 formData，請一定要塞入這行：
