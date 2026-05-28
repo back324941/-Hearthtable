@@ -715,10 +715,10 @@ async function submitOrder() {
                 try {
                     // 👑【成功畫面顯示】結構優化
                     let remainString = res.balance !== undefined ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
-                    let pointsRemainString = res.points !== undefined ? "\n🪙 剩餘點數：" + res.points + " 點" : "";
+                    let pointsRemainString = res.points !== undefined ? "\n🪙 目前點數：" + res.points + " 點" : "";
                     
                     // 🎁 會員資格期內且當日消費滿額，後端若判定符合集點會回傳 earnedPoint: true
-                    let rewardMsg = res.earnedPoint ? "\n✨ 感謝有效會員今日訂購！完成消費將自動為您累計 1 點！" : "";
+                    let rewardMsg = res.earnedPoint ? "\n✨ 謝謝您的訂購，搭伙祝您用餐愉快！" : "";
                     
                     let deliveryDays = 0;
                     for(let day in selections) { if(selections[day].type) deliveryDays++; }
