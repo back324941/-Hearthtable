@@ -766,20 +766,14 @@ async function submitOrder() {
         if(selections[day].exchangeSalmon) totalPointsRequired += 10;
     }
     
-    // 🚨🚨🚨 【前端核心修正：付款與集點分流】 🚨🚨🚨
-    let isVipDeduction = false;
+    // 前端安全分流：如果付款方式不是「儲值金扣款」，強制關閉儲值扣款判定
+    if (pay !== "儲值金扣款") {
+        window.requireVipDeduction = false;
+    }
     
-    if (pay === "儲值金扣款") {
-        isVipDeduction = true; // 只有明確選儲值金，才開啟後端扣錢開關
-        if (!vipPassword) {
-            return alert("🔑 您選擇了「儲值金扣款」，請輸入會員密碼以確認扣款安全！");
-        }
-    } else {
-        // 如果選現金、轉帳，但有填密碼（為了集點或換購）
-        isVipDeduction = false; 
-        if (totalPointsRequired > 0 && !vipPassword) {
-            return alert("🔑 您的訂單包含「點數換購」項目，請輸入會員密碼以核銷點數！");
-        }
+    // 🔒【帳戶安全核對】
+    if ((window.requireVipDeduction || totalPointsRequired > 0) && !vipPassword) {
+        return alert("🔑 您的訂單內含儲值扣款或點數換購項目，請輸入「儲值會員密碼」以維護您的錢包安全！");
     }
     
     // 🚀【啟動防重複點擊防線】
@@ -801,7 +795,7 @@ async function submitOrder() {
         total: total,
         totalPointsRequired: totalPointsRequired, 
         vipPassword: vipPassword,
-        requireVipDeduction: isVipDeduction // 真正決定後端要不要扣儲值金的關鍵
+        requireVipDeduction: window.requireVipDeduction 
     };
     
     try {
@@ -820,49 +814,99 @@ async function submitOrder() {
             return alert("【預訂未完成】\n" + res.message);
         }
 
+        // 🚨🚨🚨 【精準修正區：確保成功畫面明細完美排版，絕不黑畫面】 🚨🚨🚨
         try {
-            // 👑【成功畫面顯示】
-            let remainString = (res.balance !== undefined && pay === "儲值金扣款") ? "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)" : "";
-            // 如果是現金付款，但有過會員驗證，依然顯示剩餘餘額供客人參考，但不標註(已扣款)
-            if (res.balance !== undefined && pay !== "儲值金扣款" && vipPassword !== "") {
-                remainString = "\n👑 儲值餘額：NT$ " + res.balance + " 元";
+            // 1. 會員儲值金餘額安全排版
+            let remainString = "";
+            if (res.balance !== undefined && res.balance !== null) {
+                if (pay === "儲值金扣款") {
+                    remainString = "\n👑 儲值餘額：NT$ " + res.balance + " 元 (已扣款)";
+                } else if (vipPassword !== "") {
+                    remainString = "\n👑 儲值餘額：NT$ " + res.balance + " 元";
+                }
             }
-            let pointsRemainString = res.points !== undefined ? "\n🪙 目前點數：" + res.points + " 點" : "";
-            let rewardMsg = res.earnedPoint ? "\n✨ 謝謝您的訂購，本單已成功累積 1 點！" : "";
             
+            // 2. 會員點數安全排版
+            let pointsRemainString = "";
+            if (res.points !== undefined && res.points !== null) {
+                pointsRemainString = "\n🪙 目前點數：" + res.points + " 點";
+            }
+            
+            // 3. 本次集點獎勵安全排版
+            let rewardMsg = "";
+            if (res.earnedPoint === true) {
+                rewardMsg = "\n✨ 謝謝您的訂購，本單已成功累積 1 點！";
+            }
+            
+            // 4. 計算外送天數
             let deliveryDays = 0;
-            for(let day in selections) { if(selections[day].type) deliveryDays++; }
+            for(let day in selections) { 
+                if(selections[day] && selections[day].type) deliveryDays++; 
+            }
             
-            document.getElementById("summary-content").innerText = 
+            // 5. 格式化處理餐點明細文字（防止特殊符號斷開）
+            let formattedDetail = String(orderDetail).replace(/ \| /g, "\n");
+            
+            // 6. 組合最終要顯示在明細頁上的純文字
+            let finalSummaryText = 
                 "姓名: " + name + "\n" +
                 "手機: " + phone + "\n" +
                 "方式: " + delivery + " (" + time + ")\n" +
                 "地址: " + (addr || "未提供") + "\n" +
                 "付款: " + pay + "\n" +
-                "明細:\n" + orderDetail.replace(/ \| /g, "\n") +
+                "明細:\n" + formattedDetail +
                 (delivery === "外送" ? "\n(外送費 " + deliveryDays + "天 共+$" + (deliveryDays * 50) + ")" : "") +
                 remainString + pointsRemainString + rewardMsg +
                 "\n------------------------\n" +
                 "總額: NT$ " + total;
             
-            document.getElementById("line-portal-btn").href = LINE_OFFICIAL_URL;
-            document.getElementById("pay-portal-btn").href = LINE_PAY_URL;
-            if(JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { 
-                document.getElementById("jk-portal-btn").href = JK_TRANSFER_URL; 
-            } else { 
-                document.getElementById("jk-portal-btn").href = "jkos://jkos/home"; 
+            // 7. 將明細文字安全塞入畫面（防呆：萬一 id 寫錯也不崩潰）
+            const summaryEl = document.getElementById("summary-content");
+            if (summaryEl) {
+                summaryEl.innerText = finalSummaryText;
+            }
+            
+            // 8. 傳送/轉帳按鈕連結安全防護
+            if (document.getElementById("line-portal-btn")) {
+                document.getElementById("line-portal-btn").href = typeof LINE_OFFICIAL_URL !== 'undefined' ? LINE_OFFICIAL_URL : "#";
+            }
+            if (document.getElementById("pay-portal-btn")) {
+                document.getElementById("pay-portal-btn").href = typeof LINE_PAY_URL !== 'undefined' ? LINE_PAY_URL : "#";
+            }
+            if (document.getElementById("jk-portal-btn")) {
+                if (typeof JK_TRANSFER_URL !== 'undefined' && JK_TRANSFER_URL && JK_TRANSFER_URL.trim() !== "") { 
+                    document.getElementById("jk-portal-btn").href = JK_TRANSFER_URL; 
+                } else { 
+                    document.getElementById("jk-portal-btn").href = "jkos://jkos/home"; 
+                }
             }
 
-            document.getElementById("form-container").classList.add("hidden");
-            document.getElementById("success-container").classList.remove("hidden");
-            window.scrollTo({top:0, behavior:"smooth"});
+            // 9. 畫面強制切換（隱藏表單、顯示成功畫面）
+            const formContainer = document.getElementById("form-container");
+            const successContainer = document.getElementById("success-container");
             
-        } catch(e) {
-            alert("訂單已送出，請至後台確認扣款、扣點與明細狀態。");
+            if (formContainer && successContainer) {
+                // 💡 強制確保成功畫面如果是黑色的話，文字一定要是白色的，避免字體隱形變黑螢幕！
+                successContainer.style.color = "#ffffff"; 
+                successContainer.style.display = "block"; // 確保區塊顯示
+                
+                formContainer.classList.add("hidden");
+                successContainer.classList.remove("hidden");
+                window.scrollTo({top: 0, behavior: "smooth"});
+            } else {
+                // 如果找不到容器，直接彈跳傳統視窗提示，絕不給客人看黑畫面
+                alert("🎉 訂購成功！\n\n" + finalSummaryText);
+                window.location.reload();
+            }
+            
+        } catch(renderError) {
+            console.error("成功畫面渲染錯誤:", renderError);
+            alert("🎉 訂單已成功送出！\n總額：NT$ " + total + "\n付款方式：" + pay + "\n\n(系統提示：畫面切換異常，但後台已確實收到訂單，請安心！)");
+            window.location.reload();
         }
 
     } catch (err) {
-        console.error("錯誤:", err);
+        console.error("網路傳送錯誤:", err);
         if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.innerText = "預訂送出"; 
