@@ -226,7 +226,7 @@ side: [
 {i:"H",n:"三杯豆腐",m:115,s:70},
 {i:"I",n:"香滷豆干",m:100,s:60}
 ],
-soup: {n:"綠豆薏仁湯",p:100}
+soup: {n:"地瓜芋圓湯",p:100}
 },
 
 Thu: {
@@ -243,7 +243,7 @@ side: [
 {i:"H",n:"三杯豆腐",m:115,s:70},
 {i:"I",n:"香滷豆干",m:100,s:60}
 ],
-soup: {n:"地瓜芋圓湯",p:100}
+soup: {n:"綠豆薏仁湯",p:100}
 },
 
 Fri: {
@@ -420,8 +420,8 @@ html += `<div onclick="updateSel('pkgSideId','${sd.i}')" class="p-6 border-4 rou
 // 4. 套餐時蔬配菜設定
 html += `</div><div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐時蔬配菜設定</h3>`;
 
-const vegText = (sel.type === 'M') ? '🥦 單一時蔬 (青花菜 300g)' : '🥦 單一蔬菜 (青花菜 200公克)';
-const twinText = (sel.type === 'M') ? '✨ 雙拼時蔬 (今日時蔬+青花菜各200g)' : '✨ 雙拼 (青花菜100公克+今日時蔬100公克)';
+const vegText = (sel.type === 'M') ? '🥦 單一時蔬 (涼拌芥藍菜 300g)' : '🥦 單一蔬菜 (涼拌芥藍菜 200公克)';
+const twinText = (sel.type === 'M') ? '✨ 雙拼時蔬 (今日時蔬+涼拌芥藍菜各200g)' : '✨ 雙拼 (涼拌芥藍菜100公克+今日時蔬100公克)';
 
 html += `<div onclick="updateSel('sideMode','ONLY_VEG')" class="p-6 border-4 rounded-2xl font-black text-2xl clickable ${sel.sideMode==='ONLY_VEG'?'item-selected':'border-gray-50 bg-green-50/30'}">${vegText}</div>`;
 
@@ -468,10 +468,10 @@ if(!s.type) continue;
 if(s.type !== 'NONE') {
 let sideStr = "未選配菜設定";
 if(s.sideMode === 'ONLY_VEG') {
-sideStr = (s.type === 'M') ? "單一時蔬(青花菜300g)" : "單一蔬菜(青花菜200公克)";
+sideStr = (s.type === 'M') ? "單一時蔬(涼拌芥藍菜300g)" : "單一蔬菜(涼拌芥藍菜200公克)";
 if(s.type === 'M' && s.mGiftIdx !== undefined) sideStr += `[贈:${mGiftOptions[s.mGiftIdx]}]`;
 } else if(s.sideMode === 'TWIN') {
-sideStr = (s.type === 'M') ? "雙拼時蔬(今日+青花菜各200g)" : "雙拼(青花菜100公克+今日時蔬100公克)";
+sideStr = (s.type === 'M') ? "雙拼時蔬(今日+涼拌芥藍菜各200g)" : "雙拼(涼拌芥藍菜100公克+今日時蔬100公克)";
 }
 
 let chosenSideName = "未選副菜";
