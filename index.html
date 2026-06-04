@@ -742,6 +742,16 @@ const num = parseInt(value, 10);
 return Number.isFinite(num) && num > 0 ? num : 0;
 }
 
+function normalizeRecommendationDay(value) {
+const v = String(value || '').trim();
+const upper = v.toUpperCase();
+if(upper === 'TUE' || v === '週二' || v === '周二' || v === '二') return 'Tue';
+if(upper === 'WED' || v === '週三' || v === '周三' || v === '三') return 'Wed';
+if(upper === 'THU' || v === '週四' || v === '周四' || v === '四') return 'Thu';
+if(upper === 'FRI' || v === '週五' || v === '周五' || v === '五') return 'Fri';
+return '';
+}
+
 function normalizeRecommendationMeal(value) {
 const v = String(value || '').toUpperCase();
 if(v === 'DOUBLE' || v === '雙饗餐' || v === '雙主菜餐') return 'DOUBLE';
@@ -764,7 +774,8 @@ if(!box) return;
 const mealText = getPackageName(meal);
 const vegText = getVegModeText(veg);
 let lines = [];
-lines.push(`已依推薦幫您先套用：${mealText}、${vegText}`);
+const dayNames = {Tue:'週二', Wed:'週三', Thu:'週四', Fri:'週五'};
+lines.push(`已依推薦幫您先套用到${dayNames[currentDay] || '指定日期'}：${mealText}、${vegText}`);
 if(meal === 'LIGHT' && upgrade) {
 lines.push('主菜升級已暫存，選好主菜後會自動套用大份升級。');
 }
@@ -789,11 +800,17 @@ function applyRecommendationFromUrl() {
 const params = new URLSearchParams(window.location.search);
 if(params.get('from') !== 'recommendation' && !params.has('meal') && !params.has('veg')) return;
 
+const targetDay = normalizeRecommendationDay(params.get('day'));
 const meal = normalizeRecommendationMeal(params.get('meal'));
 const veg = normalizeRecommendationVeg(params.get('veg'));
 const upgrade = params.get('upgrade') === '1' || params.get('upgrade') === 'true';
 const largeAddons = parsePositiveInt(params.get('largeAddons'));
 const smallAddons = parsePositiveInt(params.get('smallAddons'));
+
+if(targetDay && !disabledDays.includes(targetDay)) {
+currentDay = targetDay;
+updateTabUI();
+}
 
 if(!meal && !veg && !upgrade && largeAddons === 0 && smallAddons === 0) return;
 
