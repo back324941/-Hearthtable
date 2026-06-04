@@ -34,6 +34,24 @@ animation: pulse 2s infinite;
 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); }
 }
 .upgrade-active { background-color: #ef4444 !important; color: white !important; border-color: #b91c1c !important; }
+
+.recommendation-notice {
+background-color: #ecfdf5;
+border: 4px solid #10b981;
+border-radius: 2rem;
+padding: 1.25rem;
+color: #065f46;
+font-weight: 900;
+line-height: 1.7;
+}
+.recommendation-notice .notice-title {
+font-size: 1.25rem;
+margin-bottom: 0.5rem;
+}
+.recommendation-notice .notice-small {
+font-size: 0.95rem;
+color: #047857;
+}
 </style>
 </head>
 <body class="min-h-screen py-8 px-3 pb-24 text-gray-900">
@@ -126,10 +144,10 @@ animation: pulse 2s infinite;
 </div>
 
 <div class="pkg-info-box p-6 space-y-2">
-<p class="font-black text-amber-800 text-lg">🍱 套餐配菜份量與會員制度：</p>
+<p class="font-black text-amber-800 text-lg">🍱 套餐內容與會員制度：</p>
 <p class="text-sm font-bold text-amber-700 leading-relaxed">
-<strong>M套餐 ($500)</strong>：300g主菜 + 必選副菜1道 + 時蔬配菜<br>
-<strong>S套餐 ($300)</strong>：150g主菜 + 必選副菜1道 + 時蔬配菜<br><br>
+<strong>輕享餐 ($300起)</strong>：小份主菜 1 道 + 小份副菜 1 道 + 一份時蔬，可加價升級主菜大份<br>
+<strong>雙饗餐 ($590)</strong>：大份主菜 2 道 + 大份副菜 1 道 + 一份時蔬<br><br>
 
 <span class="text-amber-600 font-black">
 🪙 會員制度：<br>
@@ -140,6 +158,11 @@ animation: pulse 2s infinite;
 </span>
 </p>
 </div>
+
+
+
+
+<div id="recommendation-notice-box" class="hidden recommendation-notice"></div>
 
 <div id="menu-content" class="space-y-12"></div>
 
@@ -197,16 +220,16 @@ return Math.ceil(val / 5) * 5;
 const menus = {
 Tue: {
 main: [
-{i:"A",n:"韓式水煮肉",m:265,s:160},
-{i:"B",n:"香菜皮蛋燉鱸魚",m:240,s:145},
-{i:"C",n:"乾煎雞腿排",m:195,s:120},
-{i:"D",n:"油菜炒牛肉",m:245,s:150},
+{i:"A",n:"韓式水煮肉",m:240,s:145},
+{i:"B",n:"香菜皮蛋燉鱸魚",m:220,s:135},
+{i:"C",n:"乾煎雞腿排",m:190,s:115},
+{i:"D",n:"油菜炒牛肉",m:230,s:140},
 {i:"E",n:"乾煎鮭魚",m:260,s:160}
 ],
 side: [
-{i:"F",n:"避風塘杏鮑菇",m:110,s:70},
-{i:"G",n:"玉米烘蛋",m:95,s:60},
-{i:"H",n:"番茄豆包",m:105,s:65},
+{i:"F",n:"避風塘杏鮑菇",m:120,s:75},
+{i:"G",n:"玉米烘蛋",m:100,s:60},
+{i:"H",n:"番茄豆包",m:100,s:60},
 {i:"I",n:"香滷豆干",m:100,s:60}
 ],
 soup: {n:"綠豆薏仁湯",p:100}
@@ -214,50 +237,50 @@ soup: {n:"綠豆薏仁湯",p:100}
 
 Wed: {
 main: [
-{i:"A",n:"味噌豆瓣炒雞肉",m:235,s:145},
-{i:"B",n:"糖醋旗魚腹",m:190,s:115},
-{i:"C",n:"洋蔥炒豬肉片",m:195,s:120},
-{i:"D",n:"油菜炒牛肉",m:245,s:150},
+{i:"A",n:"味噌豆瓣炒雞肉",m:220,s:135},
+{i:"B",n:"糖醋旗魚腹",m:220,s:135},
+{i:"C",n:"洋蔥炒豬肉片",m:190,s:115},
+{i:"D",n:"油菜炒牛肉",m:230,s:140},
 {i:"E",n:"乾煎鮭魚",m:260,s:160}
 ],
 side: [
-{i:"F",n:"泰式涼拌荷包蛋",m:110,s:70},
-{i:"G",n:"番茄豆包",m:105,s:65},
-{i:"H",n:"三杯豆腐",m:115,s:70},
-{i:"I",n:"香滷豆干",m:100,s:60}
-],
-soup: {n:"地瓜芋圓湯",p:100}
-},
-
-Thu: {
-main: [
-{i:"A",n:"鮮蔬乾煸雞",m:225,s:135},
-{i:"B",n:"鮮蚵粉絲煲",m:230,s:140},
-{i:"C",n:"油菜炒牛肉",m:245,s:150},
-{i:"D",n:"乾煎鯖魚",m:200,s:120},
-{i:"E",n:"乾煎鮭魚",m:260,s:160}
-],
-side: [
-{i:"F",n:"蒲瓜炒肉絲",m:110,s:70},
-{i:"G",n:"玉米烘蛋",m:95,s:60},
-{i:"H",n:"三杯豆腐",m:115,s:70},
+{i:"F",n:"泰式涼拌荷包蛋",m:120,s:75},
+{i:"G",n:"番茄豆包",m:100,s:60},
+{i:"H",n:"三杯豆腐",m:100,s:60},
 {i:"I",n:"香滷豆干",m:100,s:60}
 ],
 soup: {n:"綠豆薏仁湯",p:100}
 },
 
-Fri: {
+Thu: {
 main: [
-{i:"A",n:"金針花炒牛肉",m:235,s:145},
-{i:"B",n:"咖哩鮮蝦",m:265,s:160},
-{i:"C",n:"乾煎雞腿排",m:195,s:120},
-{i:"D",n:"洋蔥炒豬肉片",m:195,s:120},
-{i:"E",n:"乾煎鯖魚",m:200,s:120}
+{i:"A",n:"鮮蔬乾煸雞",m:220,s:135},
+{i:"B",n:"鮮蚵粉絲煲",m:210,s:130},
+{i:"C",n:"油菜炒牛肉",m:230,s:140},
+{i:"D",n:"乾煎鯖魚",m:190,s:115},
+{i:"E",n:"乾煎鮭魚",m:260,s:160}
 ],
 side: [
-{i:"F",n:"韓式雜菜粉絲",m:115,s:70},
-{i:"G",n:"玉米烘蛋",m:95,s:60},
-{i:"H",n:"三杯豆腐",m:115,s:70},
+{i:"F",n:"蒲瓜炒肉絲",m:120,s:75},
+{i:"G",n:"玉米烘蛋",m:100,s:60},
+{i:"H",n:"三杯豆腐",m:100,s:60},
+{i:"I",n:"香滷豆干",m:100,s:60}
+],
+soup: {n:"地瓜芋圓湯",p:100}
+},
+
+Fri: {
+main: [
+{i:"A",n:"金針花炒牛肉",m:240,s:145},
+{i:"B",n:"咖哩鮮蝦",m:220,s:135},
+{i:"C",n:"乾煎雞腿排",m:190,s:115},
+{i:"D",n:"洋蔥炒豬肉片",m:190,s:115},
+{i:"E",n:"乾煎鯖魚",m:190,s:115}
+],
+side: [
+{i:"F",n:"韓式雜菜粉絲",m:120,s:75},
+{i:"G",n:"玉米烘蛋",m:100,s:60},
+{i:"H",n:"三杯豆腐",m:100,s:60},
 {i:"I",n:"香滷豆干",m:100,s:60}
 ],
 soup: {n:"地瓜芋圓湯",p:100}
@@ -268,6 +291,9 @@ const mGiftOptions = ["涼拌裙帶絲", "百香青木瓜"];
 
 let selections = { Tue: {}, Wed: {}, Thu: {}, Fri: {} };
 let currentDay = 'Tue';
+let pendingRecommendedUpgrade = false;
+let recommendedLargeAddons = 0;
+let recommendedSmallAddons = 0;
 
 function handleDeliveryChange(val) {
 document.getElementById('address-box').classList.toggle('show', val === '外送');
@@ -314,14 +340,72 @@ return;
 
 function clearDay() { if(confirm("清空本日？")) { selections[currentDay]={}; renderMenu(); updateTotal(); }}
 
+function getPackageName(type) {
+if(type === 'LIGHT') return '輕享餐';
+if(type === 'DOUBLE') return '雙饗餐';
+if(type === 'NONE') return '自由單點';
+return type || '';
+}
+
+function getVegModeText(mode) {
+if(mode === 'TODAY') return '今日時蔬';
+if(mode === 'TODAY_L') return '今日時蔬加大(+20)';
+if(mode === 'BROCCOLI') return '青花菜';
+if(mode === 'BROCCOLI_L') return '青花菜加大(+20)';
+if(mode === 'TWIN') return '雙拼(+60)';
+return '未選時蔬';
+}
+
+function getVegModePrice(mode) {
+if(mode === 'TODAY_L' || mode === 'BROCCOLI_L') return 20;
+if(mode === 'TWIN') return 60;
+return 0;
+}
+
 function updateSel(k,v) { 
-selections[currentDay][k]=v; 
-if(k === 'type' || k === 'mainIdx') { selections[currentDay].upgradeMain = false; } 
-if(k === 'sideMode' && v !== 'ONLY_VEG') { delete selections[currentDay].mGiftIdx; }
-if(k === 'mGiftIdx') { selections[currentDay].sideMode = 'ONLY_VEG'; }
+if(!selections[currentDay]) selections[currentDay] = {};
+
+if(k === 'type') {
+const oldExchangeSoup = selections[currentDay].exchangeSoup;
+const oldExchangeSalmon = selections[currentDay].exchangeSalmon;
+selections[currentDay] = {
+type: v,
+exchangeSoup: oldExchangeSoup || false,
+exchangeSalmon: oldExchangeSalmon || false
+};
+} else {
+selections[currentDay][k]=v;
+}
+
+if(k === 'mainIdx') {
+if(pendingRecommendedUpgrade && selections[currentDay].type === 'LIGHT') {
+selections[currentDay].upgradeMain = true;
+pendingRecommendedUpgrade = false;
+} else {
+selections[currentDay].upgradeMain = false;
+}
+} 
 
 renderMenu(); 
 updateTotal(); 
+}
+
+function toggleDoubleMain(idx) {
+const sel = selections[currentDay];
+if(!sel.mainIdxs) sel.mainIdxs = [];
+
+const pos = sel.mainIdxs.indexOf(idx);
+if(pos >= 0) {
+sel.mainIdxs.splice(pos, 1);
+} else {
+if(sel.mainIdxs.length >= 2) {
+alert('雙饗餐主菜最多選 2 道喔！');
+return;
+}
+sel.mainIdxs.push(idx);
+}
+renderMenu();
+updateTotal();
 }
 
 function handleExchangeChange(type) {
@@ -348,6 +432,25 @@ updateTotal();
 
 function changeQty(id,amt) { selections[currentDay][id] = Math.max(0, (selections[currentDay][id]||0)+amt); renderMenu(); updateTotal(); }
 
+function renderVegOptions(sel) {
+const vegOptions = [
+{key:'TODAY', label:'🥬 今日時蔬'},
+{key:'TODAY_L', label:'🥬 今日時蔬加大', price:20},
+{key:'BROCCOLI', label:'🥦 青花菜'},
+{key:'BROCCOLI_L', label:'🥦 青花菜加大', price:20},
+{key:'TWIN', label:'✨ 雙拼', price:60}
+];
+
+let html = `<div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐時蔬選擇 (必選一)</h3>`;
+vegOptions.forEach(opt => {
+html += `<div onclick="updateSel('sideMode','${opt.key}')" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${sel.sideMode===opt.key?'item-selected':'border-gray-50 bg-green-50/30'}">
+<span>${opt.label}</span>${opt.price?`<span class="text-red-500 text-xl">+$${opt.price}</span>`:''}
+</div>`;
+});
+html += `</div>`;
+return html;
+}
+
 function renderMenu() {
 const sel = selections[currentDay], d = menus[currentDay];
 
@@ -362,31 +465,48 @@ return;
 }
 
 let html = `<div class="grid grid-cols-2 gap-4">
-               <div onclick="updateSel('type','M')" class="p-6 border-4 rounded-[2rem] font-black text-center text-2xl clickable ${sel.type=='M'?'item-selected':'border-gray-100 text-gray-300'}">M 套餐 $500</div>
-               <div onclick="updateSel('type','S')" class="p-6 border-4 rounded-[2rem] font-black text-center text-2xl clickable ${sel.type=='S'?'item-selected':'border-gray-100 text-gray-300'}">S 套餐 $300</div>
+               <div onclick="updateSel('type','LIGHT')" class="p-6 border-4 rounded-[2rem] font-black text-center text-2xl clickable ${sel.type=='LIGHT'?'item-selected':'border-gray-100 text-gray-300'}">
+                 輕享餐 $300起<br><span class="text-base">小份主菜＋小份副菜</span>
+               </div>
+               <div onclick="updateSel('type','DOUBLE')" class="p-6 border-4 rounded-[2rem] font-black text-center text-2xl clickable ${sel.type=='DOUBLE'?'item-selected':'border-gray-100 text-gray-300'}">
+                 雙饗餐 $590<br><span class="text-base">大份主菜二選</span>
+               </div>
            </div>
            <div onclick="updateSel('type','NONE')" class="py-2 text-center font-black text-lg ${sel.type=='NONE'?'text-[#a67c52]':'text-gray-300'} underline clickable">➔ 自由單點模式</div>`;
 
-if(sel.type==='M'||sel.type==='S'){
-const mainLimit = (sel.type==='M') ? 210 : 125;
+if(sel.type==='LIGHT'||sel.type==='DOUBLE'){
 
 // 1. 套餐主菜區
-html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">套餐主菜 (必選)</h3>`;
+if(sel.type === 'LIGHT') {
+const mainLimit = 115;
+html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">輕享餐主菜 (小份必選一)</h3>`;
 d.main.forEach((m,i)=>{
-const originPrice = (sel.type==='M' ? m.m : m.s);
+const originPrice = m.s;
 const ex = Math.max(0, originPrice - mainLimit); 
 html += `<div onclick="updateSel('mainIdx',${i})" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${sel.mainIdx===i?'item-selected':'border-gray-50 bg-gray-50/50'}"><span>${m.i}. ${m.n}</span>${ex>0?`<span class="text-red-500">+$${ex}</span>`:''}</div>`;
 });
 
 if(sel.mainIdx !== undefined) {
-if(sel.type === 'S') {
 const upgradeCost = d.main[sel.mainIdx].m - d.main[sel.mainIdx].s;
 html += `<div onclick="toggleUpgrade()" class="p-4 border-4 border-red-100 rounded-2xl font-black text-center text-xl clickable ${sel.upgradeMain?'upgrade-active':'bg-red-50 text-red-500'}">🚀 主菜升級大份 (+$${upgradeCost})</div>`;
 }
+html += `</div>`;
 }
 
-// 2. 會員專區：點數換購區 (已修改點數、改為單選互斥)
-html += `</div><div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2rem] space-y-4 mt-6">
+if(sel.type === 'DOUBLE') {
+const mainLimit = 190;
+const picked = sel.mainIdxs || [];
+html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">雙饗餐主菜 (大份五選二)</h3>`;
+d.main.forEach((m,i)=>{
+const ex = Math.max(0, m.m - mainLimit); 
+const selectedOrder = picked.indexOf(i) >= 0 ? ` <span class="text-sm bg-[#a67c52] text-white px-2 py-1 rounded-full">已選${picked.indexOf(i)+1}</span>` : '';
+html += `<div onclick="toggleDoubleMain(${i})" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${picked.includes(i)?'item-selected':'border-gray-50 bg-gray-50/50'}"><span>${m.i}. ${m.n}${selectedOrder}</span>${ex>0?`<span class="text-red-500">+$${ex}</span>`:''}</div>`;
+});
+html += `</div>`;
+}
+
+// 2. 會員專區：點數換購區
+html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2rem] space-y-4 mt-6">
                    <div class="flex justify-between items-center">
                        <span class="text-base font-black text-emerald-950">🪙 會員點數換購專區 (每日限換一項)</span>
                        <span class="text-xs font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded-full">限會員</span>
@@ -403,38 +523,21 @@ html += `</div><div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 roun
                    </div>
                </div>`;
 
-// 3. 套餐副菜區
-const sideLimit = (sel.type==='M') ? 105 : 65;
-
-html += `<div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐副菜 (必選一)</h3>`;
-
-d.side.forEach((sd) => {
-const sidePrice = (sel.type==='M' ? sd.m : sd.s);
+// 3. 套餐副菜區，只顯示 F～H
+const sideLimit = (sel.type === 'LIGHT') ? 65 : 100;
+html += `<div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐副菜 (${sel.type === 'LIGHT' ? '小份' : '大份'}必選一，F～H)</h3>`;
+d.side.slice(0,3).forEach((sd) => {
+const sidePrice = (sel.type === 'LIGHT') ? sd.s : sd.m;
 const sideEx = Math.max(0, sidePrice - sideLimit); 
 html += `<div onclick="updateSel('pkgSideId','${sd.i}')" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${sel.pkgSideId===sd.i?'item-selected':'border-gray-50 bg-gray-50/50'}">
                        <span>${sd.i}. ${sd.n}</span>
                        ${sideEx>0?`<span class="text-red-500 text-xl">+$${sideEx}</span>`:''}
                    </div>`;
 });
+html += `</div>`;
 
-// 4. 套餐時蔬配菜設定
-html += `</div><div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐時蔬配菜設定</h3>`;
-
-const vegText = (sel.type === 'M') ? '🥦 單一時蔬 (涼拌芥藍菜 300g)' : '🥦 單一蔬菜 (涼拌芥藍菜 200公克)';
-const twinText = (sel.type === 'M') ? '✨ 雙拼時蔬 (今日時蔬+涼拌芥藍菜各200g)' : '✨ 雙拼 (涼拌芥藍菜100公克+今日時蔬100公克)';
-
-html += `<div onclick="updateSel('sideMode','ONLY_VEG')" class="p-6 border-4 rounded-2xl font-black text-2xl clickable ${sel.sideMode==='ONLY_VEG'?'item-selected':'border-gray-50 bg-green-50/30'}">${vegText}</div>`;
-
-if(sel.type === 'M') {
-html += `<div class="p-5 border-4 border-dashed border-amber-300 bg-amber-50 rounded-2xl space-y-3">
-                       <p class="text-sm font-black text-amber-800">🎁 大套餐限定：選擇單一時蔬時，好禮 2 選 1 (必選)</p><div class="grid grid-cols-1 gap-2">`;
-mGiftOptions.forEach((gName, gIdx) => {
-html += `<div onclick="updateSel('mGiftIdx', ${gIdx})" class="p-3 border-2 rounded-xl text-base font-bold clickable bg-white text-center ${sel.mGiftIdx===gIdx?'border-amber-600 bg-amber-100 text-amber-900':'border-gray-200 text-gray-500'}">${gName}</div>`;
-});
-html += `</div></div>`;
-}
-
-html += `<div onclick="updateSel('sideMode','TWIN')" class="p-6 border-4 rounded-2xl font-black text-2xl clickable ${sel.sideMode==='TWIN'?'item-selected':'border-gray-50 bg-blue-50/30'}">${twinText}</div>`;
+// 4. 套餐時蔬
+html += renderVegOptions(sel);
 }
 
 if(sel.type){
@@ -465,32 +568,46 @@ for(let day in selections){
 let items = [];
 const s = selections[day], d = menus[day];
 if(!s.type) continue;
-if(s.type !== 'NONE') {
-let sideStr = "未選配菜設定";
-if(s.sideMode === 'ONLY_VEG') {
-sideStr = (s.type === 'M') ? "單一時蔬(涼拌芥藍菜300g)" : "單一蔬菜(涼拌芥藍菜200公克)";
-if(s.type === 'M' && s.mGiftIdx !== undefined) sideStr += `[贈:${mGiftOptions[s.mGiftIdx]}]`;
-} else if(s.sideMode === 'TWIN') {
-sideStr = (s.type === 'M') ? "雙拼時蔬(今日+涼拌芥藍菜各200g)" : "雙拼(涼拌芥藍菜100公克+今日時蔬100公克)";
+
+if(s.type === 'LIGHT') {
+let chosenMain = "未選主菜";
+if(s.mainIdx !== undefined) {
+const m = d.main[s.mainIdx];
+chosenMain = `${m.i}.${m.n}${s.upgradeMain ? '(升級大份)' : '(小份)'}`;
 }
 
 let chosenSideName = "未選副菜";
 if(s.pkgSideId) {
 const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
-chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}` : s.pkgSideId;
+chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(小份)` : s.pkgSideId;
 }
 
-let upgradeText = "";
-if(s.upgradeMain) upgradeText = " (主菜升級大)";
-
-// 串接換購文字（改為 1點/2點 標示）
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
-items.push(`【${s.type}套餐: ${d.main[s.mainIdx]?.i||''}.${d.main[s.mainIdx]?.n||'未選'}${upgradeText} + 副菜:${chosenSideName} / ${sideStr}${exchangeStr}】`);
+items.push(`【輕享餐: 主菜:${chosenMain} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
 }
+
+if(s.type === 'DOUBLE') {
+const picked = s.mainIdxs || [];
+let mainText = picked.length > 0 ? picked.map(idx => `${d.main[idx].i}.${d.main[idx].n}(大份)`).join(' + ') : "未選主菜";
+
+let chosenSideName = "未選副菜";
+if(s.pkgSideId) {
+const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
+chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(大份)` : s.pkgSideId;
+}
+
+let exchangeText = [];
+if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
+if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
+let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
+
+items.push(`【雙饗餐: 主菜:${mainText} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
+}
+
 d.main.forEach((m,i)=>{
 if(s[`addonM-${i}-M`]) items.push(`${m.i}.${m.n}(大)x${s[`addonM-${i}-M`]}`);
 if(s[`addonM-${i}-S`]) items.push(`${m.i}.${m.n}(小)x${s[`addonM-${i}-S`]}`);
@@ -517,16 +634,15 @@ let deliveryDays = 0;
 for(let day in selections){
 const s=selections[day], d=menus[day];
 let dTotal=0, has=false;
-if(s.type==='M'||s.type==='S'){ 
-// M 套餐調整為 500 元，S 套餐維持 300 元
-dTotal += (s.type === 'M') ? 500 : 300; 
 
-const mainLimit = (s.type==='M') ? 210 : 125;
-const sideLimit = (s.type==='M') ? 105 : 65;
+if(s.type==='LIGHT'){ 
+dTotal += 300; 
 
-// 主菜超額加價
+const mainLimit = 115;
+const sideLimit = 65;
+
 if(s.mainIdx!==undefined) {
-const originPrice = (s.type==='M'?d.main[s.mainIdx].m:d.main[s.mainIdx].s);
+const originPrice = d.main[s.mainIdx].s;
 dTotal += Math.max(0, originPrice - mainLimit);
 
 if(s.upgradeMain) {
@@ -534,16 +650,39 @@ dTotal += (d.main[s.mainIdx].m - d.main[s.mainIdx].s);
 }
 }
 
-// 副菜超額加價
 if(s.pkgSideId) {
 const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
 if(targetSide) {
-const sidePrice = (s.type==='M' ? targetSide.m : targetSide.s);
-dTotal += Math.max(0, sidePrice - sideLimit);
+dTotal += Math.max(0, targetSide.s - sideLimit);
 }
 }
+
+dTotal += getVegModePrice(s.sideMode);
 has=true; 
 }
+
+if(s.type==='DOUBLE'){ 
+dTotal += 590; 
+
+const mainLimit = 190;
+const sideLimit = 100;
+
+const picked = s.mainIdxs || [];
+picked.forEach(idx => {
+if(d.main[idx]) dTotal += Math.max(0, d.main[idx].m - mainLimit);
+});
+
+if(s.pkgSideId) {
+const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
+if(targetSide) {
+dTotal += Math.max(0, targetSide.m - sideLimit);
+}
+}
+
+dTotal += getVegModePrice(s.sideMode);
+has=true; 
+}
+
 d.main.forEach((m,i)=>{ if(s[`addonM-${i}-M`]){ dTotal+=s[`addonM-${i}-M`]*m.m; has=true; } if(s[`addonM-${i}-S`]){ dTotal+=s[`addonM-${i}-S`]*m.s; has=true; } });
 d.side.forEach((sd,i)=>{ if(s[`addonS-${i}-M`]){ dTotal+=s[`addonS-${i}-M`]*sd.m; has=true; } if(s[`addonS-${i}-S`]){ dTotal+=s[`addonS-${i}-S`]*sd.s; has=true; } });
 if(s.addonSoup){ dTotal+=s.addonSoup*d.soup.p; has=true; }
@@ -597,6 +736,96 @@ btn.classList.replace('text-green-800', 'text-amber-800');
 });
 }
 
+
+function parsePositiveInt(value) {
+const num = parseInt(value, 10);
+return Number.isFinite(num) && num > 0 ? num : 0;
+}
+
+function normalizeRecommendationMeal(value) {
+const v = String(value || '').toUpperCase();
+if(v === 'DOUBLE' || v === '雙饗餐' || v === '雙主菜餐') return 'DOUBLE';
+if(v === 'LIGHT' || v === '輕享餐') return 'LIGHT';
+return '';
+}
+
+function normalizeRecommendationVeg(value) {
+const v = String(value || '').toUpperCase();
+if(v === 'TODAY_L' || v === 'LARGE' || v === '時蔬加大') return 'TODAY_L';
+if(v === 'TWIN' || v === 'DOUBLE' || v === '時蔬雙拼') return 'TWIN';
+if(v === 'TODAY' || v === 'BASIC' || v === '一般時蔬' || v === '時蔬') return 'TODAY';
+return '';
+}
+
+function showRecommendationNotice(meal, veg, upgrade, largeAddons, smallAddons) {
+const box = document.getElementById('recommendation-notice-box');
+if(!box) return;
+
+const mealText = getPackageName(meal);
+const vegText = getVegModeText(veg);
+let lines = [];
+lines.push(`已依推薦幫您先套用：${mealText}、${vegText}`);
+if(meal === 'LIGHT' && upgrade) {
+lines.push('主菜升級已暫存，選好主菜後會自動套用大份升級。');
+}
+
+if(largeAddons > 0 || smallAddons > 0) {
+let addonText = [];
+if(largeAddons > 0) addonText.push(`建議加點大份 ${largeAddons} 份`);
+if(smallAddons > 0) addonText.push(`建議加點小份 ${smallAddons} 份`);
+lines.push(addonText.join('、'));
+lines.push('加點品項需依當日菜色喜好選擇，因此沒有自動指定主菜或副菜。');
+}
+
+box.innerHTML = `
+<div class="notice-title">✅ 已套用推薦方案</div>
+<div>${lines.join('<br>')}</div>
+<div class="notice-small">請接著選擇主菜與副菜，再確認是否要依建議加點。</div>
+`;
+box.classList.remove('hidden');
+}
+
+function applyRecommendationFromUrl() {
+const params = new URLSearchParams(window.location.search);
+if(params.get('from') !== 'recommendation' && !params.has('meal') && !params.has('veg')) return;
+
+const meal = normalizeRecommendationMeal(params.get('meal'));
+const veg = normalizeRecommendationVeg(params.get('veg'));
+const upgrade = params.get('upgrade') === '1' || params.get('upgrade') === 'true';
+const largeAddons = parsePositiveInt(params.get('largeAddons'));
+const smallAddons = parsePositiveInt(params.get('smallAddons'));
+
+if(!meal && !veg && !upgrade && largeAddons === 0 && smallAddons === 0) return;
+
+if(!selections[currentDay]) selections[currentDay] = {};
+
+if(meal) {
+selections[currentDay].type = meal;
+}
+
+if(veg) {
+selections[currentDay].sideMode = veg;
+}
+
+if(meal === 'LIGHT' && upgrade) {
+selections[currentDay].upgradeMain = true;
+pendingRecommendedUpgrade = true;
+}
+
+recommendedLargeAddons = largeAddons;
+recommendedSmallAddons = smallAddons;
+
+renderMenu();
+updateTotal();
+showRecommendationNotice(meal || selections[currentDay].type || '', veg || selections[currentDay].sideMode || '', upgrade, largeAddons, smallAddons);
+
+setTimeout(() => {
+const menu = document.getElementById('menu-content');
+if(menu) menu.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}, 300);
+}
+
+
 function init() {
 if(disabledDays.includes(currentDay)) {
 const days=['Tue','Wed','Thu','Fri'];
@@ -608,6 +837,7 @@ renderMenu();
 
 window.onload = function() {
 init();
+applyRecommendationFromUrl();
 const lineBtn = document.getElementById('line-portal-btn');
 const payBtn = document.getElementById('pay-portal-btn');
 const jkBtn = document.getElementById('jk-portal-btn');
@@ -675,13 +905,17 @@ async function submitOrder() {
         const s = selections[day];
         if (!s) continue;
 
-        if (s.type === 'M' || s.type === 'S') {
-            if (s.mainIdx === undefined) return alert('您選擇了' + day + '的套餐，但尚未選擇主菜喔！');
-            if (!s.pkgSideId) return alert('您選擇了' + day + '的套餐，但尚未選擇副菜喔！');
-            if (!s.sideMode) return alert('您選擇了' + day + '的套餐，但尚未選擇時蔬設定喔！');
-            if (s.type === 'M' && s.sideMode === 'ONLY_VEG' && s.mGiftIdx === undefined) {
-                return alert('大套餐選擇單一時蔬，請記得選擇贈品好禮 2 選 1 喔！');
-            }
+        if (s.type === 'LIGHT') {
+            if (s.mainIdx === undefined) return alert('您選擇了' + day + '的輕享餐，但尚未選擇主菜喔！');
+            if (!s.pkgSideId) return alert('您選擇了' + day + '的輕享餐，但尚未選擇副菜喔！');
+            if (!s.sideMode) return alert('您選擇了' + day + '的輕享餐，但尚未選擇時蔬喔！');
+            mealCount++;
+        }
+
+        if (s.type === 'DOUBLE') {
+            if (!s.mainIdxs || s.mainIdxs.length !== 2) return alert('您選擇了' + day + '的雙饗餐，請選擇 2 道主菜喔！');
+            if (!s.pkgSideId) return alert('您選擇了' + day + '的雙饗餐，但尚未選擇副菜喔！');
+            if (!s.sideMode) return alert('您選擇了' + day + '的雙饗餐，但尚未選擇時蔬喔！');
             mealCount++;
         }
 
@@ -719,7 +953,8 @@ async function submitOrder() {
         requireVipDeduction: (pay === '儲值扣款'),
         totalMealCount: mealCount,
         selections: selections
-    };console.log("送出資料 postData =", JSON.stringify(postData, null, 2));
+    };
+    console.log("送出資料 postData =", JSON.stringify(postData, null, 2));
 
     try {
         const response = await fetch(WEB_APP_URL, {
@@ -753,6 +988,13 @@ async function submitOrder() {
             pointsRemainString = NL + '🪙 目前點數：' + res.points + ' 點';
         }
 
+        let paymentSplitString = '';
+        if (res.vipDeductAmount !== undefined && res.cashAmount !== undefined) {
+            paymentSplitString =
+                NL + '💳 儲值扣款：NT$ ' + res.vipDeductAmount +
+                NL + '💵 轉帳補差額：NT$ ' + res.cashAmount;
+        }
+
         let rewardMsg = '';
         if (typeof res.earnedPoint === 'number' && res.earnedPoint > 0) {
             rewardMsg = NL + '✨ 本次獲得點數：' + res.earnedPoint + ' 點';
@@ -765,6 +1007,7 @@ async function submitOrder() {
             NL + '明細:' + NL + orderDetail.replace(/ \| /g, NL) +
             remainString +
             pointsRemainString +
+            paymentSplitString +
             rewardMsg +
             NL + '------------------------' +
             NL + '總額: NT$ ' + total;
@@ -783,5 +1026,50 @@ async function submitOrder() {
         alert('網路連線失敗，請確認網路或重新嘗試。');
     }
 }</script>
+<a
+href="https://back324941.github.io/hearth.table/"
+target="_blank"
+class="fixed bottom-5 right-5 z-50 rounded-2xl shadow-2xl px-5 py-4 flex items-center gap-3 transition hover:scale-105"
+style="
+background:#0f766e;
+color:#ffffff;
+border:3px solid #ffffff;
+text-decoration:none;
+"
+>
+
+<div style="
+font-size:38px;
+line-height:1;
+">
+🧮
+</div>
+
+<div>
+<div style="
+font-size:17px;
+font-weight:900;
+line-height:1.2;
+">
+不知道怎麼點？
+</div>
+
+<div style="
+font-size:14px;
+font-weight:700;
+line-height:1.3;
+opacity:0.95;
+">
+讓我幫你算算看
+</div>
+</div>
+
+</a>
+
+
+
+
+
+
 </body>
 </html>
