@@ -6,59 +6,147 @@
 <title>搭伙晚餐 Hearth Table</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { background-color: #1a1410; font-family: -apple-system, sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; font-size: 20px; user-select: none; }
-.gold-gradient { background: linear-gradient(135deg, #d4a574 0%, #a67c52 100%); }
-.day-tab.active { border-color: #a67c52; background-color: rgba(166, 124, 82, 0.2); color: #a67c52; }
-.day-tab.disabled { opacity: 0.3; background-color: #eee; cursor: not-allowed; text-decoration: line-through; }
-.clickable:active { transform: scale(0.96); opacity: 0.8; }
-.item-selected { border-color: #a67c52 !important; background-color: #fff9f3 !important; color: #a67c52 !important; }
-.v-qty-container { display: flex; flex-direction: column; align-items: center; background: #fff; border: 4px solid #e5e7eb; border-radius: 1.5rem; overflow: hidden; width: 85px; }
-.v-qty-btn { width: 100%; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; cursor: pointer; }
-.btn-plus { background-color: #a67c52; color: white; }
-.btn-minus { background-color: #f3f4f6; color: #9ca3af; }
-#cart-drawer { transition: transform 0.3s ease; transform: translateX(100%); }
-#cart-drawer.open { transform: translateX(0); }
-#address-box, #payment-notice { transition: all 0.3s ease; max-height: 0; opacity: 0; overflow: hidden; }
-#address-box.show, #payment-notice.show { max-height: 200px; opacity: 1; margin-top: 1rem; }
-
-.pkg-info-box { background-color: #fefce8; border: 2px solid #fef08a; border-radius: 1.5rem; }
-
-.screenshot-remind {
-background-color: #fff1f2;
-border: 4px dashed #fb7185;
-animation: pulse 2s infinite;
+:root{
+  --bg1:#fff7ed;
+  --bg2:#ecfdf5;
+  --brown:#7c4a2d;
+  --gold:#b88753;
+  --gold2:#d9ad79;
+  --cream:#fffaf3;
+  --paper:#ffffff;
+  --line:#f0dfcf;
+  --muted:#8a6f5a;
+  --green:#0f766e;
+  --danger:#ef4444;
+  --shadow:0 18px 45px rgba(85,49,24,.18);
 }
-@keyframes pulse {
-0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.4); }
-50% { transform: scale(1.02); box-shadow: 0 0 20px 10px rgba(251, 113, 133, 0); }
-100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); }
+*{box-sizing:border-box;}
+body{
+  background:
+    radial-gradient(circle at 8% 3%, rgba(255,184,107,.45) 0, transparent 28%),
+    radial-gradient(circle at 92% 0%, rgba(125,211,252,.24) 0, transparent 30%),
+    linear-gradient(160deg, var(--bg1) 0%, #fffdf8 45%, var(--bg2) 100%);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  font-size:20px;
+  user-select:none;
+  color:#2f241d;
 }
-.upgrade-active { background-color: #ef4444 !important; color: white !important; border-color: #b91c1c !important; }
-
-.recommendation-notice {
-background-color: #ecfdf5;
-border: 4px solid #10b981;
-border-radius: 2rem;
-padding: 1.25rem;
-color: #065f46;
-font-weight: 900;
-line-height: 1.7;
+body:before{
+  content:"🍅  🥬  🍲  🥕";
+  position:fixed;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:28px;
+  opacity:.24;
+  pointer-events:none;
+  letter-spacing:18px;
+  z-index:0;
 }
-.recommendation-notice .notice-title {
-font-size: 1.25rem;
-margin-bottom: 0.5rem;
+.gold-gradient{background:linear-gradient(135deg,#d8a76f 0%,#a56f3f 100%);}
+header{position:relative;z-index:1;}
+header h1{
+  background:linear-gradient(135deg,#a66b3c,#d9a15f)!important;
+  border:4px solid rgba(255,255,255,.75);
+  box-shadow:0 14px 32px rgba(124,74,45,.26);
+  text-shadow:0 2px 0 rgba(0,0,0,.08);
 }
-.recommendation-notice .notice-small {
-font-size: 0.95rem;
-color: #047857;
+#form-container,#success-container{
+  background:rgba(255,255,255,.92)!important;
+  border:1px solid rgba(255,255,255,.78);
+  box-shadow:var(--shadow)!important;
+  backdrop-filter:blur(12px);
 }
+#form-container>.gold-gradient{
+  background:linear-gradient(135deg,#7c4a2d 0%,#a66b3c 45%,#d8a76f 100%);
+  position:relative;
+  overflow:hidden;
+}
+#form-container>.gold-gradient:after{
+  content:"🍱 Hearth Table";
+  position:absolute;
+  right:24px;
+  bottom:12px;
+  color:rgba(255,255,255,.22);
+  font-weight:900;
+  font-size:28px;
+}
+input,select{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+  transition:.18s ease;
+}
+input:focus,select:focus{
+  border-color:#d8a76f!important;
+  box-shadow:0 0 0 5px rgba(216,167,111,.18)!important;
+}
+.day-tab{
+  background:#fff;
+  color:#b9a391;
+  transition:.2s ease;
+}
+.day-tab.active{
+  border-color:#a67c52;
+  background:linear-gradient(135deg,#fff7ed,#fde7cd);
+  color:#8a552d;
+  box-shadow:inset 0 -5px 0 rgba(166,124,82,.18);
+}
+.day-tab.disabled{opacity:.3;background-color:#eee;cursor:not-allowed;text-decoration:line-through;}
+.clickable:active{transform:scale(.96);opacity:.86;}
+.item-selected{
+  border-color:#b88753!important;
+  background:linear-gradient(135deg,#fff8ed,#fff)!important;
+  color:#8a552d!important;
+  box-shadow:0 10px 24px rgba(184,135,83,.16)!important;
+}
+.v-qty-container{display:flex;flex-direction:column;align-items:center;background:#fff;border:4px solid #efe5da;border-radius:1.5rem;overflow:hidden;width:85px;box-shadow:0 8px 20px rgba(0,0,0,.06);}
+.v-qty-btn{width:100%;height:55px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;cursor:pointer;}
+.btn-plus{background:linear-gradient(135deg,#b88753,#8a552d);color:white;}
+.btn-minus{background:#faf7f2;color:#b6a596;}
+#cart-drawer{transition:transform .3s ease;transform:translateX(100%);border-left:1px solid var(--line);}
+#cart-drawer.open{transform:translateX(0);}
+#address-box,#payment-notice{transition:all .3s ease;max-height:0;opacity:0;overflow:hidden;}
+#address-box.show,#payment-notice.show{max-height:200px;opacity:1;margin-top:1rem;}
+.pkg-info-box{
+  background:linear-gradient(135deg,#fff8db,#fffdf3);
+  border:2px solid #f8dc8c;
+  border-radius:1.5rem;
+  box-shadow:0 12px 24px rgba(180,130,50,.10);
+}
+#menu-content .rounded-\[2rem\],#menu-content .rounded-2xl,#menu-content .rounded-\[2\.5rem\]{
+  transition:.18s ease;
+}
+#menu-content h3{
+  letter-spacing:.04em;
+}
+.screenshot-remind{background-color:#fff1f2;border:4px dashed #fb7185;animation:pulse 2s infinite;}
+@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(251,113,133,.4);}50%{transform:scale(1.02);box-shadow:0 0 20px 10px rgba(251,113,133,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(251,113,133,0);}}
+.upgrade-active{background:linear-gradient(135deg,#ef4444,#b91c1c)!important;color:white!important;border-color:#b91c1c!important;}
+.recommendation-notice{background:linear-gradient(135deg,#ecfdf5,#f0fdfa);border:4px solid #10b981;border-radius:2rem;padding:1.25rem;color:#065f46;font-weight:900;line-height:1.7;box-shadow:0 12px 24px rgba(16,185,129,.12);}
+.recommendation-notice .notice-title{font-size:1.25rem;margin-bottom:.5rem;}
+.recommendation-notice .notice-small{font-size:.95rem;color:#047857;}
+.fixed.top-24.right-0.z-40>div{
+  border:3px solid rgba(255,255,255,.78);
+  box-shadow:0 15px 35px rgba(124,74,45,.28)!important;
+}
+button,.apply-btn{letter-spacing:.03em;}
 </style>
 </head>
 <body class="min-h-screen py-8 px-3 pb-24 text-gray-900">
 
 <header class="max-w-xl mx-auto mb-10 text-center">
-<h1 class="text-4xl font-black tracking-[0.3em] text-white bg-[#a67c52] px-8 py-3 rounded-2xl shadow-lg inline-block">搭伙晚餐</h1>
+<h1 class="text-4xl font-black tracking-[0.18em] text-white bg-[#a67c52] px-8 py-3 rounded-2xl shadow-lg inline-block">🍱 搭伙晚餐</h1>
+
+<a href="https://back324941.github.io/-Hearthtable/images/1.png" target="_blank" style="display:block;margin-top:20px;">
+<img src="https://back324941.github.io/-Hearthtable/images/1.png" alt="本週完整菜單"
+style="width:100%;border-radius:28px;box-shadow:0 12px 30px rgba(0,0,0,.12);display:block;">
+</a>
+<div style="margin-top:12px;font-size:16px;font-weight:800;color:#7c4a2d;">
+📅 本週完整菜單（點圖可放大）
+</div>
 </header>
+
 
 <div class="fixed top-24 right-0 z-40">
 <div onclick="toggleCart(true)" class="w-20 py-8 gold-gradient border-y border-l border-white/30 flex flex-col items-center gap-2 rounded-l-[2.5rem] shadow-2xl active:scale-90 transition-all">
@@ -144,7 +232,7 @@ color: #047857;
 </div>
 
 <div class="pkg-info-box p-6 space-y-2">
-<p class="font-black text-amber-800 text-lg">🍱 套餐內容與會員制度：</p>
+<p class="font-black text-amber-800 text-lg">🍱 套餐內容與會員制度</p>
 <p class="text-sm font-bold text-amber-700 leading-relaxed">
 <strong>輕享餐 ($300起)</strong>：小份主菜 1 道 + 小份副菜 1 道 + 一份時蔬，可加價升級主菜大份<br>
 <strong>雙饗餐 ($590)</strong>：大份主菜 2 道 + 大份副菜 1 道 + 一份時蔬<br><br>
@@ -240,7 +328,7 @@ main: [
 {i:"A",n:"鮮蔬乾煸雞",m:205,s:125},
 {i:"B",n:"鮮蚵粉絲煲",m:210,s:130},
 {i:"C",n:"油菜炒牛肉",m:240,s:145},
-{i:"D",n:"乾煎鱈魚",m:190,s:115},
+{i:"D",n:"乾煎鱸魚",m:190,s:115},
 {i:"E",n:"乾煎鮭魚",m:260,s:160}
 ],
 side: [
@@ -257,13 +345,13 @@ main: [
 {i:"A",n:"味噌豆瓣炒雞肉",m:215,s:130},
 {i:"B",n:"糖醋旗魚腹",m:215,s:130},
 {i:"C",n:"芭樂涼拌豬肉片",m:225,s:135},
-{i:"D",n:"乾煎鱈魚",m:190,s:115},
+{i:"D",n:"乾煎鱸魚",m:190,s:115},
 {i:"E",n:"乾煎鮭魚",m:260,s:160}
 ],
 side: [
 {i:"F",n:"泰式涼拌荷包蛋",m:105,s:65},
 {i:"G",n:"菜脯厚煎蛋",m:100,s:60},
-{i:"H",n:"吻子豆腐",m:100,s:60},
+{i:"H",n:"哨子豆腐",m:100,s:60},
 {i:"I",n:"香滷豆干",m:90,s:55}
 ],
 soup: {n:"地瓜芋圓湯",p:100}
@@ -280,7 +368,7 @@ main: [
 side: [
 {i:"F",n:"避風塘杏鮑菇",m:120,s:75},
 {i:"G",n:"菜脯厚煎蛋",m:100,s:60},
-{i:"H",n:"吻子豆腐",m:100,s:60},
+{i:"H",n:"哨子豆腐",m:100,s:60},
 {i:"I",n:"香滷豆干",m:90,s:55}
 ],
 soup: {n:"綠豆薏仁湯",p:100}
@@ -522,10 +610,10 @@ html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2
                    </div>
                </div>`;
 
-// 3. 套餐副菜區，只顯示 F～H
+// 3. 套餐副菜區，顯示 F～I
 const sideLimit = (sel.type === 'LIGHT') ? 65 : 100;
-html += `<div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐副菜 (${sel.type === 'LIGHT' ? '小份' : '大份'}必選一，F～H)</h3>`;
-d.side.slice(0,3).forEach((sd) => {
+html += `<div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐副菜 (${sel.type === 'LIGHT' ? '小份' : '大份'}必選一，F～I)</h3>`;
+d.side.forEach((sd) => {
 const sidePrice = (sel.type === 'LIGHT') ? sd.s : sd.m;
 const sideEx = Math.max(0, sidePrice - sideLimit); 
 html += `<div onclick="updateSel('pkgSideId','${sd.i}')" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${sel.pkgSideId===sd.i?'item-selected':'border-gray-50 bg-gray-50/50'}">
