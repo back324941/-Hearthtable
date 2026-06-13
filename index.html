@@ -227,7 +227,6 @@ style="width:100%;border-radius:28px;box-shadow:0 12px 30px rgba(0,0,0,.12);disp
 <div onclick="switchDay('Tue')" id="tab-Tue" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">二</div>
 <div onclick="switchDay('Wed')" id="tab-Wed" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">三</div>
 <div onclick="switchDay('Thu')" id="tab-Thu" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">四</div>
-<div onclick="switchDay('Fri')" id="tab-Fri" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">五</div>
 </div>
 </div>
 
@@ -241,7 +240,7 @@ style="width:100%;border-radius:28px;box-shadow:0 12px 30px rgba(0,0,0,.12);disp
 🪙 會員制度：<br>
 👑 當月月初完成儲值即可享有會員資格<br>
 ✔ 購買套餐或單日單點消費滿 NT$500，可獲得 1 點<br>
-✔ 點數可於套餐內換購指定餐點<br>
+✔ 點數可換購：湯品 5 點、鮭魚 10 點、鱈魚 12 點<br>
 💳 儲值金與點數永久有效，不受會員資格影響
 </span>
 </p>
@@ -308,75 +307,58 @@ return Math.ceil(val / 5) * 5;
 const menus = {
 Tue: {
 main: [
-{i:"A",n:"金針花炒牛肉",m:225,s:135},
-{i:"B",n:"咖哩鮮蝦",m:250,s:150},
-{i:"C",n:"港式油雞",m:190,s:115},
-{i:"D",n:"芭樂涼拌豬肉片",m:225,s:135},
-{i:"E",n:"乾煎鱈魚",m:290,s:175}
+{i:"A",n:"白醬馬鈴薯燉雞",m:225,s:135},
+{i:"B",n:"小薑瓜炒鮪魚",m:195,s:120},
+{i:"C",n:"芭樂涼拌豬肉片",m:225,s:135},
+{i:"D",n:"破布子蒸鱸魚",m:200,s:120},
+{i:"E",n:"乾煎鮭魚",m:260,s:160}
 ],
 side: [
-{i:"F",n:"韓式雜菜粉絲",m:120,s:75},
-{i:"G",n:"豆芽菜炒蛋",m:90,s:55},
-{i:"H",n:"金針菇吻仔魚",m:125,s:75},
-{i:"I",n:"香滷豆干",m:90,s:55}
+{i:"F",n:"吻仔魚玉米煎餅",m:115,s:70},
+{i:"G",n:"菜脯厚煎蛋",m:100,s:60},
+{i:"H",n:"哨子豆腐",m:100,s:60},
+{i:"I",n:"水蓮炒三絲",m:115,s:70}
 ],
-soup: {n:"地瓜芋圓湯",p:100}
+soup: {n:"冰湯紅棗銀耳湯",p:120}
 },
 
 Wed: {
 main: [
-{i:"A",n:"鮮蔬乾煸雞",m:205,s:125},
-{i:"B",n:"鮮蚵粉絲煲",m:210,s:130},
-{i:"C",n:"油菜炒牛肉",m:240,s:145},
-{i:"D",n:"乾煎鱸魚",m:190,s:115},
+{i:"A",n:"宮保雞丁",m:190,s:115},
+{i:"B",n:"蔥爆蝦",m:220,s:135},
+{i:"C",n:"芭樂涼拌豬肉片",m:225,s:135},
+{i:"D",n:"破布子蒸鱸魚",m:200,s:120},
 {i:"E",n:"乾煎鮭魚",m:260,s:160}
 ],
 side: [
-{i:"F",n:"蒲瓜炒肉絲",m:100,s:60},
-{i:"G",n:"豆芽菜炒蛋",m:90,s:55},
+{i:"F",n:"絲瓜冬粉",m:100,s:60},
+{i:"G",n:"大薑瓜炒蛋",m:105,s:65},
 {i:"H",n:"金針菇吻仔魚",m:125,s:75},
-{i:"I",n:"香滷豆干",m:90,s:55}
+{i:"I",n:"哨子豆腐",m:100,s:60}
 ],
-soup: {n:"綠豆薏仁湯",p:100}
+soup: {n:"冰湯紅棗銀耳湯",p:120}
 },
 
 Thu: {
 main: [
-{i:"A",n:"味噌豆瓣炒雞肉",m:215,s:130},
-{i:"B",n:"糖醋旗魚腹",m:215,s:130},
-{i:"C",n:"芭樂涼拌豬肉片",m:225,s:135},
-{i:"D",n:"乾煎鱸魚",m:190,s:115},
-{i:"E",n:"乾煎鮭魚",m:260,s:160}
+{i:"A",n:"青椒炒牛肉",m:230,s:140},
+{i:"B",n:"日式燒鯖魚",m:200,s:120},
+{i:"C",n:"港式油雞",m:190,s:115},
+{i:"D",n:"芭樂涼拌豬肉片",m:225,s:135},
+{i:"E",n:"乾煎鮭魚",m:280,s:170}
 ],
 side: [
-{i:"F",n:"泰式涼拌荷包蛋",m:105,s:65},
-{i:"G",n:"菜脯厚煎蛋",m:100,s:60},
-{i:"H",n:"哨子豆腐",m:100,s:60},
-{i:"I",n:"香滷豆干",m:90,s:55}
+{i:"F",n:"菇菇豆腐煲",m:110,s:70},
+{i:"G",n:"大薑瓜炒蛋",m:105,s:65},
+{i:"H",n:"金針菇吻仔魚",m:125,s:75},
+{i:"I",n:"哨子豆腐",m:100,s:60}
 ],
-soup: {n:"地瓜芋圓湯",p:100}
-},
-
-Fri: {
-main: [
-{i:"A",n:"蒜香蜂蜜奶油豬",m:265,s:160},
-{i:"B",n:"香菜皮蛋燉鱸魚",m:240,s:145},
-{i:"C",n:"港式油雞",m:195,s:120},
-{i:"D",n:"油菜炒牛肉",m:245,s:150},
-{i:"E",n:"乾煎鱈魚",m:290,s:175}
-],
-side: [
-{i:"F",n:"避風塘杏鮑菇",m:120,s:75},
-{i:"G",n:"菜脯厚煎蛋",m:100,s:60},
-{i:"H",n:"哨子豆腐",m:100,s:60},
-{i:"I",n:"香滷豆干",m:90,s:55}
-],
-soup: {n:"綠豆薏仁湯",p:100}
+soup: {n:"冰湯紅棗銀耳湯",p:120}
 }
 };
 
 
-let selections = { Tue: {}, Wed: {}, Thu: {}, Fri: {} };
+let selections = { Tue: {}, Wed: {}, Thu: {} };
 let currentDay = 'Tue';
 let pendingRecommendedUpgrade = false;
 let recommendedLargeAddons = 0;
@@ -414,7 +396,7 @@ t.classList.add('active');
 }
 
 function goToNextDay() { 
-const days=['Tue','Wed','Thu','Fri']; 
+const days=['Tue','Wed','Thu']; 
 let idx=days.indexOf(currentDay); 
 for(let i = idx + 1; i < days.length; i++) {
 if(!disabledDays.includes(days[i])) {
@@ -455,10 +437,12 @@ if(!selections[currentDay]) selections[currentDay] = {};
 if(k === 'type') {
 const oldExchangeSoup = selections[currentDay].exchangeSoup;
 const oldExchangeSalmon = selections[currentDay].exchangeSalmon;
+const oldExchangeCod = selections[currentDay].exchangeCod;
 selections[currentDay] = {
 type: v,
 exchangeSoup: oldExchangeSoup || false,
-exchangeSalmon: oldExchangeSalmon || false
+exchangeSalmon: oldExchangeSalmon || false,
+exchangeCod: oldExchangeCod || false
 };
 } else {
 selections[currentDay][k]=v;
@@ -496,14 +480,21 @@ updateTotal();
 }
 
 function handleExchangeChange(type) {
-// 互斥邏輯：若勾選一項，另一項必須取消
+// 互斥邏輯：若勾選一項，另外兩項必須取消
 if (type === 'soup') {
 if (selections[currentDay].exchangeSoup) {
 selections[currentDay].exchangeSalmon = false;
+selections[currentDay].exchangeCod = false;
 }
 } else if (type === 'salmon') {
 if (selections[currentDay].exchangeSalmon) {
 selections[currentDay].exchangeSoup = false;
+selections[currentDay].exchangeCod = false;
+}
+} else if (type === 'cod') {
+if (selections[currentDay].exchangeCod) {
+selections[currentDay].exchangeSoup = false;
+selections[currentDay].exchangeSalmon = false;
 }
 }
 renderMenu();
@@ -607,6 +598,10 @@ html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2
                            <input type="checkbox" ${sel.exchangeSalmon ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSalmon = this.checked; handleExchangeChange('salmon');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
                            <span>換購香煎鮭魚 🐟 (扣 10 點)</span>
                        </label>
+                       <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
+                           <input type="checkbox" ${sel.exchangeCod ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeCod = this.checked; handleExchangeChange('cod');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
+                           <span>換購乾煎鱈魚 🐟 (扣 12 點)</span>
+                       </label>
                    </div>
                </div>`;
 
@@ -650,7 +645,7 @@ return `<div class="p-6 bg-white rounded-[2.5rem] border-4 border-gray-100 shado
 
 function buildDetailText() {
 let result = [];
-const dayNames = {Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
+const dayNames = {Tue:'週二',Wed:'週三',Thu:'週四'};
 for(let day in selections){
 let items = [];
 const s = selections[day], d = menus[day];
@@ -672,6 +667,7 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(小份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
+if(s.exchangeCod) exchangeText.push("換購鱈魚(扣12點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
 items.push(`【輕享餐: 主菜:${chosenMain} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
@@ -690,6 +686,7 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(大份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
+if(s.exchangeCod) exchangeText.push("換購鱈魚(扣12點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
 items.push(`【雙饗餐: 主菜:${mainText} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
@@ -794,11 +791,12 @@ for(let day in selections) { if(selections[day].type) deliveryDays++; }
 if(deliveryDays > 0) deliveryFeeHtml = `<div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl font-black text-sm text-blue-700">外送費 (${deliveryDays}天): +$${deliveryDays * 50}</div>`;
 }
 
-// 計算點數（鮭魚10點，湯品5點）
+// 計算點數（湯品5點，鮭魚10點，鱈魚12點）
 let totalPointsRequired = 0;
 for(let day in selections) {
 if(selections[day].exchangeSoup) totalPointsRequired += 5;
 if(selections[day].exchangeSalmon) totalPointsRequired += 10;
+if(selections[day].exchangeCod) totalPointsRequired += 12;
 }
 let pointsHtml = '';
 if(totalPointsRequired > 0) {
@@ -835,7 +833,6 @@ const upper = v.toUpperCase();
 if(upper === 'TUE' || v === '週二' || v === '周二' || v === '二') return 'Tue';
 if(upper === 'WED' || v === '週三' || v === '周三' || v === '三') return 'Wed';
 if(upper === 'THU' || v === '週四' || v === '周四' || v === '四') return 'Thu';
-if(upper === 'FRI' || v === '週五' || v === '周五' || v === '五') return 'Fri';
 return '';
 }
 
@@ -861,7 +858,7 @@ if(!box) return;
 const mealText = getPackageName(meal);
 const vegText = getVegModeText(veg);
 let lines = [];
-const dayNames = {Tue:'週二', Wed:'週三', Thu:'週四', Fri:'週五'};
+const dayNames = {Tue:'週二', Wed:'週三', Thu:'週四'};
 lines.push(`已依推薦幫您先套用到${dayNames[currentDay] || '指定日期'}：${mealText}、${vegText}`);
 if(meal === 'LIGHT' && upgrade) {
 lines.push('主菜升級已暫存，選好主菜後會自動套用大份升級。');
@@ -932,7 +929,7 @@ if(menu) menu.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 function init() {
 if(disabledDays.includes(currentDay)) {
-const days=['Tue','Wed','Thu','Fri'];
+const days=['Tue','Wed','Thu'];
 for(let d of days) { if(!disabledDays.includes(d)) { currentDay = d; break; } }
 }
 updateTabUI();
@@ -1025,6 +1022,7 @@ async function submitOrder() {
 
         if (s.exchangeSoup) totalPointsRequired += 5;
         if (s.exchangeSalmon) totalPointsRequired += 10;
+        if (s.exchangeCod) totalPointsRequired += 12;
     }
 
     const total = calculateTotal();
