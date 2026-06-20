@@ -227,6 +227,7 @@ style="width:100%;border-radius:28px;box-shadow:0 12px 30px rgba(0,0,0,.12);disp
 <div onclick="switchDay('Tue')" id="tab-Tue" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">二</div>
 <div onclick="switchDay('Wed')" id="tab-Wed" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">三</div>
 <div onclick="switchDay('Thu')" id="tab-Thu" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">四</div>
+<div onclick="switchDay('Fri')" id="tab-Fri" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">五</div>
 </div>
 </div>
 
@@ -305,22 +306,6 @@ function ceilTo5Or0(val) {
 return Math.ceil(val / 5) * 5;
 }
 const menus = {
-Mon: {
-main: [
-{i:"A",n:"白醬馬鈴薯燉雞",m:230,s:138},
-{i:"B",n:"小黃瓜炒魷魚",m:195,s:117},
-{i:"C",n:"豬肉壽喜燒",m:180,s:108},
-{i:"D",n:"黃瓜燴蝦仁",m:200,s:120},
-{i:"E",n:"乾煎鱸魚",m:190,s:114}
-],
-side: [
-{i:"F",n:"吻仔魚玉米煎餅",m:130,s:78},
-{i:"G",n:"豆瓣味噌燒茄子",m:120,s:72},
-{i:"H",n:"金針菇吻仔魚",m:130,s:78},
-{i:"I",n:"番茄嫩蛋",m:100,s:60}
-],
-soup: {n:"冰糖銀耳湯",p:100}
-},
 
 Tue: {
 main: [
@@ -371,11 +356,29 @@ side: [
 {i:"I",n:"蔥燒蠔油豆腐",m:90,s:54}
 ],
 soup: {n:"冰糖銀耳湯",p:100}
+},
+
+Fri: {
+main: [
+{i:"A",n:"白醬馬鈴薯燉雞",m:230,s:138},
+{i:"B",n:"小黃瓜炒魷魚",m:195,s:117},
+{i:"C",n:"豬肉壽喜燒",m:180,s:108},
+{i:"D",n:"黃瓜燴蝦仁",m:200,s:120},
+{i:"E",n:"乾煎鱸魚",m:190,s:114}
+],
+side: [
+{i:"F",n:"吻仔魚玉米煎餅",m:130,s:78},
+{i:"G",n:"豆瓣味噌燒茄子",m:120,s:72},
+{i:"H",n:"金針菇吻仔魚",m:130,s:78},
+{i:"I",n:"番茄嫩蛋",m:100,s:60}
+],
+soup: {n:"冰糖銀耳湯",p:100}
 }
+
 };
 
-let selections = { Mon: {}, Tue: {}, Wed: {}, Thu: {} };
-let currentDay = 'Mon';
+let selections = { Tue: {}, Wed: {}, Thu: {}, Fri: {} };
+let currentDay = 'Tue';
 let pendingRecommendedUpgrade = false;
 let recommendedLargeAddons = 0;
 let recommendedSmallAddons = 0;
@@ -412,7 +415,7 @@ t.classList.add('active');
 }
 
 function goToNextDay() { 
-const days=['Mon','Tue','Wed','Thu']; 
+const days=['Tue','Wed','Thu','Fri']; 
 let idx=days.indexOf(currentDay); 
 for(let i = idx + 1; i < days.length; i++) {
 if(!disabledDays.includes(days[i])) {
@@ -581,7 +584,7 @@ html += `<div onclick="updateSel('mainIdx',${i})" class="p-6 border-4 rounded-2x
 });
 
 if(sel.mainIdx !== undefined) {
-const upgradeCost = d.main[sel.mainIdx].m - d.main[sel.mainIdx].s;
+const upgradeCost = d.main[sel.mainIdx].m - (d.main[sel.mainIdx].s || 0);
 html += `<div onclick="toggleUpgrade()" class="p-4 border-4 border-red-100 rounded-2xl font-black text-center text-xl clickable ${sel.upgradeMain?'upgrade-active':'bg-red-50 text-red-500'}">🚀 主菜升級大份 (+$${upgradeCost})</div>`;
 }
 html += `</div>`;
@@ -651,17 +654,21 @@ document.getElementById('menu-content').innerHTML = html;
 
 function renderAddon(id,l,n,pm,ps) {
 const sel=selections[currentDay];
+const smallHtml = (ps === null || ps === undefined || ps === '')
+? `<div class="bg-gray-50 p-4 rounded-2xl flex justify-center items-center text-gray-400 font-black">無小份</div>`
+: `<div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>小 $${ps}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-S',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-S']||0}</div><div onclick="changeQty('${id}-S',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>`;
+
 return `<div class="p-6 bg-white rounded-[2.5rem] border-4 border-gray-100 shadow-lg space-y-4">
                <div class="font-black text-2xl">${l}. ${n}</div>
                <div class="grid grid-cols-2 gap-4">
                    <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>大 $${pm}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-M',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-M']||0}</div><div onclick="changeQty('${id}-M',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
-                   <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>小 $${ps}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-S',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-S']||0}</div><div onclick="changeQty('${id}-S',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
+                   ${smallHtml}
                </div></div>`;
 }
 
 function buildDetailText() {
 let result = [];
-const dayNames = {Mon:'週一',Tue:'週二',Wed:'週三',Thu:'週四'};
+const dayNames = {Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
 for(let day in selections){
 let items = [];
 const s = selections[day], d = menus[day];
@@ -746,7 +753,7 @@ const originPrice = d.main[s.mainIdx].s;
 dTotal += Math.max(0, originPrice - mainLimit);
 
 if(s.upgradeMain) {
-dTotal += (d.main[s.mainIdx].m - d.main[s.mainIdx].s);
+dTotal += (d.main[s.mainIdx].m - (d.main[s.mainIdx].s || 0));
 }
 }
 
@@ -783,7 +790,7 @@ dTotal += getVegModePrice(s.sideMode);
 has=true; 
 }
 
-d.main.forEach((m,i)=>{ if(s[`addonM-${i}-M`]){ dTotal+=s[`addonM-${i}-M`]*m.m; has=true; } if(s[`addonM-${i}-S`]){ dTotal+=s[`addonM-${i}-S`]*m.s; has=true; } });
+d.main.forEach((m,i)=>{ if(s[`addonM-${i}-M`]){ dTotal+=s[`addonM-${i}-M`]*m.m; has=true; } if(s[`addonM-${i}-S`] && m.s !== null && m.s !== undefined && m.s !== ''){ dTotal+=s[`addonM-${i}-S`]*m.s; has=true; } });
 d.side.forEach((sd,i)=>{ if(s[`addonS-${i}-M`]){ dTotal+=s[`addonS-${i}-M`]*sd.m; has=true; } if(s[`addonS-${i}-S`]){ dTotal+=s[`addonS-${i}-S`]*sd.s; has=true; } });
 if(s.addonSoup){ dTotal+=s.addonSoup*d.soup.p; has=true; }
 if(s.type==='NONE' && has) dTotal+=50;
@@ -849,6 +856,7 @@ const upper = v.toUpperCase();
 if(upper === 'TUE' || v === '週二' || v === '周二' || v === '二') return 'Tue';
 if(upper === 'WED' || v === '週三' || v === '周三' || v === '三') return 'Wed';
 if(upper === 'THU' || v === '週四' || v === '周四' || v === '四') return 'Thu';
+if(upper === 'FRI' || v === '週五' || v === '周五' || v === '五') return 'Fri';
 return '';
 }
 
@@ -874,7 +882,7 @@ if(!box) return;
 const mealText = getPackageName(meal);
 const vegText = getVegModeText(veg);
 let lines = [];
-const dayNames = {Tue:'週二', Wed:'週三', Thu:'週四'};
+const dayNames = {Tue:'週二', Wed:'週三', Thu:'週四', Fri:'週五'};
 lines.push(`已依推薦幫您先套用到${dayNames[currentDay] || '指定日期'}：${mealText}、${vegText}`);
 if(meal === 'LIGHT' && upgrade) {
 lines.push('主菜升級已暫存，選好主菜後會自動套用大份升級。');
@@ -945,7 +953,7 @@ if(menu) menu.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 function init() {
 if(disabledDays.includes(currentDay)) {
-const days=['Mon','Tue','Wed','Thu'];
+const days=['Tue','Wed','Thu','Fri'];
 for(let d of days) { if(!disabledDays.includes(d)) { currentDay = d; break; } }
 }
 updateTabUI();
