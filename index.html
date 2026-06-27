@@ -614,7 +614,7 @@ html += `</div>`;
 if(sel.type === 'DOUBLE') {
 const mainLimit = 190;
 const picked = sel.mainIdxs || [];
-html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">雙饗餐主菜 (大份五選二)</h3>`;
+html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">雙饗餐主菜 (大份選二)</h3>`;
 d.main.filter(m => m.i !== 'E').forEach((m)=>{
 const i = d.main.indexOf(m);
 const ex = Math.max(0, m.m - mainLimit); 
