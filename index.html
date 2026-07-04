@@ -748,7 +748,7 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(大份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
-if(s.exchangeCod) exchangeText.push("換購魷魚冰捲(扣15點)");
+if(s.exchangeCod) exchangeText.push("換購五味魷魚冰捲(扣15點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
 items.push(`【雙饗餐: 主菜:${mainText} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
