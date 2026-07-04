@@ -243,7 +243,6 @@ color:#7c4a2d;
 <button onclick="clearDay()" class="text-sm font-black text-red-500 border-2 border-red-100 px-4 py-1 rounded-full clickable">✕ 清空本日</button>
 </div>
 <div class="flex border-[4px] rounded-[2rem] overflow-hidden bg-gray-100 border-gray-100">
-<div onclick="switchDay('Mon')" id="tab-Mon" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">一</div>
 <div onclick="switchDay('Tue')" id="tab-Tue" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">二</div>
 <div onclick="switchDay('Wed')" id="tab-Wed" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">三</div>
 <div onclick="switchDay('Thu')" id="tab-Thu" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">四</div>
@@ -327,23 +326,6 @@ return Math.ceil(val / 5) * 5;
 }
 const menus = {
 
-Mon:{
-main:[
-{i:"A",n:"左宗棠雞",m:230,s:140},
-{i:"B",n:"鯛魚菇菇燒豆腐",m:205,s:125},
-{i:"C",n:"番茄塔香肉末",m:195,s:115},
-{i:"D",n:"檸香鱸魚",m:200,s:120},
-{i:"E",n:"今日煎魚",m:200,s:null}
-],
-side:[
-{i:"F",n:"什錦炒蛋",m:110,s:65},
-{i:"G",n:"紅燒豆包",m:130,s:80},
-{i:"H",n:"紹子烘蛋",m:120,s:70},
-{i:"I",n:"辣燉豆腐雞蛋",m:100,s:60}
-],
-soup:{n:"優質鮭魚",p:260}
-},
-
 Tue:{
 main:[
 {i:"A",n:"古早味滷肉",m:210,s:125},
@@ -414,7 +396,7 @@ soup:{n:"優質鮭魚",p:260}
 
 };
 
-let selections = {Mon: {}, Tue: {}, Wed: {}, Thu: {}, Fri: {} };
+let selections = {Tue: {}, Wed: {}, Thu: {}, Fri: {} };
 let currentDay = 'Tue';
 let pendingRecommendedUpgrade = false;
 let recommendedLargeAddons = 0;
@@ -452,7 +434,7 @@ t.classList.add('active');
 }
 
 function goToNextDay() { 
-const days=['Mon','Tue','Wed','Thu','Fri']; 
+const days=['Tue','Wed','Thu','Fri']; 
 let idx=days.indexOf(currentDay); 
 for(let i = idx + 1; i < days.length; i++) {
 if(!disabledDays.includes(days[i])) {
@@ -475,8 +457,8 @@ return type || '';
 function getVegModeText(mode) {
 if(mode === 'TODAY') return '今日時蔬';
 if(mode === 'TODAY_L') return '今日時蔬加大(+20)';
-if(mode === 'BROCCOLI') return '涼拌芥蘭菜';
-if(mode === 'BROCCOLI_L') return '涼拌芥蘭菜加大(+20)';
+if(mode === 'BROCCOLI') return '青花菜';
+if(mode === 'BROCCOLI_L') return '青花菜加大(+20)';
 if(mode === 'TWIN') return '雙拼(+60)';
 return '未選時蔬';
 }
@@ -570,8 +552,8 @@ function renderVegOptions(sel) {
 const vegOptions = [
 {key:'TODAY', label:'🥬 今日時蔬'},
 {key:'TODAY_L', label:'🥬 今日時蔬加大', price:20},
-{key:'BROCCOLI', label:'🥦 涼拌芥蘭菜'},
-{key:'BROCCOLI_L', label:'🥦 涼拌芥蘭菜加大', price:20},
+{key:'BROCCOLI', label:'🥦 青花菜'},
+{key:'BROCCOLI_L', label:'🥦 青花菜加大', price:20},
 {key:'TWIN', label:'✨ 雙拼', price:60}
 ];
 
@@ -707,7 +689,7 @@ return `<div class="p-6 bg-white rounded-[2.5rem] border-4 border-gray-100 shado
 
 function buildDetailText() {
 let result = [];
-const dayNames = {Mon:'週一',Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
+const dayNames = {Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
 for(let day in selections){
 let items = [];
 const s = selections[day], d = menus[day];
@@ -892,7 +874,6 @@ return Number.isFinite(num) && num > 0 ? num : 0;
 function normalizeRecommendationDay(value) {
 const v = String(value || '').trim();
 const upper = v.toUpperCase();
-if(upper === 'MON' || v === '週一' || v === '周一' || v === '一') return 'Mon';
 if(upper === 'TUE' || v === '週二' || v === '周二' || v === '二') return 'Tue';
 if(upper === 'WED' || v === '週三' || v === '周三' || v === '三') return 'Wed';
 if(upper === 'THU' || v === '週四' || v === '周四' || v === '四') return 'Thu';
@@ -922,7 +903,7 @@ if(!box) return;
 const mealText = getPackageName(meal);
 const vegText = getVegModeText(veg);
 let lines = [];
-const dayNames = {Mon:'週一', Tue:'週二', Wed:'週三', Thu:'週四', Fri:'週五'};
+const dayNames = {Tue:'週二', Wed:'週三', Thu:'週四', Fri:'週五'};
 lines.push(`已依推薦幫您先套用到${dayNames[currentDay] || '指定日期'}：${mealText}、${vegText}`);
 if(meal === 'LIGHT' && upgrade) {
 lines.push('主菜升級已暫存，選好主菜後會自動套用大份升級。');
@@ -993,7 +974,7 @@ if(menu) menu.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 function init() {
 if(disabledDays.includes(currentDay)) {
-const days=['Mon','Tue','Wed','Thu','Fri'];
+const days=['Tue','Wed','Thu','Fri'];
 for(let d of days) { if(!disabledDays.includes(d)) { currentDay = d; break; } }
 }
 updateTabUI();
