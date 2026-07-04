@@ -261,7 +261,7 @@ color:#7c4a2d;
 🪙 會員制度：<br>
 👑 當月月初完成儲值即可享有會員資格<br>
 ✔ 購買套餐或單日單點消費滿 NT$500，可獲得 1 點<br>
-✔ 點數可換購：湯品 5 點、鮭魚 10 點、鱈魚 12 點<br>
+✔ 點數可換購：湯品 5 點、鮭魚 10 點、冰捲15 點<br>
 💳 儲值金與點數永久有效，不受會員資格影響
 </span>
 </p>
@@ -658,7 +658,7 @@ html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2
                        </label>
                        <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                            <input type="checkbox" ${sel.exchangeCod ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeCod = this.checked; handleExchangeChange('cod');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
-                           <span>換購乾煎鱈魚 🐟 (扣 12 點)</span>
+                           <span>換購五味魷魚冰捲 🐟 (扣 15 點)</span>
                        </label>
                    </div>
                </div>`;
@@ -729,7 +729,7 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(小份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
-if(s.exchangeCod) exchangeText.push("換購鱈魚(扣12點)");
+if(s.exchangeCod) exchangeText.push("換購五味魷魚冰捲(扣15點))");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
 items.push(`【輕享餐: 主菜:${chosenMain} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
@@ -748,7 +748,7 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(大份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
-if(s.exchangeCod) exchangeText.push("換購鱈魚(扣12點)");
+if(s.exchangeCod) exchangeText.push("換購魷魚冰捲(扣15點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
 items.push(`【雙饗餐: 主菜:${mainText} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
@@ -853,12 +853,12 @@ for(let day in selections) { if(selections[day].type) deliveryDays++; }
 if(deliveryDays > 0) deliveryFeeHtml = `<div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl font-black text-sm text-blue-700">外送費 (${deliveryDays}天): +$${deliveryDays * 50}</div>`;
 }
 
-// 計算點數（湯品5點，鮭魚10點，鱈魚12點）
+// 計算點數（湯品5點，鮭魚10點，魷魚冰捲15點）
 let totalPointsRequired = 0;
 for(let day in selections) {
 if(selections[day].exchangeSoup) totalPointsRequired += 5;
 if(selections[day].exchangeSalmon) totalPointsRequired += 10;
-if(selections[day].exchangeCod) totalPointsRequired += 12;
+if(selections[day].exchangeCod) totalPointsRequired += 15;
 }
 let pointsHtml = '';
 if(totalPointsRequired > 0) {
@@ -1086,7 +1086,7 @@ async function submitOrder() {
 
         if (s.exchangeSoup) totalPointsRequired += 5;
         if (s.exchangeSalmon) totalPointsRequired += 10;
-        if (s.exchangeCod) totalPointsRequired += 12;
+        if (s.exchangeCod) totalPointsRequired += 15;
     }
 
     const total = calculateTotal();
