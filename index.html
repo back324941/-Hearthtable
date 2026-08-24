@@ -1108,19 +1108,14 @@ async function submitOrder() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
-console.error('訂單送出後回應異常:', err);
-
-if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.innerText = '訂單處理中...';
-    submitBtn.style.opacity = '0.6';
-}
-
-alert(
-    '⚠️ 訂單已送出，系統回應較慢。\n\n' +
-    '請勿重複送單。\n' +
-    '若需要確認訂單，請聯絡我們。'
-);
+        console.error('錯誤:', err);
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = '確認預訂 ➔';
+            submitBtn.style.opacity = '1';
+        }
+        alert('網路連線失敗，請確認網路或重新嘗試。');
+    }
 }</script>
 <a
 href="https://back324941.github.io/hearth.table/"
