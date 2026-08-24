@@ -261,7 +261,7 @@ color:#7c4a2d;
 🪙 會員制度：<br>
 👑 當月月初完成儲值即可享有會員資格<br>
 ✔ 購買套餐或單日單點消費滿 NT$500，可獲得 1 點<br>
-✔ 點數可換購：湯品 5 點、鮭魚 10 點、白蝦 10 點<br>
+✔ 點數可換購：湯品 5 點、鮭魚 10 點、冰捲15 點<br>
 💳 儲值金與點數永久有效，不受會員資格影響
 </span>
 </p>
@@ -553,7 +553,7 @@ if(sel.type === 'DOUBLE') {
 const mainLimit = 190;
 const picked = sel.mainIdxs || [];
 html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">雙饗餐主菜 (大份選二)</h3>`;
-d.main.filter(m => m.i !== 'E').forEach((m)=>{
+d.main.forEach((m)=>{
 const i = d.main.indexOf(m);
 const ex = Math.max(0, m.m - mainLimit); 
 const selectedOrder = picked.indexOf(i) >= 0 ? ` <span class="text-sm bg-[#a67c52] text-white px-2 py-1 rounded-full">已選${picked.indexOf(i)+1}</span>` : '';
@@ -575,7 +575,7 @@ html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2
                        </label>
                        <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                            <input type="checkbox" ${sel.exchangeSalmon ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSalmon = this.checked; handleExchangeChange('salmon');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
-                           <span>換購優質鮭魚 🐟 (扣 10 點)</span>
+                           <span>換購香煎鮭魚 🐟 (扣 10 點)</span>
                        </label>
                        <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                            <input type="checkbox" ${sel.exchangeCod ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeCod = this.checked; handleExchangeChange('cod');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
