@@ -747,7 +747,12 @@ const deliveryType = document.getElementById('deliveryType').value;
 let deliveryDays = 0;
 
 for(let day in selections){
-const s=selections[day], d=menus[day];
+const s=selections[day];
+const d=menus[day];
+
+// 關閉日沒有菜單資料時直接跳過，避免 calculateTotal 讀取 undefined
+if(!d) continue;
+
 let dTotal=0, has=false;
 
 if(s.type==='LIGHT'){ 
