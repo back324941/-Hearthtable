@@ -638,10 +638,6 @@ html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2
                            <input type="checkbox" ${sel.exchangeSalmon ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSalmon = this.checked; handleExchangeChange('salmon');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
                            <span>換購香煎鮭魚 🐟 (扣 10 點)</span>
                        </label>
-                       <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
-                           <input type="checkbox" ${sel.exchangeCod ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeCod = this.checked; handleExchangeChange('cod');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
-                           <span>換購白灼蝦 🦐 (扣 10 點)</span>
-                       </label>
                    </div>
                </div>`;
 
@@ -714,7 +710,6 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(小份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
-if(s.exchangeCod) exchangeText.push("換購白灼蝦(扣10點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
 items.push(`【輕享餐: 主菜:${chosenMain} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
@@ -733,7 +728,6 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(大份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
-if(s.exchangeCod) exchangeText.push("換購白灼蝦(扣10點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
 items.push(`【雙饗餐: 主菜:${mainText} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
@@ -845,7 +839,7 @@ for(let day in selections) { if(selections[day].type) deliveryDays++; }
 if(deliveryDays > 0) deliveryFeeHtml = `<div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl font-black text-sm text-blue-700">外送費 (${deliveryDays}天): +$${deliveryDays * 50}</div>`;
 }
 
-// 計算點數（湯品5點，鮭魚10點，白灼蝦10點）
+// 計算點數（湯品5點，鮭魚10點）
 let totalPointsRequired = 0;
 for(let day in selections) {
 if(selections[day].exchangeSoup) totalPointsRequired += 5;
