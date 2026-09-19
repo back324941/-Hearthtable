@@ -340,7 +340,7 @@ Mon:{
     {i:"H",n:"絲瓜炒蝦仁",m:130,s:80},
     {i:"I",n:"吻仔魚炒蛋",m:115,s:70}
   ],
-  soup:{n:"番茄雞蛋肉片湯",m:120,s:50}
+  soup:{n:"冬瓜排骨湯",m:120,s:50}
 },
 Tue:{
   main:[
@@ -356,7 +356,7 @@ Tue:{
     {i:"H",n:"絲瓜炒蝦仁",m:130,s:80},
     {i:"I",n:"吻仔魚炒蛋",m:115,s:70}
   ],
-  soup:{n:"番茄雞蛋肉片湯",m:120,s:50}
+  soup:{n:"冬瓜排骨湯",m:120,s:50}
 },
 Wed:{
   main:[
@@ -372,7 +372,7 @@ Wed:{
     {i:"H",n:"鮮蚵豆腐",m:110,s:70},
     {i:"I",n:"魚香烘蛋",m:110,s:70}
   ],
-  soup:{n:"番茄雞蛋肉片湯",m:120,s:50}
+  soup:{n:"冬瓜排骨湯",m:120,s:50}
 },
 Thu:{
   main:[
@@ -388,7 +388,7 @@ Thu:{
     {i:"H",n:"鮮蚵豆腐",m:110,s:70},
     {i:"I",n:"魚香烘蛋",m:110,s:70}
   ],
-  soup:{n:"番茄雞蛋肉片湯",m:120,s:50}
+  soup:{n:"冬瓜排骨湯",m:120,s:50}
 },
 Fri:{
   main:[
@@ -404,7 +404,7 @@ Fri:{
     {i:"H",n:"鮮蚵豆腐",m:110,s:70},
     {i:"I",n:"魚香烘蛋",m:110,s:70}
   ],
-  soup:{n:"番茄雞蛋肉片湯",m:120,s:50}
+  soup:{n:"冬瓜排骨湯",m:120,s:50}
 }
 };
 
@@ -787,69 +787,84 @@ let deliveryDays = 0;
 for(let day in selections){
 const s=selections[day];
 const d=menus[day];
-
-// 關閉日沒有菜單資料時直接跳過，避免 calculateTotal 讀取 undefined
 if(!d) continue;
 
 let dTotal=0, has=false;
 
-if(s.type==='LIGHT'){ 
-dTotal += 300; 
+// 套餐僅在實際選了菜色／時蔬時才成立計價；單純打開套餐不收套餐基本費
+if(s.type==='LIGHT'){
+  const hasPackageChoice =
+    s.mainIdx !== undefined ||
+    !!s.pkgSideId ||
+    !!s.sideMode;
+  if(hasPackageChoice){
+    dTotal += 300;
+    has = true;
 
-const mainLimit = 115;
-const sideLimit = 65;
+    const mainLimit = 115;
+    const sideLimit = 65;
 
-if(s.mainIdx!==undefined) {
-const originPrice = d.main[s.mainIdx].s;
-dTotal += Math.max(0, originPrice - mainLimit);
+    if(s.mainIdx !== undefined && d.main[s.mainIdx]){
+      const selectedMain = d.main[s.mainIdx];
+      const originPrice = Number(selectedMain.s) || 0;
+      dTotal += Math.max(0, originPrice - mainLimit);
+      if(s.upgradeMain){
+        dTotal += Math.max(0, (Number(selectedMain.m)||0) - originPrice);
+      }
+    }
 
-if(s.upgradeMain) {
-dTotal += (d.main[s.mainIdx].m - (d.main[s.mainIdx].s || 0));
+    if(s.pkgSideId){
+      const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
+      if(targetSide) dTotal += Math.max(0, (Number(targetSide.s)||0) - sideLimit);
+    }
+
+    dTotal += getVegModePrice(s.sideMode);
+  }
 }
+
+if(s.type==='DOUBLE'){
+  const picked = s.mainIdxs || [];
+  const hasPackageChoice =
+    picked.length > 0 ||
+    !!s.pkgSideId ||
+    !!s.sideMode;
+  if(hasPackageChoice){
+    dTotal += 590;
+    has = true;
+
+    const mainLimit = 190;
+    const sideLimit = 100;
+
+    picked.forEach(idx => {
+      if(d.main[idx]) dTotal += Math.max(0, (Number(d.main[idx].m)||0) - mainLimit);
+    });
+
+    if(s.pkgSideId){
+      const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
+      if(targetSide) dTotal += Math.max(0, (Number(targetSide.m)||0) - sideLimit);
+    }
+
+    dTotal += getVegModePrice(s.sideMode);
+  }
 }
 
-if(s.pkgSideId) {
-const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
-if(targetSide) {
-dTotal += Math.max(0, targetSide.s - sideLimit);
-}
-}
-
-dTotal += getVegModePrice(s.sideMode);
-has=true; 
-}
-
-if(s.type==='DOUBLE'){ 
-dTotal += 590; 
-
-const mainLimit = 190;
-const sideLimit = 100;
-
-const picked = s.mainIdxs || [];
-picked.forEach(idx => {
-if(d.main[idx]) dTotal += Math.max(0, d.main[idx].m - mainLimit);
+d.main.forEach((m,i)=>{
+  if(s[`addonM-${i}-M`]){ dTotal += s[`addonM-${i}-M`] * m.m; has=true; }
+  if(s[`addonM-${i}-S`] && m.s !== null && m.s !== undefined && m.s !== ''){
+    dTotal += s[`addonM-${i}-S`] * m.s; has=true;
+  }
 });
-
-if(s.pkgSideId) {
-const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
-if(targetSide) {
-dTotal += Math.max(0, targetSide.m - sideLimit);
-}
-}
-
-dTotal += getVegModePrice(s.sideMode);
-has=true; 
-}
-
-d.main.forEach((m,i)=>{ if(s[`addonM-${i}-M`]){ dTotal+=s[`addonM-${i}-M`]*m.m; has=true; } if(s[`addonM-${i}-S`] && m.s !== null && m.s !== undefined && m.s !== ''){ dTotal+=s[`addonM-${i}-S`]*m.s; has=true; } });
-d.side.forEach((sd,i)=>{ if(s[`addonS-${i}-M`]){ dTotal+=s[`addonS-${i}-M`]*sd.m; has=true; } if(s[`addonS-${i}-S`]){ dTotal+=s[`addonS-${i}-S`]*sd.s; has=true; } });
+d.side.forEach((sd,i)=>{
+  if(s[`addonS-${i}-M`]){ dTotal += s[`addonS-${i}-M`] * sd.m; has=true; }
+  if(s[`addonS-${i}-S`]){ dTotal += s[`addonS-${i}-S`] * sd.s; has=true; }
+});
 if(s["addonSoup-M"]){ dTotal += s["addonSoup-M"] * d.soup.m; has=true; }
 if(s["addonSoup-S"]){ dTotal += s["addonSoup-S"] * d.soup.s; has=true; }
-if(s.type==='NONE' && has) dTotal+=50;
+if(s.type==='NONE' && has) dTotal += 50;
 
-if(has) { total += dTotal; deliveryDays++; }
+if(has){ total += dTotal; deliveryDays++; }
 }
-if(deliveryDays > 0 && deliveryType === '外送') total += (deliveryDays * 50);
+if(deliveryDays > 0 && deliveryType === '外送') total += deliveryDays * 50;
 return total;
 }
 
