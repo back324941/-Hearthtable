@@ -466,11 +466,20 @@ if(type === 'NONE') return '自由單點';
 return type || '';
 }
 
-function getVegModeText(mode) {
+const vegByDay = {
+  Mon: { name: '青花菜', icon: '🥦' },
+  Tue: { name: '芥蘭菜', icon: '🥬' },
+  Wed: { name: '青花菜', icon: '🥦' },
+  Thu: { name: '芥蘭菜', icon: '🥬' },
+  Fri: { name: '青花菜', icon: '🥦' }
+};
+
+function getVegModeText(mode, day = currentDay) {
+const veg = vegByDay[day] || { name: '青花菜' };
 if(mode === 'TODAY') return '今日時蔬';
 if(mode === 'TODAY_L') return '今日時蔬加大(+20)';
-if(mode === 'BROCCOLI') return '青花菜';
-if(mode === 'BROCCOLI_L') return '青花菜加大(+20)';
+if(mode === 'BROCCOLI') return veg.name;
+if(mode === 'BROCCOLI_L') return veg.name + '加大(+20)';
 if(mode === 'TWIN') return '雙拼(+60)';
 return '未選時蔬';
 }
@@ -564,8 +573,8 @@ function renderVegOptions(sel) {
 const vegOptions = [
 {key:'TODAY', label:'🥬 今日時蔬'},
 {key:'TODAY_L', label:'🥬 今日時蔬加大', price:20},
-{key:'BROCCOLI', label:'🥦 青花菜'},
-{key:'BROCCOLI_L', label:'🥦 青花菜加大', price:20},
+{key:'BROCCOLI', label:`${(vegByDay[currentDay] || {icon:'🥦',name:'青花菜'}).icon} ${(vegByDay[currentDay] || {name:'青花菜'}).name}`},
+{key:'BROCCOLI_L', label:`${(vegByDay[currentDay] || {icon:'🥦',name:'青花菜'}).icon} ${(vegByDay[currentDay] || {name:'青花菜'}).name}加大`, price:20},
 {key:'TWIN', label:'✨ 雙拼', price:60}
 ];
 
