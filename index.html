@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head> 
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>搭伙晚餐 Hearth Table</title>
@@ -138,29 +138,10 @@ button,.apply-btn{letter-spacing:.03em;}
 <header class="max-w-xl mx-auto mb-10 text-center">
 <h1 class="text-4xl font-black tracking-[0.18em] text-white bg-[#a67c52] px-8 py-3 rounded-2xl shadow-lg inline-block">🍱 搭伙晚餐</h1>
 
-<a href="https://raw.githubusercontent.com/back324941/-Hearthtable/main/1.png?v=20260627"
-   target="_blank"
-   style="display:block;margin-top:20px;">
-
-<img
-src="https://raw.githubusercontent.com/back324941/-Hearthtable/main/1.png?v=20260622"
-alt="本週完整菜單"
-style="
-width:100%;
-border-radius:28px;
-box-shadow:0 12px 30px rgba(0,0,0,.12);
-display:block;
-">
-
+<a href="https://back324941.github.io/-Hearthtable/images/1.png" target="_blank" style="display:block;margin-top:20px;">
+<img src="https://back324941.github.io/-Hearthtable/images/1.png" alt="本週完整菜單"
+style="width:100%;border-radius:28px;box-shadow:0 12px 30px rgba(0,0,0,.12);display:block;">
 </a>
-
-<div style="
-margin-top:12px;
-font-size:16px;
-font-weight:800;
-color:#7c4a2d;
-">
-</div>
 <div style="margin-top:12px;font-size:16px;font-weight:800;color:#7c4a2d;">
 📅 本週完整菜單（點圖可放大）
 </div>
@@ -243,7 +224,6 @@ color:#7c4a2d;
 <button onclick="clearDay()" class="text-sm font-black text-red-500 border-2 border-red-100 px-4 py-1 rounded-full clickable">✕ 清空本日</button>
 </div>
 <div class="flex border-[4px] rounded-[2rem] overflow-hidden bg-gray-100 border-gray-100">
-<div onclick="switchDay('Mon')" id="tab-Mon" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">一</div>
 <div onclick="switchDay('Tue')" id="tab-Tue" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">二</div>
 <div onclick="switchDay('Wed')" id="tab-Wed" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">三</div>
 <div onclick="switchDay('Thu')" id="tab-Thu" class="day-tab flex-1 py-5 text-center font-black text-3xl clickable">四</div>
@@ -261,7 +241,7 @@ color:#7c4a2d;
 🪙 會員制度：<br>
 👑 當月月初完成儲值即可享有會員資格<br>
 ✔ 購買套餐或單日單點消費滿 NT$500，可獲得 1 點<br>
-✔ 點數可換購：湯品 5 點、鮭魚 10 點、冰捲15 點<br>
+✔ 點數可於套餐內換購指定餐點<br>
 💳 儲值金與點數永久有效，不受會員資格影響
 </span>
 </p>
@@ -316,7 +296,7 @@ color:#7c4a2d;
 </div>
 
 <script>
-const disabledDays = ['Fri']; 
+const disabledDays = []; 
 const LINE_OFFICIAL_URL = "https://lin.ee/7gDyy0y"; 
 const LINE_PAY_URL = "https://line.me/ti/p/TqORVd2VXL"; 
 const JK_TRANSFER_URL = "https://www.jkopay.com/transfer?jkoid=JKO0000000903550968"; 
@@ -326,90 +306,78 @@ function ceilTo5Or0(val) {
 return Math.ceil(val / 5) * 5;
 }
 const menus = {
-Mon:{
-  main:[
-    {i:"A",n:"南瓜燉肉",m:235,s:145},
-    {i:"B",n:"鮮蚵煎蛋",m:195,s:120},
-    {i:"C",n:"蔥油雞",m:205,s:125},
-    {i:"D",n:"台式奶油煎蝦",m:240,s:145},
-    {i:"E",n:"今日煎魚",m:200,s:120}
-  ],
-  side:[
-    {i:"F",n:"金針菇起司煎餅",m:110,s:70},
-    {i:"G",n:"糯米椒炒豆乾",m:110,s:70},
-    {i:"H",n:"絲瓜炒蝦仁",m:130,s:80},
-    {i:"I",n:"吻仔魚炒蛋",m:115,s:70}
-  ],
-  soup:{n:"番茄蛋花肉片湯",m:120,s:50}
+Tue: {
+main: [
+{i:"A",n:"金針花炒牛肉",m:225,s:135},
+{i:"B",n:"咖哩鮮蝦",m:250,s:150},
+{i:"C",n:"港式油雞",m:190,s:115},
+{i:"D",n:"芭樂涼拌豬肉片",m:225,s:135},
+{i:"E",n:"乾煎鱈魚",m:290,s:175}
+],
+side: [
+{i:"F",n:"韓式雜菜粉絲",m:120,s:75},
+{i:"G",n:"豆芽菜炒蛋",m:90,s:55},
+{i:"H",n:"金針菇吻仔魚",m:125,s:75},
+{i:"I",n:"香滷豆干",m:90,s:55}
+],
+soup: {n:"地瓜芋圓湯",p:100}
 },
-Tue:{
-  main:[
-    {i:"A",n:"胡椒雞",m:215,s:130},
-    {i:"B",n:"酸菜魚",m:220,s:135},
-    {i:"C",n:"大醬豬肉豆腐煲",m:200,s:120},
-    {i:"D",n:"台式奶油煎蝦",m:240,s:145},
-    {i:"E",n:"優質鮭魚",m:260,s:null}
-  ],
-  side:[
-    {i:"F",n:"油豆腐炒時蔬",m:105,s:65},
-    {i:"G",n:"糯米椒炒豆乾",m:110,s:70},
-    {i:"H",n:"絲瓜炒蝦仁",m:130,s:80},
-    {i:"I",n:"吻仔魚炒蛋",m:115,s:70}
-  ],
-  soup:{n:"番茄蛋花肉片湯",m:120,s:50}
+
+Wed: {
+main: [
+{i:"A",n:"鮮蔬乾煸雞",m:205,s:125},
+{i:"B",n:"鮮蚵粉絲煲",m:210,s:130},
+{i:"C",n:"油菜炒牛肉",m:240,s:145},
+{i:"D",n:"乾煎鱸魚",m:190,s:115},
+{i:"E",n:"乾煎鮭魚",m:260,s:160}
+],
+side: [
+{i:"F",n:"蒲瓜炒肉絲",m:100,s:60},
+{i:"G",n:"豆芽菜炒蛋",m:90,s:55},
+{i:"H",n:"金針菇吻仔魚",m:125,s:75},
+{i:"I",n:"香滷豆干",m:90,s:55}
+],
+soup: {n:"綠豆薏仁湯",p:100}
 },
-Wed:{
-  main:[
-    {i:"A",n:"橙汁雞翅",m:195,s:120},
-    {i:"B",n:"滑菇炒蝦仁",m:235,s:145},
-    {i:"C",n:"大醬豬肉豆腐煲",m:200,s:120},
-    {i:"D",n:"泡菜炒牛肉",m:220,s:135},
-    {i:"E",n:"今日煎魚",m:200,s:120}
-  ],
-  side:[
-    {i:"F",n:"馬鈴薯炒肉絲",m:105,s:65},
-    {i:"G",n:"西芹炒肉絲",m:100,s:60},
-    {i:"H",n:"鮮蚵豆腐",m:110,s:70},
-    {i:"I",n:"魚香烘蛋",m:110,s:70}
-  ],
-  soup:{n:"番茄蛋花肉片湯",m:120,s:50}
+
+Thu: {
+main: [
+{i:"A",n:"味噌豆瓣炒雞肉",m:215,s:130},
+{i:"B",n:"糖醋旗魚腹",m:215,s:130},
+{i:"C",n:"芭樂涼拌豬肉片",m:225,s:135},
+{i:"D",n:"乾煎鱸魚",m:190,s:115},
+{i:"E",n:"乾煎鮭魚",m:260,s:160}
+],
+side: [
+{i:"F",n:"泰式涼拌荷包蛋",m:105,s:65},
+{i:"G",n:"菜脯厚煎蛋",m:100,s:60},
+{i:"H",n:"哨子豆腐",m:100,s:60},
+{i:"I",n:"香滷豆干",m:90,s:55}
+],
+soup: {n:"地瓜芋圓湯",p:100}
 },
-Thu:{
-  main:[
-    {i:"A",n:"馬鈴薯燉梅花肉",m:240,s:145},
-    {i:"B",n:"奶香茄汁蝦",m:230,s:140},
-    {i:"C",n:"蔥油雞",m:205,s:125},
-    {i:"D",n:"泡菜炒牛肉",m:220,s:135},
-    {i:"E",n:"優質鮭魚",m:260,s:null}
-  ],
-  side:[
-    {i:"F",n:"奶油玉米雞丁",m:115,s:70},
-    {i:"G",n:"西芹炒肉絲",m:100,s:60},
-    {i:"H",n:"鮮蚵豆腐",m:110,s:70},
-    {i:"I",n:"魚香烘蛋",m:110,s:70}
-  ],
-  soup:{n:"番茄蛋花肉片湯",m:120,s:50}
-},
-Fri:{
-  main:[
-    {i:"A",n:"馬鈴薯燉梅花肉",m:240,s:145},
-    {i:"B",n:"奶香茄汁蝦",m:230,s:140},
-    {i:"C",n:"蔥油雞",m:205,s:125},
-    {i:"D",n:"泡菜炒牛肉",m:220,s:135},
-    {i:"E",n:"優質鮭魚",m:260,s:null}
-  ],
-  side:[
-    {i:"F",n:"奶油玉米雞丁",m:115,s:70},
-    {i:"G",n:"西芹炒肉絲",m:100,s:60},
-    {i:"H",n:"鮮蚵豆腐",m:110,s:70},
-    {i:"I",n:"魚香烘蛋",m:110,s:70}
-  ],
-  soup:{n:"番茄蛋花肉片湯",m:120,s:50}
+
+Fri: {
+main: [
+{i:"A",n:"蒜香蜂蜜奶油豬",m:265,s:160},
+{i:"B",n:"香菜皮蛋燉鱸魚",m:240,s:145},
+{i:"C",n:"港式油雞",m:195,s:120},
+{i:"D",n:"油菜炒牛肉",m:245,s:150},
+{i:"E",n:"乾煎鱈魚",m:290,s:175}
+],
+side: [
+{i:"F",n:"避風塘杏鮑菇",m:120,s:75},
+{i:"G",n:"菜脯厚煎蛋",m:100,s:60},
+{i:"H",n:"哨子豆腐",m:100,s:60},
+{i:"I",n:"香滷豆干",m:90,s:55}
+],
+soup: {n:"綠豆薏仁湯",p:100}
 }
 };
 
-let selections = {Mon: {}, Tue: {}, Wed: {}, Thu: {}, Fri: {}};
-let currentDay = 'Mon';
+
+let selections = { Tue: {}, Wed: {}, Thu: {}, Fri: {} };
+let currentDay = 'Tue';
 let pendingRecommendedUpgrade = false;
 let recommendedLargeAddons = 0;
 let recommendedSmallAddons = 0;
@@ -446,7 +414,7 @@ t.classList.add('active');
 }
 
 function goToNextDay() { 
-const days=['Mon','Tue','Wed','Thu','Fri']; 
+const days=['Tue','Wed','Thu','Fri']; 
 let idx=days.indexOf(currentDay); 
 for(let i = idx + 1; i < days.length; i++) {
 if(!disabledDays.includes(days[i])) {
@@ -466,20 +434,16 @@ if(type === 'NONE') return '自由單點';
 return type || '';
 }
 
-const vegByDay = {
-  Mon: { name: '青花菜', icon: '🥦' },
-  Tue: { name: '芥蘭菜', icon: '🥬' },
-  Wed: { name: '青花菜', icon: '🥦' },
-  Thu: { name: '芥蘭菜', icon: '🥬' },
-  Fri: { name: '青花菜', icon: '🥦' }
-};
+function getVegNameByDay(day) {
+return (day === 'Tue' || day === 'Thu') ? '芥蘭菜' : '青花菜';
+}
 
-function getVegModeText(mode, day = currentDay) {
-const veg = vegByDay[day] || { name: '青花菜' };
-if(mode === 'TODAY') return '今日時蔬';
-if(mode === 'TODAY_L') return '今日時蔬加大(+20)';
-if(mode === 'BROCCOLI') return veg.name;
-if(mode === 'BROCCOLI_L') return veg.name + '加大(+20)';
+function getVegModeText(mode, day) {
+const vegName = getVegNameByDay(day || currentDay);
+if(mode === 'TODAY') return vegName;
+if(mode === 'TODAY_L') return vegName + '加大(+20)';
+if(mode === 'BROCCOLI') return '青花菜';
+if(mode === 'BROCCOLI_L') return '青花菜加大(+20)';
 if(mode === 'TWIN') return '雙拼(+60)';
 return '未選時蔬';
 }
@@ -496,12 +460,10 @@ if(!selections[currentDay]) selections[currentDay] = {};
 if(k === 'type') {
 const oldExchangeSoup = selections[currentDay].exchangeSoup;
 const oldExchangeSalmon = selections[currentDay].exchangeSalmon;
-const oldExchangeCod = selections[currentDay].exchangeCod;
 selections[currentDay] = {
 type: v,
 exchangeSoup: oldExchangeSoup || false,
-exchangeSalmon: oldExchangeSalmon || false,
-exchangeCod: oldExchangeCod || false
+exchangeSalmon: oldExchangeSalmon || false
 };
 } else {
 selections[currentDay][k]=v;
@@ -539,21 +501,14 @@ updateTotal();
 }
 
 function handleExchangeChange(type) {
-// 互斥邏輯：若勾選一項，另外兩項必須取消
+// 互斥邏輯：若勾選一項，另一項必須取消
 if (type === 'soup') {
 if (selections[currentDay].exchangeSoup) {
 selections[currentDay].exchangeSalmon = false;
-selections[currentDay].exchangeCod = false;
 }
 } else if (type === 'salmon') {
 if (selections[currentDay].exchangeSalmon) {
 selections[currentDay].exchangeSoup = false;
-selections[currentDay].exchangeCod = false;
-}
-} else if (type === 'cod') {
-if (selections[currentDay].exchangeCod) {
-selections[currentDay].exchangeSoup = false;
-selections[currentDay].exchangeSalmon = false;
 }
 }
 renderMenu();
@@ -570,11 +525,12 @@ updateTotal();
 function changeQty(id,amt) { selections[currentDay][id] = Math.max(0, (selections[currentDay][id]||0)+amt); renderMenu(); updateTotal(); }
 
 function renderVegOptions(sel) {
+const vegName = getVegNameByDay(currentDay);
 const vegOptions = [
-{key:'TODAY', label:'🥬 今日時蔬'},
-{key:'TODAY_L', label:'🥬 今日時蔬加大', price:20},
-{key:'BROCCOLI', label:`${(vegByDay[currentDay] || {icon:'🥦',name:'青花菜'}).icon} ${(vegByDay[currentDay] || {name:'青花菜'}).name}`},
-{key:'BROCCOLI_L', label:`${(vegByDay[currentDay] || {icon:'🥦',name:'青花菜'}).icon} ${(vegByDay[currentDay] || {name:'青花菜'}).name}加大`, price:20},
+{key:'TODAY', label:`🥬 ${vegName}`},
+{key:'TODAY_L', label:`🥬 ${vegName}加大`, price:20},
+{key:'BROCCOLI', label:'🥦 青花菜'},
+{key:'BROCCOLI_L', label:'🥦 青花菜加大', price:20},
 {key:'TWIN', label:'✨ 雙拼', price:60}
 ];
 
@@ -606,7 +562,7 @@ let html = `<div class="grid grid-cols-2 gap-4">
                  輕享餐 $300起<br><span class="text-base">小份主菜＋小份副菜</span>
                </div>
                <div onclick="updateSel('type','DOUBLE')" class="p-6 border-4 rounded-[2rem] font-black text-center text-2xl clickable ${sel.type=='DOUBLE'?'item-selected':'border-gray-100 text-gray-300'}">
-                 雙饗餐 $590<br><span class="text-base">大份主菜四選二</span>
+                 雙饗餐 $590<br><span class="text-base">大份主菜五選二</span>
                </div>
            </div>
            <div onclick="updateSel('type','NONE')" class="py-2 text-center font-black text-lg ${sel.type=='NONE'?'text-[#a67c52]':'text-gray-300'} underline clickable">➔ 自由單點模式</div>`;
@@ -617,15 +573,14 @@ if(sel.type==='LIGHT'||sel.type==='DOUBLE'){
 if(sel.type === 'LIGHT') {
 const mainLimit = 115;
 html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">輕享餐主菜 (小份必選一)</h3>`;
-d.main.filter(m => m.i !== 'E').forEach((m)=>{
-const i = d.main.indexOf(m);
+d.main.forEach((m,i)=>{
 const originPrice = m.s;
 const ex = Math.max(0, originPrice - mainLimit); 
 html += `<div onclick="updateSel('mainIdx',${i})" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${sel.mainIdx===i?'item-selected':'border-gray-50 bg-gray-50/50'}"><span>${m.i}. ${m.n}</span>${ex>0?`<span class="text-red-500">+$${ex}</span>`:''}</div>`;
 });
 
 if(sel.mainIdx !== undefined) {
-const upgradeCost = d.main[sel.mainIdx].m - (d.main[sel.mainIdx].s || 0);
+const upgradeCost = d.main[sel.mainIdx].m - d.main[sel.mainIdx].s;
 html += `<div onclick="toggleUpgrade()" class="p-4 border-4 border-red-100 rounded-2xl font-black text-center text-xl clickable ${sel.upgradeMain?'upgrade-active':'bg-red-50 text-red-500'}">🚀 主菜升級大份 (+$${upgradeCost})</div>`;
 }
 html += `</div>`;
@@ -634,9 +589,8 @@ html += `</div>`;
 if(sel.type === 'DOUBLE') {
 const mainLimit = 190;
 const picked = sel.mainIdxs || [];
-html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">雙饗餐主菜 (大份選二)</h3>`;
-d.main.forEach((m)=>{
-const i = d.main.indexOf(m);
+html += `<div class="space-y-4 pt-6 border-t-4 border-gray-50"><h3 class="text-xl font-black text-[#a67c52]">雙饗餐主菜 (大份五選二)</h3>`;
+d.main.forEach((m,i)=>{
 const ex = Math.max(0, m.m - mainLimit); 
 const selectedOrder = picked.indexOf(i) >= 0 ? ` <span class="text-sm bg-[#a67c52] text-white px-2 py-1 rounded-full">已選${picked.indexOf(i)+1}</span>` : '';
 html += `<div onclick="toggleDoubleMain(${i})" class="p-6 border-4 rounded-2xl font-black text-2xl flex justify-between items-center clickable ${picked.includes(i)?'item-selected':'border-gray-50 bg-gray-50/50'}"><span>${m.i}. ${m.n}${selectedOrder}</span>${ex>0?`<span class="text-red-500">+$${ex}</span>`:''}</div>`;
@@ -658,10 +612,6 @@ html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2
                        <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                            <input type="checkbox" ${sel.exchangeSalmon ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSalmon = this.checked; handleExchangeChange('salmon');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
                            <span>換購香煎鮭魚 🐟 (扣 10 點)</span>
-                       </label>
-                       <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
-                           <input type="checkbox" ${sel.exchangeCod ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeCod = this.checked; handleExchangeChange('cod');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
-                           <span>換購白灼蝦 🦐 (扣 10 點)</span>
                        </label>
                    </div>
                </div>`;
@@ -687,33 +637,26 @@ if(sel.type){
 html += `<div class="pt-10 border-t-4 border-gray-100 space-y-8"><h3 class="text-2xl font-black text-[#a67c52]">單點加購</h3>`;
 d.main.forEach((m,i)=> html += renderAddon(`addonM-${i}`, m.i, m.n, m.m, m.s));
 d.side.forEach((s,i)=> html += renderAddon(`addonS-${i}`, s.i, s.n, s.m, s.s));
-html += `<div class="p-6 bg-white rounded-[2.5rem] border-4 border-gray-100 shadow-md space-y-4">
-                   <div class="font-black text-2xl">S. ${d.soup.n}</div>
-                   <div class="grid grid-cols-2 gap-4">
-                       <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>大 $${d.soup.m}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('addonSoup-M',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel['addonSoup-M']||0}</div><div onclick="changeQty('addonSoup-M',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
-                       <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>小 $${d.soup.s}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('addonSoup-S',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel['addonSoup-S']||0}</div><div onclick="changeQty('addonSoup-S',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
-                   </div></div></div>`;
+html += `<div class="p-6 bg-white rounded-[2.5rem] flex justify-between items-center border-4 border-gray-100 shadow-md">
+                   <div class="font-black text-2xl">S. ${d.soup.n}<br><span class="text-orange-600">$${d.soup.p}</span></div>
+                   <div class="v-qty-container"><div onclick="changeQty('addonSoup',1)" class="v-qty-btn btn-plus">＋</div><div class="text-3xl font-black py-2">${sel.addonSoup||0}</div><div onclick="changeQty('addonSoup',-1)" class="v-qty-btn btn-minus">－</div></div></div></div>`;
 }
 document.getElementById('menu-content').innerHTML = html;
 }
 
 function renderAddon(id,l,n,pm,ps) {
 const sel=selections[currentDay];
-const smallHtml = (ps === null || ps === undefined || ps === '')
-? `<div class="bg-gray-50 p-4 rounded-2xl flex justify-center items-center text-gray-400 font-black">無小份</div>`
-: `<div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>小 $${ps}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-S',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-S']||0}</div><div onclick="changeQty('${id}-S',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>`;
-
 return `<div class="p-6 bg-white rounded-[2.5rem] border-4 border-gray-100 shadow-lg space-y-4">
                <div class="font-black text-2xl">${l}. ${n}</div>
                <div class="grid grid-cols-2 gap-4">
                    <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>大 $${pm}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-M',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-M']||0}</div><div onclick="changeQty('${id}-M',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
-                   ${smallHtml}
+                   <div class="bg-gray-50 p-4 rounded-2xl flex justify-between items-center"><span>小 $${ps}</span><div class="v-qty-container" style="width:70px"><div onclick="changeQty('${id}-S',1)" class="v-qty-btn" style="height:40px">＋</div><div class="font-black">${sel[id+'-S']||0}</div><div onclick="changeQty('${id}-S',-1)" class="v-qty-btn" style="height:40px">－</div></div></div>
                </div></div>`;
 }
 
 function buildDetailText() {
 let result = [];
-const dayNames = {Mon:'週一',Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
+const dayNames = {Tue:'週二',Wed:'週三',Thu:'週四',Fri:'週五'};
 for(let day in selections){
 let items = [];
 const s = selections[day], d = menus[day];
@@ -735,10 +678,9 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(小份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
-if(s.exchangeCod) exchangeText.push("換購白灼蝦(扣10點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
-items.push(`【輕享餐: 主菜:${chosenMain} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
+items.push(`【輕享餐: 主菜:${chosenMain} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode, day)}${exchangeStr}】`);
 }
 
 if(s.type === 'DOUBLE') {
@@ -754,10 +696,9 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(大份)` : s.pkgS
 let exchangeText = [];
 if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
-if(s.exchangeCod) exchangeText.push("換購白灼蝦(扣10點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
 
-items.push(`【雙饗餐: 主菜:${mainText} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode)}${exchangeStr}】`);
+items.push(`【雙饗餐: 主菜:${mainText} + 副菜:${chosenSideName} / 時蔬:${getVegModeText(s.sideMode, day)}${exchangeStr}】`);
 }
 
 d.main.forEach((m,i)=>{
@@ -768,8 +709,7 @@ d.side.forEach((sd,i)=>{
 if(s[`addonS-${i}-M`]) items.push(`${sd.i}.${sd.n}(大)x${s[`addonS-${i}-M`]}`);
 if(s[`addonS-${i}-S`]) items.push(`${sd.i}.${sd.n}(小)x${s[`addonS-${i}-S`]}`);
 });
-if(s["addonSoup-M"]) items.push(`S.${d.soup.n}(大)x${s["addonSoup-M"]}`);
-if(s["addonSoup-S"]) items.push(`S.${d.soup.n}(小)x${s["addonSoup-S"]}`);
+if(s.addonSoup) items.push(`S.${d.soup.n}x${s.addonSoup}`);
 if(s.type==='NONE' && items.length > 0) items.push("(單點基本費+$50)");
 if(items.length > 0) result.push(`${dayNames[day]}: ${items.join(' + ')}`);
 }
@@ -785,86 +725,65 @@ const deliveryType = document.getElementById('deliveryType').value;
 let deliveryDays = 0;
 
 for(let day in selections){
-const s=selections[day];
-const d=menus[day];
-if(!d) continue;
-
+const s=selections[day], d=menus[day];
 let dTotal=0, has=false;
 
-// 套餐僅在實際選了菜色／時蔬時才成立計價；單純打開套餐不收套餐基本費
-if(s.type==='LIGHT'){
-  const hasPackageChoice =
-    s.mainIdx !== undefined ||
-    !!s.pkgSideId ||
-    !!s.sideMode;
-  if(hasPackageChoice){
-    dTotal += 300;
-    has = true;
+if(s.type==='LIGHT'){ 
+dTotal += 300; 
 
-    const mainLimit = 115;
-    const sideLimit = 65;
+const mainLimit = 115;
+const sideLimit = 65;
 
-    if(s.mainIdx !== undefined && d.main[s.mainIdx]){
-      const selectedMain = d.main[s.mainIdx];
-      const originPrice = Number(selectedMain.s) || 0;
-      dTotal += Math.max(0, originPrice - mainLimit);
-      if(s.upgradeMain){
-        dTotal += Math.max(0, (Number(selectedMain.m)||0) - originPrice);
-      }
-    }
+if(s.mainIdx!==undefined) {
+const originPrice = d.main[s.mainIdx].s;
+dTotal += Math.max(0, originPrice - mainLimit);
 
-    if(s.pkgSideId){
-      const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
-      if(targetSide) dTotal += Math.max(0, (Number(targetSide.s)||0) - sideLimit);
-    }
-
-    dTotal += getVegModePrice(s.sideMode);
-  }
+if(s.upgradeMain) {
+dTotal += (d.main[s.mainIdx].m - d.main[s.mainIdx].s);
+}
 }
 
-if(s.type==='DOUBLE'){
-  const picked = s.mainIdxs || [];
-  const hasPackageChoice =
-    picked.length > 0 ||
-    !!s.pkgSideId ||
-    !!s.sideMode;
-  if(hasPackageChoice){
-    dTotal += 590;
-    has = true;
-
-    const mainLimit = 190;
-    const sideLimit = 100;
-
-    picked.forEach(idx => {
-      if(d.main[idx]) dTotal += Math.max(0, (Number(d.main[idx].m)||0) - mainLimit);
-    });
-
-    if(s.pkgSideId){
-      const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
-      if(targetSide) dTotal += Math.max(0, (Number(targetSide.m)||0) - sideLimit);
-    }
-
-    dTotal += getVegModePrice(s.sideMode);
-  }
+if(s.pkgSideId) {
+const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
+if(targetSide) {
+dTotal += Math.max(0, targetSide.s - sideLimit);
+}
 }
 
-d.main.forEach((m,i)=>{
-  if(s[`addonM-${i}-M`]){ dTotal += s[`addonM-${i}-M`] * m.m; has=true; }
-  if(s[`addonM-${i}-S`] && m.s !== null && m.s !== undefined && m.s !== ''){
-    dTotal += s[`addonM-${i}-S`] * m.s; has=true;
-  }
+dTotal += getVegModePrice(s.sideMode);
+has=true; 
+}
+
+if(s.type==='DOUBLE'){ 
+dTotal += 590; 
+
+const mainLimit = 190;
+const sideLimit = 100;
+
+const picked = s.mainIdxs || [];
+picked.forEach(idx => {
+if(d.main[idx]) dTotal += Math.max(0, d.main[idx].m - mainLimit);
 });
-d.side.forEach((sd,i)=>{
-  if(s[`addonS-${i}-M`]){ dTotal += s[`addonS-${i}-M`] * sd.m; has=true; }
-  if(s[`addonS-${i}-S`]){ dTotal += s[`addonS-${i}-S`] * sd.s; has=true; }
-});
-if(s["addonSoup-M"]){ dTotal += s["addonSoup-M"] * d.soup.m; has=true; }
-if(s["addonSoup-S"]){ dTotal += s["addonSoup-S"] * d.soup.s; has=true; }
-if(s.type==='NONE' && has) dTotal += 50;
 
-if(has){ total += dTotal; deliveryDays++; }
+if(s.pkgSideId) {
+const targetSide = d.side.find(sd => sd.i === s.pkgSideId);
+if(targetSide) {
+dTotal += Math.max(0, targetSide.m - sideLimit);
 }
-if(deliveryDays > 0 && deliveryType === '外送') total += deliveryDays * 50;
+}
+
+dTotal += getVegModePrice(s.sideMode);
+has=true; 
+}
+
+d.main.forEach((m,i)=>{ if(s[`addonM-${i}-M`]){ dTotal+=s[`addonM-${i}-M`]*m.m; has=true; } if(s[`addonM-${i}-S`]){ dTotal+=s[`addonM-${i}-S`]*m.s; has=true; } });
+d.side.forEach((sd,i)=>{ if(s[`addonS-${i}-M`]){ dTotal+=s[`addonS-${i}-M`]*sd.m; has=true; } if(s[`addonS-${i}-S`]){ dTotal+=s[`addonS-${i}-S`]*sd.s; has=true; } });
+if(s.addonSoup){ dTotal+=s.addonSoup*d.soup.p; has=true; }
+if(s.type==='NONE' && has) dTotal+=50;
+
+if(has) { total += dTotal; deliveryDays++; }
+}
+if(deliveryDays > 0 && deliveryType === '外送') total += (deliveryDays * 50);
 return total;
 }
 
@@ -881,12 +800,11 @@ for(let day in selections) { if(selections[day].type) deliveryDays++; }
 if(deliveryDays > 0) deliveryFeeHtml = `<div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl font-black text-sm text-blue-700">外送費 (${deliveryDays}天): +$${deliveryDays * 50}</div>`;
 }
 
-// 計算點數（湯品5點，鮭魚10點，白灼蝦10點）
+// 計算點數（鮭魚10點，湯品5點）
 let totalPointsRequired = 0;
 for(let day in selections) {
 if(selections[day].exchangeSoup) totalPointsRequired += 5;
 if(selections[day].exchangeSalmon) totalPointsRequired += 10;
-if(selections[day].exchangeCod) totalPointsRequired += 10;
 }
 let pointsHtml = '';
 if(totalPointsRequired > 0) {
@@ -947,7 +865,7 @@ const box = document.getElementById('recommendation-notice-box');
 if(!box) return;
 
 const mealText = getPackageName(meal);
-const vegText = getVegModeText(veg);
+const vegText = getVegModeText(veg, currentDay);
 let lines = [];
 const dayNames = {Tue:'週二', Wed:'週三', Thu:'週四', Fri:'週五'};
 lines.push(`已依推薦幫您先套用到${dayNames[currentDay] || '指定日期'}：${mealText}、${vegText}`);
@@ -1020,7 +938,7 @@ if(menu) menu.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 function init() {
 if(disabledDays.includes(currentDay)) {
-const days=['Mon','Tue','Wed','Thu','Fri'];
+const days=['Tue','Wed','Thu','Fri'];
 for(let d of days) { if(!disabledDays.includes(d)) { currentDay = d; break; } }
 }
 updateTabUI();
@@ -1113,7 +1031,6 @@ async function submitOrder() {
 
         if (s.exchangeSoup) totalPointsRequired += 5;
         if (s.exchangeSalmon) totalPointsRequired += 10;
-        if (s.exchangeCod) totalPointsRequired += 10;
     }
 
     const total = calculateTotal();
