@@ -463,7 +463,7 @@ const vegByDay = {
 };
 
 function getVegModeText(mode, day = currentDay) {
-  // 今日時蔬為每日隨機供應、且不同於青花菜與芥蘭菜，因此不綁定固定菜名
+  // 今日時蔬為每日隨機供應、且不同於青花菜與地瓜葉，因此不綁定固定菜名
   const veg = vegByDay[day] || { name: '青花菜' };
   if (mode === 'TODAY') return '今日時蔬';
   if (mode === 'TODAY_L') return '今日時蔬加大(+20)';
@@ -471,7 +471,7 @@ function getVegModeText(mode, day = currentDay) {
   if (mode === 'BROCCOLI_L') return '青花菜加大(+20)';
   if (mode === 'KAILAN') return '地瓜葉';
   if (mode === 'KAILAN_L') return '地瓜葉加大(+20)';
-  if (mode === 'TWIN') return '雙拼（今日時蔬＋地瓜葉）(+60)';
+  if (mode === 'TWIN') return '雙拼(+60)';
   return '未選時蔬';
 }
 
@@ -575,7 +575,7 @@ const vegOptions = [
   {key:'TODAY', label:'🥬 今日時蔬'},
   {key:'TODAY_L', label:'🥬 今日時蔬加大', price:20},
   ...specificVegOptions,
-  {key:'TWIN', label:'🥬 雙拼（今日時蔬＋地瓜葉）', price:60}
+  {key:'TWIN', label:'🥬 雙拼', price:60}
 ];
 
 let html = `<div class="space-y-4 pt-6"><h3 class="text-xl font-black text-[#a67c52]">套餐時蔬選擇 (必選一)</h3>`;
