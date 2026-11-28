@@ -677,7 +677,7 @@ button,.apply-btn{font-family:inherit;}
 🪙 會員制度：<br>
 👑 當月月初完成儲值即可享有會員資格<br>
 ✔ 購買套餐或單日單點消費滿 NT$500，可獲得 1 點<br>
-✔ 點數可換購：湯品 7 點、鮭魚 10 點、白灼蝦 10 點<br>
+✔ 點數可換購：湯品 5 點、鮭魚 10 點、冰捲15 點<br>
 💳 儲值金與點數永久有效，不受會員資格影響
 </span>
 </p>
@@ -732,7 +732,7 @@ button,.apply-btn{font-family:inherit;}
 </div>
 
 <script>
-const disabledDays = ['Mon']; // 本週週二至週五正常開放
+const disabledDays = ['Mon']; // 本週週一公休，週二至週五正常開放
 const LINE_OFFICIAL_URL = "https://lin.ee/7gDyy0y"; 
 const LINE_PAY_URL = "https://line.me/ti/p/TqORVd2VXL"; 
 const JK_TRANSFER_URL = "https://www.jkopay.com/transfer?jkoid=JKO0000000903550968"; 
@@ -742,78 +742,89 @@ function ceilTo5Or0(val) {
 return Math.ceil(val / 5) * 5;
 }
 const menus = {
-
-Tue: {
-  main: [
-    {i:"A",n:"花生味噌豬梅花",m:240,s:145},
-    {i:"B",n:"彩椒炒三鮮",m:220,s:135},
-    {i:"C",n:"和風雞腿燉豆腐",m:200,s:120},
-    {i:"D",n:"蔥爆蝦",m:220,s:135},
-    {i:"E",n:"今日煎魚",m:220,s:null}
-  ],
-  side: [
-    {i:"F",n:"大黃瓜炒貢丸",m:100,s:60},
-    {i:"G",n:"櫛瓜炒肉絲",m:100,s:60},
-    {i:"H",n:"芹菜炒豆乾",m:90,s:55},
-    {i:"I",n:"番茄嫩蛋",m:105,s:65}
-  ],
-  soup:{n:"清燉牛肉湯",m:150,s:70}
-},
-
-Wed: {
-  main: [
-    {i:"A",n:"胡椒白菜雞",m:235,s:145},
-    {i:"B",n:"避風塘魷魚",m:230,s:140},
-    {i:"C",n:"泡菜豬",m:195,s:120},
-    {i:"D",n:"和風雞腿燉豆腐",m:200,s:120},
-    {i:"E",n:"今日煎魚",m:220,s:null}
-  ],
-  side: [
-    {i:"F",n:"木須炒蛋",m:100,s:60},
-    {i:"G",n:"櫛瓜炒肉絲",m:100,s:60},
-    {i:"H",n:"糖醋豆包",m:120,s:75},
-    {i:"I",n:"韭菜炒蛋",m:105,s:65}
-  ],
-  soup:{n:"清燉牛肉湯",m:150,s:70}
-},
-
-Thu: {
-  main: [
-    {i:"A",n:"韓式辣牛肉燉豆腐 🌶️",m:215,s:130},
-    {i:"B",n:"XO醬炒小卷 🌶️",m:225,s:135},
-    {i:"C",n:"泡菜豬",m:195,s:120},
-    {i:"D",n:"和風雞腿燉豆腐",m:200,s:120},
-    {i:"E",n:"優質鮭魚",m:260,s:null}
-  ],
-  side: [
-    {i:"F",n:"白菜滷",m:120,s:75},
-    {i:"G",n:"蔥爆肉絲",m:110,s:70},
-    {i:"H",n:"糖醋豆包",m:120,s:75},
-    {i:"I",n:"韭菜炒蛋",m:105,s:65}
-  ],
-  soup:{n:"清燉牛肉湯",m:150,s:70}
-},
-
-Fri: {
-  main: [
+Mon:{
+  main:[
     {i:"A",n:"奶香菠菜雞腿",m:240,s:145},
     {i:"B",n:"佃煮秋刀魚",m:200,s:120},
-    {i:"C",n:"泡菜豬",m:195,s:120},
-    {i:"D",n:"蔥爆蝦",m:220,s:135},
+    {i:"C",n:"酸菜牛",m:215,s:130},
+    {i:"D",n:"泡菜豬",m:195,s:120},
     {i:"E",n:"優質鮭魚",m:260,s:null}
   ],
-  side: [
-    {i:"F",n:"馬鈴薯炒肉末",m:100,s:60},
-    {i:"G",n:"蔥爆肉絲",m:110,s:70},
-    {i:"H",n:"芹菜炒豆乾",m:90,s:55},
-    {i:"I",n:"番茄嫩蛋",m:105,s:65}
+  side:[
+    {i:"F",n:"茄汁燒豆皮",m:110,s:70},
+    {i:"G",n:"水蓮涼拌干絲",m:110,s:70},
+    {i:"H",n:"蔥爆肉絲",m:110,s:70},
+    {i:"I",n:"菜脯蛋",m:90,s:55}
   ],
-  soup:{n:"清燉牛肉湯",m:150,s:70}
-
+  soup:{n:"刈菜雞湯",m:120,s:50}
+},
+Tue:{
+  main:[
+    {i:"A",n:"梅子小雞腿",m:190,s:115},
+    {i:"B",n:"茄汁鮮蝦",m:235,s:145},
+    {i:"C",n:"滑蛋牛肉",m:135,s:85},
+    {i:"D",n:"豬肉壽喜燒",m:195,s:120},
+    {i:"E",n:"乾煎金鲳",m:260,s:null}
+  ],
+  side:[
+    {i:"F",n:"三杯皮蛋油豆腐",m:110,s:70},
+    {i:"G",n:"芹菜炒豆乾",m:90,s:55},
+    {i:"H",n:"櫛瓜炒杏鮑菇",m:110,s:70},
+    {i:"I",n:"蝦仁炒蛋",m:125,s:75}
+  ],
+  soup:{n:"刈菜雞湯",m:120,s:50}
+},
+Wed:{
+  main:[
+    {i:"A",n:"古早味滷肉",m:225,s:135},
+    {i:"B",n:"鮮蚵煎蛋",m:200,s:120},
+    {i:"C",n:"和風雞腿燉豆腐",m:200,s:120},
+    {i:"D",n:"避風塘魷魚",m:230,s:140},
+    {i:"E",n:"乾煎金鲳",m:260,s:null}
+  ],
+  side:[
+    {i:"F",n:"馬鈴薯炒肉末",m:100,s:60},
+    {i:"G",n:"芹菜炒豆乾",m:90,s:55},
+    {i:"H",n:"櫛瓜炒杏鮑菇",m:110,s:70},
+    {i:"I",n:"蝦仁炒蛋",m:125,s:75}
+  ],
+  soup:{n:"刈菜雞湯",m:120,s:50}
+},
+Thu:{
+  main:[
+    {i:"A",n:"奶油蘋果燉肉",m:245,s:150},
+    {i:"B",n:"彩椒炒三鮮",m:220,s:135},
+    {i:"C",n:"和風雞腿燉豆腐",m:200,s:120},
+    {i:"D",n:"滑蛋牛肉",m:135,s:85},
+    {i:"E",n:"優質鮭魚",m:260,s:null}
+  ],
+  side:[
+    {i:"F",n:"菇菇燒蘿蔔",m:110,s:70},
+    {i:"G",n:"肉末味噌燒豆腐",m:100,s:60},
+    {i:"H",n:"大黃瓜炒蝦米",m:90,s:55},
+    {i:"I",n:"韭菜炒蛋",m:100,s:60}
+  ],
+  soup:{n:"刈菜雞湯",m:120,s:50}
+},
+Fri:{
+  main:[
+    {i:"A",n:"咖哩燉牛肉",m:230,s:140},
+    {i:"B",n:"鱸魚排佐義式青醬",m:230,s:140},
+    {i:"C",n:"避風塘魷魚",m:230,s:140},
+    {i:"D",n:"豬肉壽喜燒",m:195,s:120},
+    {i:"E",n:"優質鮭魚",m:260,s:null}
+  ],
+  side:[
+    {i:"F",n:"奶油玉米雞丁",m:120,s:75},
+    {i:"G",n:"肉末味噌燒豆腐",m:100,s:60},
+    {i:"H",n:"大黃瓜炒蝦米",m:90,s:55},
+    {i:"I",n:"韭菜炒蛋",m:100,s:60}
+  ],
+  soup:{n:"刈菜雞湯",m:120,s:50}
 }};
 
 let selections = {Mon: {}, Tue: {}, Wed: {}, Thu: {}, Fri: {}};
-let currentDay = 'Mon';
+let currentDay = 'Tue';
 let pendingRecommendedUpgrade = false;
 let recommendedLargeAddons = 0;
 let recommendedSmallAddons = 0;
@@ -1069,7 +1080,7 @@ html += `<div class="p-5 border-4 border-emerald-600 bg-emerald-50/60 rounded-[2
                    <div class="flex flex-col gap-3">
                        <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                            <input type="checkbox" ${sel.exchangeSoup ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSoup = this.checked; handleExchangeChange('soup');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
-                           <span>換購當日湯品 🥣 (扣 7 點)</span>
+                           <span>換購當日湯品 🥣 (扣 5 點)</span>
                        </label>
                        <label class="flex items-center gap-3 font-bold text-lg text-emerald-900 cursor-pointer">
                            <input type="checkbox" ${sel.exchangeSalmon ? 'checked' : ''} onchange="selections['${currentDay}'].exchangeSalmon = this.checked; handleExchangeChange('salmon');" class="w-6 h-6 rounded border-gray-300 text-emerald-600 focus:ring-emerald-50">
@@ -1149,7 +1160,7 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(小份)` : s.pkgS
 }
 
 let exchangeText = [];
-if(s.exchangeSoup) exchangeText.push("換購湯品(扣7點)");
+if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
 if(s.exchangeCod) exchangeText.push("換購白灼蝦(扣10點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
@@ -1168,7 +1179,7 @@ chosenSideName = targetSide ? `${targetSide.i}.${targetSide.n}(大份)` : s.pkgS
 }
 
 let exchangeText = [];
-if(s.exchangeSoup) exchangeText.push("換購湯品(扣7點)");
+if(s.exchangeSoup) exchangeText.push("換購湯品(扣5點)");
 if(s.exchangeSalmon) exchangeText.push("換購鮭魚(扣10點)");
 if(s.exchangeCod) exchangeText.push("換購白灼蝦(扣10點)");
 let exchangeStr = exchangeText.length > 0 ? ` + [點數換購: ${exchangeText.join(', ')}]` : '';
@@ -1297,10 +1308,10 @@ for(let day in selections) { if(selections[day].type) deliveryDays++; }
 if(deliveryDays > 0) deliveryFeeHtml = `<div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl font-black text-sm text-blue-700">外送費 (${deliveryDays}天): +$${deliveryDays * 50}</div>`;
 }
 
-// 計算點數（湯品7點，鮭魚10點，白灼蝦10點）
+// 計算點數（湯品5點，鮭魚10點，白灼蝦10點）
 let totalPointsRequired = 0;
 for(let day in selections) {
-if(selections[day].exchangeSoup) totalPointsRequired += 7;
+if(selections[day].exchangeSoup) totalPointsRequired += 5;
 if(selections[day].exchangeSalmon) totalPointsRequired += 10;
 if(selections[day].exchangeCod) totalPointsRequired += 10;
 }
@@ -1527,7 +1538,7 @@ async function submitOrder() {
             mealCount++;
         }
 
-        if (s.exchangeSoup) totalPointsRequired += 5;
+        if (s.exchangeSoup) totalPointsRequired += 7;
         if (s.exchangeSalmon) totalPointsRequired += 10;
         if (s.exchangeCod) totalPointsRequired += 10;
     }
